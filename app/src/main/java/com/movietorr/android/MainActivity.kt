@@ -137,7 +137,6 @@ class MainActivity : AppCompatActivity() {
     
     private fun showSettingsFragment() {
         webView.visibility = View.GONE
-        hideFloatingButton()
         
         val settingsFragment = SettingsFragment()
         supportFragmentManager.beginTransaction()
@@ -223,9 +222,6 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                
-                // Показываем плавающую кнопку на всех страницах
-                showFloatingButton()
                 
                 binding.swipeRefresh.isRefreshing = false
             }
