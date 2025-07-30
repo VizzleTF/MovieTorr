@@ -42,16 +42,20 @@ def getVersionCode() {
 
 android {
     namespace 'com.movietorr.android'
-    compileSdk 35
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.movietorr.android"
         minSdk 24
-        targetSdk 35
-        versionCode getVersionCode()
-        versionName getVersionName()
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Добавляем RenderScript поддержку для блюра
+        renderscriptTargetApi 21
+        renderscriptSupportModeEnabled true
     }
 
     signingConfigs {

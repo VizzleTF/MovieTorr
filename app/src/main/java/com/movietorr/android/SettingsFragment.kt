@@ -54,8 +54,32 @@ class SettingsFragment : DialogFragment() {
             setDimAmount(0.3f) // Затемняем фон на 30%
         }
         
-        // Применяем прозрачность к корневому view
-        binding.root.alpha = 0.9f
+        // Применяем эффект жидкого стекла как в AndroidLiquidGlass
+        applyLiquidGlassEffect()
+    }
+    
+    private fun applyLiquidGlassEffect() {
+        try {
+            // Применяем блюр к корневому view
+            binding.root.post {
+                val blurredBitmap = BlurUtils.blurView(requireContext(), binding.root, 8f)
+                blurredBitmap?.let { bitmap ->
+                    // Создаем фон с эффектом жидкого стекла
+                    val liquidGlassBg = BlurUtils.createLiquidGlassBackground(
+                        context = requireContext(),
+                        cornerRadius = 28f,
+                        blurRadius = 8f,
+                        alpha = 0.3f
+                    )
+                    
+                    // Применяем фон
+                    binding.root.background = liquidGlassBg
+                }
+            }
+        } catch (e: Exception) {
+            // Если блюр не работает, используем стандартный фон
+            binding.root.alpha = 0.9f
+        }
     }
     
     private fun setupAllSitesRecycler() {
