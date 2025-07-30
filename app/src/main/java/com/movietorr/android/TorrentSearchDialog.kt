@@ -95,16 +95,6 @@ class TorrentSearchDialog(
     
     private fun setupListeners() {
         searchButton.setOnClickListener { performSearch(false) }
-        
-        // Добавляем обработчик для Enter в поле поиска
-        searchInput.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
-                performSearch(false)
-                true
-            } else {
-                false
-            }
-        }
     }
     
     private fun performSearch(searchAll: Boolean) {

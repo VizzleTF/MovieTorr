@@ -1,0 +1,21 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Основной полупрозрачный фон (как в CSS: rgba(255, 255, 255, 0.50)) -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#CCFFFFFF"/>
+            <corners android:radius="28dp"/>
+        </shape>
+    </item>
+    <!-- Shine-эффект (как в CSS: box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5)) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="45"
+                android:startColor="#80FFFFFF"
+                android:centerColor="#40FFFFFF"
+                android:endColor="#00FFFFFF"/>
+            <corners android:radius="28dp"/>
+        </shape>
+    </item>
+</layer-list>

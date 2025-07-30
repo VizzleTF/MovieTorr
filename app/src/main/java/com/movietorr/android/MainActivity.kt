@@ -191,12 +191,16 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun setupBottomBar() {
-        // Центрируем нижнее меню программно
-        val bottomCardView = findViewById<com.movietorr.android.BottomSheetView>(R.id.bottomCardView)
-        bottomCardView?.let { cardView ->
-            val layoutParams = cardView.layoutParams as? androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
+        // Настраиваем LiquidGlassView
+        val liquidGlassView = findViewById<LiquidGlassView>(R.id.bottomCardView)
+        liquidGlassView?.let { view ->
+            // Устанавливаем targetView для захвата фона (весь экран)
+            view.setTargetView(binding.root)
+            
+            // Центрируем программно
+            val layoutParams = view.layoutParams as? androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
             layoutParams?.gravity = android.view.Gravity.CENTER_HORIZONTAL or android.view.Gravity.BOTTOM
-            cardView.layoutParams = layoutParams
+            view.layoutParams = layoutParams
         }
         
         updateSiteButton()

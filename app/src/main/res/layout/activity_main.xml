@@ -28,17 +28,14 @@
         android:visibility="gone" />
 
     <!-- Нижняя панель с кнопками -->
-    <com.movietorr.android.BottomSheetView
+    <com.movietorr.android.LiquidGlassView
         android:id="@+id/bottomCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
-        android:layout_marginBottom="24dp"
-        app:cornerRadius="28dp"
-        app:glassAlpha="0.8"
-        app:glassColor="?attr/colorSurface">
+        android:layout_marginBottom="24dp">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -87,6 +84,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="0dp" />
         </LinearLayout>
-    </com.movietorr.android.BottomSheetView>
+    </com.movietorr.android.LiquidGlassView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout> 

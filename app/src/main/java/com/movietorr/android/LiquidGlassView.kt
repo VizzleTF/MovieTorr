@@ -1,197 +1,187 @@
 package com.movietorr.android
 
 import android.content.Context
-import android.content.res.TypedArray
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.RectF
-import android.os.Build
+import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
-import android.util.TypedValue
-import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
+import android.view.View
+import android.view.ViewTreeObserver
 
 class LiquidGlassView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+) : View(context, attrs, defStyleAttr) {
 
-    companion object {
-        private const val TAG = "LiquidGlassView"
-        private const val DEBUG = true
-    }
-
-    private val paint = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.FILL
-    }
+    private var targetView: View? = null
+    private var targetBitmap: Bitmap? = null
+    private var runtimeShader: RuntimeShader? = null
+    private var shaderPaint: Paint? = null
     
-    private val path = Path()
-    private val rect = RectF()
-    
-    var cornerRadius: Float = 28f
-        set(value) {
-            field = value
-            invalidate()
-        }
-    
-    var glassAlpha: Float = 0.3f
-        set(value) {
-            field = value
-            invalidate()
-        }
-    
-    var glassColor: Int = ContextCompat.getColor(context, android.R.color.white)
-        set(value) {
-            field = value
-            invalidate()
-        }
+    // Параметры эффекта
+    private var blurRadius: Float = 8f
+    private var cornerRadius: Float = 28f
+    private var curvature: Float = 0.1f
+    private var thickness: Float = 0.05f
     
     init {
-        if (DEBUG) {
-            Log.d(TAG, "LiquidGlassView init - Manufacturer: ${Build.MANUFACTURER}, Brand: ${Build.BRAND}")
-        }
-        
-        try {
-            // Читаем кастомные атрибуты
-            val typedArray: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.LiquidGlassView)
+        setupShader()
+    }
+    
+    private fun setupShader() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             try {
-                cornerRadius = typedArray.getDimension(R.styleable.LiquidGlassView_cornerRadius, 28f)
-                glassAlpha = typedArray.getFloat(R.styleable.LiquidGlassView_glassAlpha, 0.3f)
-                glassColor = typedArray.getColor(R.styleable.LiquidGlassView_glassColor, ContextCompat.getColor(context, android.R.color.white))
-                
-                if (DEBUG) {
-                    Log.d(TAG, "Attributes loaded - cornerRadius: $cornerRadius, glassAlpha: $glassAlpha")
+                runtimeShader = RuntimeShader(SHADER_CODE)
+                shaderPaint = Paint().apply {
+                    shader = runtimeShader
+                    isAntiAlias = true
                 }
-            } finally {
-                typedArray.recycle()
+            } catch (e: Exception) {
+                // Fallback для устройств без поддержки AGSL
+                shaderPaint = Paint().apply {
+                    color = Color.WHITE
+                    alpha = 200
+                    isAntiAlias = true
+                }
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error loading attributes", e)
-        }
-        
-        // Устанавливаем прозрачный фон для FrameLayout
-        setBackgroundColor(android.graphics.Color.TRANSPARENT)
-        
-        // Включаем аппаратное ускорение для лучшей производительности
-        setLayerType(LAYER_TYPE_HARDWARE, null)
-    }
-    
-    override fun dispatchDraw(canvas: Canvas) {
-        try {
-            if (DEBUG) {
-                Log.d(TAG, "dispatchDraw called - width: $width, height: $height")
-            }
-            
-            // Создаем скругленный прямоугольник
-            rect.set(0f, 0f, width.toFloat(), height.toFloat())
-            path.reset()
-            path.addRoundRect(rect, cornerRadius, cornerRadius, Path.Direction.CW)
-            
-            // Рисуем основной фон с повышенной прозрачностью
-            paint.color = glassColor
-            paint.alpha = (255 * glassAlpha).toInt()
-            canvas.drawPath(path, paint)
-            
-            // Добавляем более заметный inner refraction эффект
-            drawInnerRefraction(canvas)
-            
-            // Добавляем более заметный shine эффект
-            drawShineEffect(canvas)
-            
-            // Добавляем border эффект
-            drawBorderEffect(canvas)
-            
-        } catch (e: Exception) {
-            Log.e(TAG, "Error in dispatchDraw", e)
-            // Fallback на простой фон
-            try {
-                canvas.drawColor(glassColor)
-            } catch (e2: Exception) {
-                Log.e(TAG, "Error in fallback draw", e2)
-            }
-        }
-        
-        // Рисуем дочерние элементы
-        super.dispatchDraw(canvas)
-    }
-    
-    private fun drawInnerRefraction(canvas: Canvas) {
-        try {
-            val refractionPaint = Paint().apply {
+        } else {
+            // Fallback для старых версий Android
+            shaderPaint = Paint().apply {
+                color = Color.WHITE
+                alpha = 200
                 isAntiAlias = true
-                style = Paint.Style.FILL
-                alpha = (255 * 0.2f).toInt() // Увеличил прозрачность
             }
+        }
+    }
+    
+    fun setTargetView(view: View) {
+        targetView?.viewTreeObserver?.removeOnPreDrawListener(targetLayoutListener)
+        targetView = view
+        view.viewTreeObserver.addOnPreDrawListener(targetLayoutListener)
+    }
+    
+    private val targetLayoutListener = ViewTreeObserver.OnPreDrawListener {
+        updateBitmap()
+        true
+    }
+    
+    private fun updateBitmap() {
+        val view = targetView ?: return
+        val shader = runtimeShader ?: return
+        
+        try {
+            // Создаем bitmap из View правильным способом
+            val bmp = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bmp)
+            view.draw(canvas)
+            targetBitmap = bmp
             
-            // Создаем градиент для inner refraction
-            val gradient = android.graphics.LinearGradient(
-                0f, 0f, width.toFloat(), height.toFloat(),
-                intArrayOf(
-                    ContextCompat.getColor(context, android.R.color.transparent),
-                    ContextCompat.getColor(context, android.R.color.white),
-                    ContextCompat.getColor(context, android.R.color.transparent)
-                ),
-                floatArrayOf(0f, 0.5f, 1f),
-                android.graphics.Shader.TileMode.CLAMP
+            val bitmapShader = BitmapShader(
+                bmp,
+                Shader.TileMode.CLAMP,
+                Shader.TileMode.CLAMP
             )
             
-            refractionPaint.shader = gradient
-            canvas.drawPath(path, refractionPaint)
+            val targetPos = IntArray(2)
+            val selfPos = IntArray(2)
             
+            view.getLocationOnScreen(targetPos)
+            getLocationOnScreen(selfPos)
+            
+            shader.setInputShader("iImage1", bitmapShader)
+            shader.setFloatUniform("iImageResolution", bmp.width.toFloat(), bmp.height.toFloat())
+            shader.setFloatUniform("iTargetViewPos", targetPos[0].toFloat(), targetPos[1].toFloat())
+            shader.setFloatUniform("iShaderViewPos", selfPos[0].toFloat(), selfPos[1].toFloat())
+            shader.setFloatUniform("iShaderResolution", width.toFloat(), height.toFloat())
+            shader.setFloatUniform("iBlurRadius", blurRadius)
+            shader.setFloatUniform("iCornerRadius", cornerRadius)
+            shader.setFloatUniform("iCurvature", curvature)
+            shader.setFloatUniform("iThickness", thickness)
+            
+            shaderPaint?.shader = shader
+            invalidate()
         } catch (e: Exception) {
-            Log.e(TAG, "Error in drawInnerRefraction", e)
+            // Fallback если что-то пошло не так
         }
     }
     
-    private fun drawShineEffect(canvas: Canvas) {
-        try {
-            val shinePaint = Paint().apply {
-                isAntiAlias = true
-                style = Paint.Style.FILL
-                alpha = (255 * 0.15f).toInt() // Увеличил прозрачность
-            }
-            
-            // Создаем радиальный градиент для shine
-            val centerX = width * 0.3f
-            val centerY = height * 0.3f
-            val radius = kotlin.math.min(width, height) * 0.8f
-            
-            val shineGradient = android.graphics.RadialGradient(
-                centerX, centerY, radius,
-                intArrayOf(
-                    ContextCompat.getColor(context, android.R.color.white),
-                    ContextCompat.getColor(context, android.R.color.transparent)
-                ),
-                floatArrayOf(0f, 1f),
-                android.graphics.Shader.TileMode.CLAMP
-            )
-            
-            shinePaint.shader = shineGradient
-            canvas.drawPath(path, shinePaint)
-            
-        } catch (e: Exception) {
-            Log.e(TAG, "Error in drawShineEffect", e)
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        
+        if (shaderPaint != null) {
+            // Рисуем скругленные углы
+            val rect = RectF(0f, 0f, width.toFloat(), height.toFloat())
+            canvas.drawRoundRect(rect, cornerRadius, cornerRadius, shaderPaint!!)
         }
     }
     
-    private fun drawBorderEffect(canvas: Canvas) {
-        try {
-            val borderPaint = Paint().apply {
-                isAntiAlias = true
-                style = Paint.Style.STROKE
-                strokeWidth = 2f
-                alpha = (255 * 0.1f).toInt()
-                color = ContextCompat.getColor(context, android.R.color.white)
+    companion object {
+        private val SHADER_CODE = """
+            uniform shader iImage1;
+            uniform float2 iImageResolution;
+            uniform float2 iTargetViewPos;
+            uniform float2 iShaderViewPos;
+            uniform float2 iShaderResolution;
+            uniform float iBlurRadius;
+            uniform float iCornerRadius;
+            uniform float iCurvature;
+            uniform float iThickness;
+            
+            float2 getUV(float2 coord) {
+                float2 globalCoord = coord + iShaderViewPos - iTargetViewPos;
+                return globalCoord / iImageResolution;
             }
             
-            canvas.drawPath(path, borderPaint)
+            float2 applyLensDistortion(float2 coord, float2 center, float2 size, float radius, float curvature, float thickness) {
+                float2 normalized = (coord - center) / size;
+                float dist = length(normalized);
+                
+                if (dist > 1.0) {
+                    return coord;
+                }
+                
+                // Эффект линзы
+                float distortion = 1.0 + curvature * (1.0 - dist * dist);
+                float2 distorted = normalized * distortion;
+                
+                // Добавляем толщину стекла
+                distorted *= (1.0 - thickness);
+                
+                return center + distorted * size;
+            }
             
-        } catch (e: Exception) {
-            Log.e(TAG, "Error in drawBorderEffect", e)
-        }
+            half4 gaussianBlur(float2 uv, float2 resolution, float radius) {
+                if (radius <= 0.0) {
+                    return iImage1.eval(uv * resolution);
+                }
+                
+                float2 texelSize = 1.0 / resolution;
+                half4 color = half4(0.0);
+                float totalWeight = 0.0;
+                
+                // Простой Gaussian blur 5x5
+                for (int x = -2; x <= 2; x++) {
+                    for (int y = -2; y <= 2; y++) {
+                        float2 offset = float2(x, y) * texelSize * radius;
+                        float weight = exp(-(x*x + y*y) / (2.0 * radius * radius));
+                        color += iImage1.eval((uv + offset) * resolution) * weight;
+                        totalWeight += weight;
+                    }
+                }
+                
+                return color / totalWeight;
+            }
+            
+            half4 main(float2 fragCoord) {
+                float2 center = iShaderResolution * 0.5;
+                float2 lensSize = iShaderResolution * 0.48;
+                
+                float2 distortedCoord = applyLensDistortion(
+                    fragCoord, center, lensSize, iCornerRadius, iCurvature, iThickness
+                );
+                
+                float2 uv = getUV(distortedCoord);
+                return gaussianBlur(uv, iImageResolution, iBlurRadius);
+            }
+        """.trimIndent()
     }
 } 

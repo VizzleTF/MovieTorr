@@ -8,13 +8,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class SearchHistoryFragment : Fragment() {
     
     private lateinit var recyclerView: RecyclerView
     private lateinit var emptyText: TextView
-    private lateinit var clearButton: ExtendedFloatingActionButton
+    private lateinit var clearButton: FloatingActionButton
     private lateinit var historyAdapter: SearchHistoryAdapter
     
     override fun onCreateView(
