@@ -33,6 +33,9 @@ class SettingsFragment : Fragment() {
         setupAllSitesRecycler()
         setupAddSiteButton()
         setupKeyboardHandling()
+        binding.btnLegalInfo?.setOnClickListener {
+            showLegalInfoDialog()
+        }
     }
     
     private fun setupAllSitesRecycler() {
@@ -106,6 +109,16 @@ class SettingsFragment : Fragment() {
                 }
             }
         }
+    }
+    
+    private fun showLegalInfoDialog() {
+        val dialog = com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.legal_notice_title)
+            .setMessage(android.text.Html.fromHtml(getString(R.string.legal_notice_content), android.text.Html.FROM_HTML_MODE_COMPACT))
+            .setPositiveButton(R.string.ok) { d, _ -> d.dismiss() }
+            .setCancelable(true)
+            .create()
+        dialog.show()
     }
     
     override fun onDestroyView() {
