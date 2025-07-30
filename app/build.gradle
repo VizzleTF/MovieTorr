@@ -41,11 +41,11 @@ def getVersionCode() {
 }
 
 android {
-    namespace 'com.librekinopoisk.android'
+    namespace 'com.movietorr.android'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.librekinopoisk.android"
+        applicationId "com.movietorr.android"
         minSdk 24
         targetSdk 35
         versionCode getVersionCode()

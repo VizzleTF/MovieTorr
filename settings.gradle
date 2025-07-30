@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "LibreKinopoisk"
+rootProject.name = "MovieTorr"
 include ':app' 

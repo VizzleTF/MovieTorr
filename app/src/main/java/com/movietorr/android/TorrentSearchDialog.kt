@@ -1,4 +1,4 @@
-package com.librekinopoisk.android
+package com.movietorr.android
 
 import androidx.appcompat.app.AlertDialog
 import android.content.ClipData

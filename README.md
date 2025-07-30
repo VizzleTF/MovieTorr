@@ -75,7 +75,7 @@ MovieTorr использует [TorAPI](https://github.com/Lifailon/TorAPI) - н
 
 ```
 app/
-├── src/main/java/com/librekinopoisk/android/
+├── src/main/java/com/movietorr/android/
 │   ├── MainActivity.kt                 # Основная Activity с WebView
 │   ├── TorApiService.kt               # HTTP клиент для TorAPI
 │   ├── TorrentSearchDialog.kt         # Диалог поиска видео

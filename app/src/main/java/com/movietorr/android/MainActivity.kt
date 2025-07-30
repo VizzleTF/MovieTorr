@@ -1,4 +1,4 @@
-package com.librekinopoisk.android
+package com.movietorr.android
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -12,7 +12,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
-import com.librekinopoisk.android.databinding.ActivityMainBinding
+import com.movietorr.android.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     

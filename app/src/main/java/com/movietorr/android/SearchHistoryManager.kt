@@ -1,4 +1,4 @@
-package com.librekinopoisk.android
+package com.movietorr.android
 
 import android.content.Context
 import android.content.SharedPreferences

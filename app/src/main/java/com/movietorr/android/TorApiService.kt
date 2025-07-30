@@ -1,4 +1,4 @@
-package com.librekinopoisk.android
+package com.movietorr.android
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

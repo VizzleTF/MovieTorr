@@ -1,4 +1,4 @@
-package com.librekinopoisk.android
+package com.movietorr.android
 
 import android.os.Bundle
 import android.view.LayoutInflater

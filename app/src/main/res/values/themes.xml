@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.LibreKinopoisk" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.MovieTorr" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#FF6600</item>
         <item name="colorPrimaryVariant">#E55A00</item>
@@ -15,7 +15,7 @@
     </style>
     
     <!-- Тема без ActionBar для полноэкранного режима -->
-    <style name="Theme.LibreKinopoisk.NoActionBar" parent="Theme.LibreKinopoisk">
+    <style name="Theme.MovieTorr.NoActionBar" parent="Theme.MovieTorr">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
