@@ -37,13 +37,14 @@
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="24dp"
         app:cardCornerRadius="28dp"
-        app:cardElevation="12dp"
-        app:cardBackgroundColor="?attr/colorSurfaceContainer">
+        app:cardElevation="12dp">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="8dp">
+
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,6 +65,7 @@
                     android:ellipsize="end"
                     android:maxLines="1" />
             </com.google.android.material.card.MaterialCardView>
+
             <ImageButton
                 android:id="@+id/searchButton"
                 android:layout_width="wrap_content"
@@ -75,6 +77,7 @@
                 app:tint="?attr/colorOnSurfaceVariant"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp" />
+
             <ImageButton
                 android:id="@+id/settingsButton"
                 android:layout_width="wrap_content"
