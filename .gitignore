@@ -96,6 +96,7 @@ Thumbs.db
 
 # VSCode
 .vscode/
+.cursor/
 
 # Vim
 *.swp

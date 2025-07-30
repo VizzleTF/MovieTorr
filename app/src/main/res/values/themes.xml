@@ -1,17 +1,49 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.MovieTorr" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.MovieTorr" parent="Theme.Material3.DayNight">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#FF6600</item>
-        <item name="colorPrimaryVariant">#E55A00</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/md_theme_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_onPrimaryContainer</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#03DAC5</item>
-        <item name="colorSecondaryVariant">#018786</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/md_theme_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_onSecondaryContainer</item>
+        <!-- Tertiary brand color. -->
+        <item name="colorTertiary">@color/md_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_onTertiaryContainer</item>
+        <!-- Error colors. -->
+        <item name="colorError">@color/md_theme_error</item>
+        <item name="colorOnError">@color/md_theme_onError</item>
+        <item name="colorErrorContainer">@color/md_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/md_theme_onErrorContainer</item>
+        <!-- Neutral colors. -->
+        <item name="colorSurface">@color/md_theme_surface</item>
+        <item name="colorOnSurface">@color/md_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_outline</item>
+        <item name="colorOutlineVariant">@color/md_theme_outlineVariant</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <!-- Typography. -->
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.MovieTorr.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.MovieTorr.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.MovieTorr.HeadlineSmall</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.MovieTorr.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.MovieTorr.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.MovieTorr.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.MovieTorr.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.MovieTorr.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.MovieTorr.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.MovieTorr.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.MovieTorr.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.MovieTorr.LabelSmall</item>
     </style>
     
     <!-- Тема без ActionBar для полноэкранного режима -->
@@ -19,4 +51,18 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+    
+    <!-- Typography styles -->
+    <style name="TextAppearance.MovieTorr.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge" />
+    <style name="TextAppearance.MovieTorr.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium" />
+    <style name="TextAppearance.MovieTorr.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall" />
+    <style name="TextAppearance.MovieTorr.TitleLarge" parent="TextAppearance.Material3.TitleLarge" />
+    <style name="TextAppearance.MovieTorr.TitleMedium" parent="TextAppearance.Material3.TitleMedium" />
+    <style name="TextAppearance.MovieTorr.TitleSmall" parent="TextAppearance.Material3.TitleSmall" />
+    <style name="TextAppearance.MovieTorr.BodyLarge" parent="TextAppearance.Material3.BodyLarge" />
+    <style name="TextAppearance.MovieTorr.BodyMedium" parent="TextAppearance.Material3.BodyMedium" />
+    <style name="TextAppearance.MovieTorr.BodySmall" parent="TextAppearance.Material3.BodySmall" />
+    <style name="TextAppearance.MovieTorr.LabelLarge" parent="TextAppearance.Material3.LabelLarge" />
+    <style name="TextAppearance.MovieTorr.LabelMedium" parent="TextAppearance.Material3.LabelMedium" />
+    <style name="TextAppearance.MovieTorr.LabelSmall" parent="TextAppearance.Material3.LabelSmall" />
 </resources> 

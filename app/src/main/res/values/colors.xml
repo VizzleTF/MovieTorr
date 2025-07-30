@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Material 3 Color System -->
+    <color name="md_theme_primary">#FF6600</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#FFE0D6</color>
+    <color name="md_theme_onPrimaryContainer">#2D1500</color>
+    <color name="md_theme_secondary">#755847</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#FFDCC2</color>
+    <color name="md_theme_onSecondaryContainer">#2B1608</color>
+    <color name="md_theme_tertiary">#636032</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#EBE8AA</color>
+    <color name="md_theme_onTertiaryContainer">#1E1D00</color>
+    <color name="md_theme_error">#BA1A1A</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_errorContainer">#FFDAD6</color>
+    <color name="md_theme_onErrorContainer">#410002</color>
+    <color name="md_theme_background">#FFFBFF</color>
+    <color name="md_theme_onBackground">#201A18</color>
+    <color name="md_theme_surface">#FFFBFF</color>
+    <color name="md_theme_onSurface">#201A18</color>
+    <color name="md_theme_surfaceVariant">#F3DFD1</color>
+    <color name="md_theme_onSurfaceVariant">#52443C</color>
+    <color name="md_theme_outline">#85746C</color>
+    <color name="md_theme_outlineVariant">#D7C3B8</color>
+    <color name="md_theme_inverseOnSurface">#FBEEE9</color>
+    <color name="md_theme_inverseSurface">#352F2D</color>
+    <color name="md_theme_inversePrimary">#FFB59A</color>
+    <color name="md_theme_shadow">#000000</color>
+    <color name="md_theme_surfaceTint">#FF6600</color>
+    <color name="md_theme_scrim">#000000</color>
+    
+    <!-- Legacy colors for backward compatibility -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -8,22 +41,22 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- Новые цвета для дизайна 2025 -->
-    <color name="card_background">#FFFFFF</color>
-    <color name="source_text">#FF6600</color>
-    <color name="source_icon_tint">#FF6600</color>
-    <color name="size_text">#666666</color>
-    <color name="title_text">#1A1A1A</color>
-    <color name="category_text">#666666</color>
+    <!-- App-specific colors -->
+    <color name="card_background">@color/md_theme_surface</color>
+    <color name="source_text">@color/md_theme_primary</color>
+    <color name="source_icon_tint">@color/md_theme_primary</color>
+    <color name="size_text">@color/md_theme_onSurfaceVariant</color>
+    <color name="title_text">@color/md_theme_onSurface</color>
+    <color name="category_text">@color/md_theme_onSurfaceVariant</color>
     <color name="seed_color">#4CAF50</color>
     <color name="peer_color">#FF5722</color>
-    <color name="date_text">#999999</color>
-    <color name="magnet_color">#FF6600</color>
+    <color name="date_text">@color/md_theme_outline</color>
+    <color name="magnet_color">@color/md_theme_primary</color>
     
-    <!-- Цвета для темной темы -->
-    <color name="card_background_dark">#1E1E1E</color>
-    <color name="title_text_dark">#FFFFFF</color>
-    <color name="size_text_dark">#CCCCCC</color>
-    <color name="category_text_dark">#CCCCCC</color>
-    <color name="date_text_dark">#888888</color>
+    <!-- Dark theme colors -->
+    <color name="card_background_dark">@color/md_theme_surface</color>
+    <color name="title_text_dark">@color/md_theme_onSurface</color>
+    <color name="size_text_dark">@color/md_theme_onSurfaceVariant</color>
+    <color name="category_text_dark">@color/md_theme_onSurfaceVariant</color>
+    <color name="date_text_dark">@color/md_theme_outline</color>
 </resources> 
