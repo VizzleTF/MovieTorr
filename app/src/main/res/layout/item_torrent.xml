@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:flexbox="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="8dp"
@@ -18,13 +19,14 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Метаданные в одной строке -->
-        <LinearLayout
+        <!-- Метаданные в одной строке, с переносом -->
+        <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/metadataContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            flexbox:flexWrap="wrap"
+            flexbox:alignItems="center"
+            flexbox:justifyContent="flex_start"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -70,7 +72,7 @@
                 <ImageView
                     android:layout_width="14dp"
                     android:layout_height="14dp"
-                    android:src="@drawable/ic_seed"
+                    android:src="@drawable/ic_arrow_upward"
                     android:layout_marginEnd="4dp"
                     android:tint="@color/seed_color" />
 
@@ -96,7 +98,7 @@
                 <ImageView
                     android:layout_width="14dp"
                     android:layout_height="14dp"
-                    android:src="@drawable/ic_peer"
+                    android:src="@drawable/ic_arrow_downward"
                     android:layout_marginEnd="4dp"
                     android:tint="@color/peer_color" />
 
@@ -135,7 +137,7 @@
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="2dp" />
 
-        </LinearLayout>
+        </com.google.android.flexbox.FlexboxLayout>
 
         <!-- Название торрента -->
         <TextView
