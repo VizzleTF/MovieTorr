@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.movietorr.android.databinding.ActivityMainBinding
+import com.movietorr.android.databinding.DialogSettingsBinding
 
 class MainActivity : AppCompatActivity() {
     
@@ -225,7 +226,6 @@ class MainActivity : AppCompatActivity() {
             dialog.show(supportFragmentManager, "SettingsDialog")
         }
     }
-    
     private fun updateSiteButton() {
         val sharedPrefs = getSharedPreferences("MovieTorrPrefs", MODE_PRIVATE)
         val lastSource = sharedPrefs.getString(PREF_LAST_SOURCE, "freepik") ?: "freepik"
@@ -233,7 +233,6 @@ class MainActivity : AppCompatActivity() {
         val site = sites.find { it.id == lastSource } ?: sites.firstOrNull()
         siteButton.text = site?.name ?: "Site"
     }
-    
     private fun extractMovieDataFromPage() {
         val script = """
             (function() {

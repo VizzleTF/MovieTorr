@@ -62,9 +62,6 @@ class TorrentSearchDialog(
         // Центрируем диалог
         dialog.window?.setGravity(android.view.Gravity.CENTER)
         
-        // Применяем прозрачность к корневому view
-        dialogView.findViewById<View>(R.id.rootCardView)?.alpha = 0.9f
-        
         // Автоматически запускаем поиск если включен
         if (autoSearch && presetTitle.isNotEmpty()) {
             // Увеличиваем задержку для полной инициализации диалога
@@ -98,6 +95,16 @@ class TorrentSearchDialog(
     
     private fun setupListeners() {
         searchButton.setOnClickListener { performSearch(false) }
+        
+        // Добавляем обработчик для Enter в поле поиска
+        searchInput.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
+                performSearch(false)
+                true
+            } else {
+                false
+            }
+        }
     }
     
     private fun performSearch(searchAll: Boolean) {

@@ -34,7 +34,7 @@ class SettingsFragment : DialogFragment() {
         setupAddSiteButton()
         setupKeyboardHandling()
         setupThemeSelection()
-        binding.btnLegalInfo?.setOnClickListener {
+        binding.legalInfoButton?.setOnClickListener {
             showLegalInfoDialog()
         }
     }
@@ -53,9 +53,6 @@ class SettingsFragment : DialogFragment() {
             // Универсальная прозрачность для всех устройств
             setDimAmount(0.3f) // Затемняем фон на 30%
         }
-        
-        // Применяем прозрачность к корневому view
-        binding.root.alpha = 0.9f
     }
     
     private fun setupAllSitesRecycler() {
@@ -69,7 +66,7 @@ class SettingsFragment : DialogFragment() {
             updateAllSitesList()
         }
         
-        binding.recyclerAllSites.apply {
+        binding.sitesRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = allSitesAdapter
         }
@@ -78,9 +75,9 @@ class SettingsFragment : DialogFragment() {
     }
     
     private fun setupAddSiteButton() {
-        binding.btnAddSite.setOnClickListener {
-            val name = binding.editSiteName.text.toString().trim()
-            val url = binding.editSiteUrl.text.toString().trim()
+        binding.addSiteButton.setOnClickListener {
+            val name = binding.siteNameInput.text.toString().trim()
+            val url = binding.siteUrlInput.text.toString().trim()
             
             if (name.isBlank() || url.isBlank()) {
                 Toast.makeText(context, "Заполните все поля", Toast.LENGTH_SHORT).show()
@@ -93,8 +90,8 @@ class SettingsFragment : DialogFragment() {
             }
             
             if (SiteSettingsManager.addCustomSite(requireContext(), name, url)) {
-                binding.editSiteName.text?.clear()
-                binding.editSiteUrl.text?.clear()
+                binding.siteNameInput.text?.clear()
+                binding.siteUrlInput.text?.clear()
                 updateAllSitesList()
                 Toast.makeText(context, "Сайт добавлен", Toast.LENGTH_SHORT).show()
             } else {
@@ -112,7 +109,7 @@ class SettingsFragment : DialogFragment() {
     
     private fun setupKeyboardHandling() {
         // Настраиваем обработку фокуса для полей ввода
-        binding.editSiteName.setOnFocusChangeListener { _, hasFocus ->
+        binding.siteNameInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 // Прокручиваем к полю при получении фокуса
                 binding.root.post {
@@ -121,7 +118,7 @@ class SettingsFragment : DialogFragment() {
             }
         }
         
-        binding.editSiteUrl.setOnFocusChangeListener { _, hasFocus ->
+        binding.siteUrlInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 // Прокручиваем к полю при получении фокуса
                 binding.root.post {

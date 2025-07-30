@@ -28,7 +28,7 @@
         android:visibility="gone" />
 
     <!-- Нижняя панель с кнопками -->
-    <com.google.android.material.card.MaterialCardView
+    <com.movietorr.android.LiquidGlassView
         android:id="@+id/bottomCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,16 +36,14 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="24dp"
-        app:cardCornerRadius="28dp"
-        app:cardElevation="12dp"
-        android:background="@drawable/liquid_glass_bg">
-
+        app:cornerRadius="28dp"
+        app:glassAlpha="0.3"
+        app:glassColor="?attr/colorSurface">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="8dp">
-
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,7 +64,6 @@
                     android:ellipsize="end"
                     android:maxLines="1" />
             </com.google.android.material.card.MaterialCardView>
-
             <ImageButton
                 android:id="@+id/searchButton"
                 android:layout_width="wrap_content"
@@ -78,7 +75,6 @@
                 app:tint="?attr/colorOnSurfaceVariant"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp" />
-
             <ImageButton
                 android:id="@+id/settingsButton"
                 android:layout_width="wrap_content"
@@ -91,6 +87,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="0dp" />
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </com.movietorr.android.LiquidGlassView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout> 
