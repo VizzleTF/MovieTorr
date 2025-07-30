@@ -253,7 +253,7 @@ class MainActivity : AppCompatActivity() {
             popup.show()
         }
         searchButton.setOnClickListener {
-            showSearchDialog()
+            extractMovieDataFromPage()
         }
         settingsButton.setOnClickListener {
             showSettingsDialog()
@@ -266,8 +266,84 @@ class MainActivity : AppCompatActivity() {
         val site = sites.find { it.id == lastSource } ?: sites.firstOrNull()
         siteButton.text = site?.name ?: "Site"
     }
-    private fun showSearchDialog() {
-        TorrentSearchDialog(this, torApiService).show()
+    private fun extractMovieDataFromPage() {
+        val script = """
+            (function() {
+                'use strict';
+                // Функция для извлечения названия
+                function extractMovieData() {
+                    let title = '';
+                    let year = '';
+                    // Сначала пробуем извлечь из title страницы
+                    const pageTitle = document.title.trim();
+                    // Паттерны для извлечения названия и года из title
+                    const titlePatterns = [
+                        /^(.+?)\s*\((\d{4})\)\s*[—–-]\s*[^-]+$/,
+                        /^(.+?)\s*\((\d{4})\)\s*[-|]/,
+                        /^(.+?)\s*\((\d{4})\)\s*$/,
+                        /^(.+?)\s*[—–-]\s*[^-]+$/,
+                        /^(.+?)\s*[-|]/,
+                        /^(.+?)\s*$/
+                    ];
+                    for (const pattern of titlePatterns) {
+                        const match = pageTitle.match(pattern);
+                        if (match) {
+                            title = match[1].trim();
+                            if (match[2]) {
+                                year = match[2];
+                            }
+                            break;
+                        }
+                    }
+                    // Если не удалось извлечь из title, пробуем DOM элементы
+                    if (!title) {
+                        const titleSelectors = [
+                            'h1[data-testid="hero-title-block__title"]',
+                            'h1.titleHeader__title',
+                            'h1[class*="title"]',
+                            'h1',
+                            '.film-header__title',
+                            '.movie-header__title',
+                            'h1[data-testid="hero-title-block__title"]',
+                            'h1.titleHeader__title',
+                            'h1[class*="title"]',
+                            'h1',
+                            'h2.title',
+                            'h1.title',
+                            '.title h1',
+                            '.title h2',
+                            'h1',
+                            'h2',
+                            '.release-name',
+                            '.anime-title',
+                            'h1.release-name',
+                            'h1.anime-title',
+                            '.title h1',
+                            '.title h2',
+                            'h1',
+                            'h2'
+                        ];
+                        for (const selector of titleSelectors) {
+                            const element = document.querySelector(selector);
+                            if (element) {
+                                title = element.textContent.trim();
+                                break;
+                            }
+                        }
+                    }
+                    // Заменяем пробелы на + для URL
+                    const finalTitle = title.replace(/\s+/g, '+');
+                    return { 
+                        title: finalTitle, 
+                        year: year, 
+                        success: finalTitle.length > 0
+                    };
+                }
+                const result = extractMovieData();
+                Android.onMovieDataExtracted(result.title, result.year, result.success);
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script, null)
     }
     
     private fun setupBackPressHandler() {
