@@ -27,6 +27,12 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/bottomBarBlurView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:blurRadius="18" />
+
     <!-- Нижняя панель с кнопками -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
@@ -37,7 +43,7 @@
         android:layout_marginBottom="24dp"
         app:cardCornerRadius="28dp"
         app:cardElevation="12dp"
-        app:cardBackgroundColor="?attr/colorSurfaceContainer"
+        app:cardBackgroundColor="#CCFFFFFF"
         app:cardMaxWidth="480dp"
         app:cardMinWidth="240dp">
 
