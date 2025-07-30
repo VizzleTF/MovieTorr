@@ -38,11 +38,7 @@ android {
         jvmTarget = '1.8'
     }
     
-    dexOptions {
-        preDexLibraries true
-        maxProcessCount 8
-        javaMaxHeapSize "2g"
-    }
+
     
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
