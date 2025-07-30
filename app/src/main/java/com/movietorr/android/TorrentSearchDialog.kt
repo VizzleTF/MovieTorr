@@ -46,7 +46,13 @@ class TorrentSearchDialog(
         setupDialog(dialogView)
         setupRecyclerView()
         setupListeners()
-        
+
+        // Эффект блюра для Android 12+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            val cardView = dialogView.findViewById<com.google.android.material.card.MaterialCardView>(R.id.rootCardView)
+            cardView?.setRenderEffect(android.graphics.RenderEffect.createBlurEffect(16f, 16f, android.graphics.Shader.TileMode.CLAMP))
+        }
+
         // Предзаполняем поле поиска если есть данные
         if (presetTitle.isNotEmpty()) {
             searchInput.setText("$presetTitle $presetYear".trim())
