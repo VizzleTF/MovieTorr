@@ -5,13 +5,14 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
     app:cardElevation="2dp"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="12dp"
+    app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:padding="16dp"
         android:gravity="center_vertical">
 
         <LinearLayout
@@ -25,28 +26,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Название сайта"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurface"
+                android:fontFamily="sans-serif-medium" />
 
             <TextView
                 android:id="@+id/tv_site_url"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="https://example.com"
-                android:textSize="12sp"
-                android:textColor="@android:color/darker_gray" />
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginTop="2dp" />
 
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_delete_site"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="Удалить"
-            android:textSize="12sp"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
             app:icon="@drawable/ic_delete"
-            app:iconSize="16dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            app:iconSize="18dp"
+            app:cornerRadius="12dp"
+            app:backgroundTint="?attr/colorErrorContainer"
+            app:strokeColor="?attr/colorError"
+            app:strokeWidth="1dp"
+            app:iconTint="?attr/colorError"
+            app:textColor="?attr/colorError"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
 
     </LinearLayout>
 

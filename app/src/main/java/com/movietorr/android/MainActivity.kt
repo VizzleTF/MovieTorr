@@ -1,43 +1,43 @@
 package com.movietorr.android
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Html
 import android.view.View
 import android.webkit.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.appbar.MaterialToolbar
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.navigation.NavigationView
 import com.movietorr.android.databinding.ActivityMainBinding
+import com.movietorr.android.databinding.DialogSettingsBinding
 
 class MainActivity : AppCompatActivity() {
     
     private lateinit var binding: ActivityMainBinding
     private lateinit var webView: WebView
     private lateinit var torApiService: TorApiService
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navigationView: NavigationView
-    private lateinit var torrentSearchFab: com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
     
     companion object {
         private const val PREF_LAST_SOURCE = "last_source"
+        private const val PREF_THEME_MODE = "theme_mode"
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Применяем сохраненную тему
+        applyThemeMode()
+        
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
         torApiService = TorApiService()
-        setupToolbar()
-        setupNavigationDrawer()
         setupWebView()
-        setupFloatingButton()
+        setupButtons()
         setupBackPressHandler()
         
         // Показываем правовое уведомление при первом запуске
@@ -47,98 +47,21 @@ class MainActivity : AppCompatActivity() {
         loadLastSource()
     }
     
-    private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_menu)
-        }
-    }
-    
-    private fun setupNavigationDrawer() {
-        drawerLayout = binding.drawerLayout
-        navigationView = binding.navigationView
+    private fun applyThemeMode() {
+        val sharedPrefs = getSharedPreferences("MovieTorrPrefs", MODE_PRIVATE)
+        val themeMode = sharedPrefs.getInt(PREF_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         
-        updateNavigationMenu()
-        
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.nav_history -> {
-                    showHistoryFragment()
-                    true
-                }
-                R.id.nav_settings -> {
-                    showSettingsFragment()
-                    true
-                }
-                R.id.nav_legal -> {
-                    showLegalInformation()
-                    true
-                }
-                else -> {
-                    // Динамические сайты
-                    val sites = SiteSettingsManager.getEnabledSites(this)
-                    val site = sites.find { generateMenuId(it.id) == menuItem.itemId }
-                    if (site != null) {
-                        loadSite(site.url, site.name)
-                        saveLastSource(site.id)
-                        true
-                    } else {
-                        false
-                    }
-                }
-            }
+        when (themeMode) {
+            AppCompatDelegate.MODE_NIGHT_NO -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            AppCompatDelegate.MODE_NIGHT_YES -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
-    }
-    
-    fun updateNavigationMenu() {
-        val menu = navigationView.menu
-        
-        // Очищаем старые сайты
-        val sitesToRemove = mutableListOf<Int>()
-        for (i in 0 until menu.size()) {
-            val item = menu.getItem(i)
-            if (item.itemId != R.id.nav_history && 
-                item.itemId != R.id.nav_settings && 
-                item.itemId != R.id.nav_legal) {
-                sitesToRemove.add(item.itemId)
-            }
-        }
-        sitesToRemove.forEach { menu.removeItem(it) }
-        
-        // Добавляем новые сайты в начало меню
-        val sites = SiteSettingsManager.getEnabledSites(this)
-        sites.forEachIndexed { index, site ->
-            val menuItem = menu.add(0, generateMenuId(site.id), index, site.name)
-            menuItem.setIcon(R.drawable.ic_movie)
-        }
-    }
-    
-    private fun generateMenuId(siteId: String): Int {
-        return ("nav_$siteId").hashCode()
     }
     
     private fun loadSite(url: String, title: String) {
-        supportActionBar?.title = title
         webView.visibility = View.VISIBLE
         binding.fragmentContainer.visibility = View.GONE
         webView.loadUrl(url)
-        drawerLayout.closeDrawer(GravityCompat.START)
-    }
-    
-    private fun showHistoryFragment() {
-        supportActionBar?.title = "История поиска"
-        webView.visibility = View.GONE
-        hideFloatingButton()
-        
-        val historyFragment = SearchHistoryFragment()
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, historyFragment)
-            .addToBackStack("history")
-            .commit()
-        
-        binding.fragmentContainer.visibility = View.VISIBLE
-        drawerLayout.closeDrawer(GravityCompat.START)
     }
     
     private fun saveLastSource(source: String) {
@@ -164,8 +87,49 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
+    private fun showSettingsDialog() {
+        val dialogBinding = DialogSettingsBinding.inflate(layoutInflater)
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(dialogBinding.root)
+            .setCancelable(true)
+            .create()
+        
+        // Устанавливаем текущую тему
+        val sharedPrefs = getSharedPreferences("MovieTorrPrefs", MODE_PRIVATE)
+        val currentTheme = sharedPrefs.getInt(PREF_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        
+        when (currentTheme) {
+            AppCompatDelegate.MODE_NIGHT_NO -> dialogBinding.themeLight.isChecked = true
+            AppCompatDelegate.MODE_NIGHT_YES -> dialogBinding.themeDark.isChecked = true
+            else -> dialogBinding.themeAuto.isChecked = true
+        }
+        
+        // Обработчики кнопок
+        dialogBinding.cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        dialogBinding.applyButton.setOnClickListener {
+            val newTheme = when (dialogBinding.themeRadioGroup.checkedRadioButtonId) {
+                R.id.themeLight -> AppCompatDelegate.MODE_NIGHT_NO
+                R.id.themeDark -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+            
+            sharedPrefs.edit().putInt(PREF_THEME_MODE, newTheme).apply()
+            AppCompatDelegate.setDefaultNightMode(newTheme)
+            dialog.dismiss()
+        }
+        
+        dialogBinding.manageSitesButton.setOnClickListener {
+            dialog.dismiss()
+            showSettingsFragment()
+        }
+        
+        dialog.show()
+    }
+    
     private fun showSettingsFragment() {
-        supportActionBar?.title = "Настройки"
         webView.visibility = View.GONE
         hideFloatingButton()
         
@@ -176,7 +140,6 @@ class MainActivity : AppCompatActivity() {
             .commit()
         
         binding.fragmentContainer.visibility = View.VISIBLE
-        drawerLayout.closeDrawer(GravityCompat.START)
     }
     
     private fun showLegalInformation() {
@@ -190,7 +153,6 @@ class MainActivity : AppCompatActivity() {
             .create()
         
         dialog.show()
-        drawerLayout.closeDrawer(GravityCompat.START)
     }
     
     private fun showLegalNoticeOnFirstLaunch() {
@@ -268,28 +230,48 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    private fun setupFloatingButton() {
-        torrentSearchFab = binding.torrentSearchFab
-        torrentSearchFab.setOnClickListener {
-            // Пытаемся извлечь данные с текущей страницы
+    private fun setupButtons() {
+        // Кнопка поиска
+        binding.searchButton.setOnClickListener {
+            showHistoryFragment()
+        }
+        
+        // Кнопка настроек
+        binding.settingsButton.setOnClickListener {
+            showSettingsDialog()
+        }
+        
+        // Плавающая кнопка поиска торрентов
+        binding.torrentSearchFab.setOnClickListener {
             extractMovieDataFromPage()
         }
     }
     
+    private fun showHistoryFragment() {
+        webView.visibility = View.GONE
+        hideFloatingButton()
+        
+        val historyFragment = SearchHistoryFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, historyFragment)
+            .addToBackStack("history")
+            .commit()
+        
+        binding.fragmentContainer.visibility = View.VISIBLE
+    }
+    
     private fun showFloatingButton() {
-        torrentSearchFab.visibility = View.VISIBLE
+        binding.torrentSearchFab.visibility = View.VISIBLE
     }
     
     private fun hideFloatingButton() {
-        torrentSearchFab.visibility = View.GONE
+        binding.torrentSearchFab.visibility = View.GONE
     }
     
     private fun extractMovieDataFromPage() {
         val script = """
             (function() {
                 'use strict';
-                
-
                 
                 // Функция для извлечения названия
                 function extractMovieData() {
@@ -386,17 +368,11 @@ class MainActivity : AppCompatActivity() {
         webView.evaluateJavascript(script, null)
     }
     
-
-    
     private fun setupBackPressHandler() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START)
-                } else if (supportFragmentManager.backStackEntryCount > 0) {
+                if (supportFragmentManager.backStackEntryCount > 0) {
                     supportFragmentManager.popBackStack()
-                    // Обновляем меню при возврате из настроек
-                    updateNavigationMenu()
                 } else if (webView.canGoBack()) {
                     webView.goBack()
                 } else {
@@ -406,18 +382,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-    
-    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                drawerLayout.openDrawer(GravityCompat.START)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-    
-
     
     // JavaScript Interface для взаимодействия с WebView
     inner class KinopoiskInterface {

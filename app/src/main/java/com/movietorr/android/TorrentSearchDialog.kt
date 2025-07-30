@@ -80,9 +80,8 @@ class TorrentSearchDialog(
     
     private fun setupDialog(view: View) {
         dialog = MaterialAlertDialogBuilder(context)
-            .setTitle("Поиск торрентов")
             .setView(view)
-            .setNegativeButton("Закрыть", null)
+            .setCancelable(true)
             .create()
     }
     

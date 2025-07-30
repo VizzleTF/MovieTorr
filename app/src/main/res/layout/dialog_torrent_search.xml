@@ -4,8 +4,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="?attr/colorSurface"
     android:minHeight="500dp">
+
+    <!-- Заголовок -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="24dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_search"
+            android:tint="?attr/colorPrimary"
+            android:layout_marginEnd="16dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Поиск торрентов"
+            android:textAppearance="?attr/textAppearanceHeadlineSmall"
+            android:textColor="?attr/colorOnSurface" />
+
+    </LinearLayout>
+
+    <!-- Разделитель -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/colorOutlineVariant"
+        android:layout_marginHorizontal="24dp" />
 
     <!-- Основной контент -->
     <LinearLayout
@@ -13,7 +45,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="24dp">
 
         <!-- Поиск с кнопкой в одной строке -->
         <LinearLayout
@@ -33,29 +65,34 @@
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusBottomEnd="12dp"
-                app:boxStrokeColor="@color/magnet_color"
-                app:hintTextColor="@color/magnet_color"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:boxStrokeColor="?attr/colorPrimary"
+                app:hintTextColor="?attr/colorPrimary"
+                app:boxBackgroundColor="?attr/colorSurfaceContainer"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/searchInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?attr/colorOnSurface" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/searchButton"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:text="🔍"
                 android:textSize="16sp"
                 android:fontFamily="sans-serif-medium"
-                app:cornerRadius="12dp"
-                app:backgroundTint="@color/magnet_color"
-                style="@style/Widget.MaterialComponents.Button" />
+                app:cornerRadius="16dp"
+                app:backgroundTint="?attr/colorPrimary"
+                app:iconTint="?attr/colorOnPrimary"
+                app:textColor="?attr/colorOnPrimary"
+                style="@style/Widget.Material3.Button" />
 
         </LinearLayout>
 
@@ -65,9 +102,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Найдено: 0"
-            android:textSize="14sp"
-            android:textColor="@color/size_text"
-            android:fontFamily="sans-serif"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_marginBottom="16dp" />
 
         <!-- Прогресс бар -->
@@ -76,8 +112,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:indicatorColor="@color/magnet_color"
-            app:trackColor="@color/size_text"
+            app:indicatorColor="?attr/colorPrimary"
+            app:trackColor="?attr/colorSurfaceVariant"
             android:layout_marginBottom="16dp" />
 
         <!-- Список результатов -->
