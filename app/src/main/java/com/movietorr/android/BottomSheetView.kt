@@ -3,24 +3,25 @@ package com.movietorr.android
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
-import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
-import android.util.TypedValue
+import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
+import kotlin.math.min
 
-class LiquidGlassView @JvmOverloads constructor(
+class BottomSheetView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val TAG = "LiquidGlassView"
+        private const val TAG = "BottomSheetView"
         private const val DEBUG = true
     }
 
@@ -29,8 +30,16 @@ class LiquidGlassView @JvmOverloads constructor(
         style = Paint.Style.FILL
     }
     
+    private val shadowPaint = Paint().apply {
+        isAntiAlias = true
+        style = Paint.Style.FILL
+        color = Color.BLACK
+        alpha = (255 * 0.3f).toInt()
+    }
+    
     private val path = Path()
     private val rect = RectF()
+    private val shadowRect = RectF()
     
     var cornerRadius: Float = 28f
         set(value) {
@@ -38,7 +47,7 @@ class LiquidGlassView @JvmOverloads constructor(
             invalidate()
         }
     
-    var glassAlpha: Float = 0.3f
+    var glassAlpha: Float = 0.8f
         set(value) {
             field = value
             invalidate()
@@ -50,17 +59,21 @@ class LiquidGlassView @JvmOverloads constructor(
             invalidate()
         }
     
+    private var dragHandleHeight: Float = 48f
+    private var isDragging = false
+    private var lastY = 0f
+    
     init {
         if (DEBUG) {
-            Log.d(TAG, "LiquidGlassView init - Manufacturer: ${Build.MANUFACTURER}, Brand: ${Build.BRAND}")
+            Log.d(TAG, "BottomSheetView init")
         }
         
         try {
-            // Читаем кастомные атрибуты
+            // Читаем кастомные атрибуты (используем те же что и LiquidGlassView)
             val typedArray: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.LiquidGlassView)
             try {
                 cornerRadius = typedArray.getDimension(R.styleable.LiquidGlassView_cornerRadius, 28f)
-                glassAlpha = typedArray.getFloat(R.styleable.LiquidGlassView_glassAlpha, 0.3f)
+                glassAlpha = typedArray.getFloat(R.styleable.LiquidGlassView_glassAlpha, 0.8f)
                 glassColor = typedArray.getColor(R.styleable.LiquidGlassView_glassColor, ContextCompat.getColor(context, android.R.color.white))
                 
                 if (DEBUG) {
@@ -73,11 +86,34 @@ class LiquidGlassView @JvmOverloads constructor(
             Log.e(TAG, "Error loading attributes", e)
         }
         
-        // Устанавливаем прозрачный фон для FrameLayout
-        setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        // Устанавливаем прозрачный фон
+        setBackgroundColor(Color.TRANSPARENT)
         
-        // Включаем аппаратное ускорение для лучшей производительности
+        // Включаем аппаратное ускорение
         setLayerType(LAYER_TYPE_HARDWARE, null)
+    }
+    
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                isDragging = true
+                lastY = event.y
+                return true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (isDragging) {
+                    val deltaY = event.y - lastY
+                    // Здесь можно добавить логику drag эффекта
+                    lastY = event.y
+                    return true
+                }
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                isDragging = false
+                return true
+            }
+        }
+        return super.onTouchEvent(event)
     }
     
     override fun dispatchDraw(canvas: Canvas) {
@@ -86,28 +122,28 @@ class LiquidGlassView @JvmOverloads constructor(
                 Log.d(TAG, "dispatchDraw called - width: $width, height: $height")
             }
             
+            // Рисуем тень
+            drawShadow(canvas)
+            
             // Создаем скругленный прямоугольник
             rect.set(0f, 0f, width.toFloat(), height.toFloat())
             path.reset()
             path.addRoundRect(rect, cornerRadius, cornerRadius, Path.Direction.CW)
             
-            // Рисуем основной фон с повышенной прозрачностью
+            // Рисуем основной фон с эффектом стекла
             paint.color = glassColor
             paint.alpha = (255 * glassAlpha).toInt()
             canvas.drawPath(path, paint)
             
-            // Добавляем более заметный inner refraction эффект
-            drawInnerRefraction(canvas)
+            // Добавляем эффекты жидкого стекла
+            drawGlassEffects(canvas)
             
-            // Добавляем более заметный shine эффект
-            drawShineEffect(canvas)
-            
-            // Добавляем border эффект
-            drawBorderEffect(canvas)
+            // Рисуем drag handle
+            drawDragHandle(canvas)
             
         } catch (e: Exception) {
             Log.e(TAG, "Error in dispatchDraw", e)
-            // Fallback на простой фон
+            // Fallback
             try {
                 canvas.drawColor(glassColor)
             } catch (e2: Exception) {
@@ -119,21 +155,41 @@ class LiquidGlassView @JvmOverloads constructor(
         super.dispatchDraw(canvas)
     }
     
-    private fun drawInnerRefraction(canvas: Canvas) {
+    private fun drawShadow(canvas: Canvas) {
         try {
+            // Создаем тень с размытием
+            shadowRect.set(
+                -8f, -8f, 
+                width.toFloat() + 8f, 
+                height.toFloat() + 8f
+            )
+            
+            val shadowPath = Path()
+            shadowPath.addRoundRect(shadowRect, cornerRadius + 8f, cornerRadius + 8f, Path.Direction.CW)
+            
+            // Рисуем тень с градиентом
+            canvas.drawPath(shadowPath, shadowPaint)
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in drawShadow", e)
+        }
+    }
+    
+    private fun drawGlassEffects(canvas: Canvas) {
+        try {
+            // Inner refraction эффект
             val refractionPaint = Paint().apply {
                 isAntiAlias = true
                 style = Paint.Style.FILL
-                alpha = (255 * 0.2f).toInt() // Увеличил прозрачность
+                alpha = (255 * 0.15f).toInt()
             }
             
-            // Создаем градиент для inner refraction
             val gradient = android.graphics.LinearGradient(
                 0f, 0f, width.toFloat(), height.toFloat(),
                 intArrayOf(
-                    ContextCompat.getColor(context, android.R.color.transparent),
-                    ContextCompat.getColor(context, android.R.color.white),
-                    ContextCompat.getColor(context, android.R.color.transparent)
+                    Color.TRANSPARENT,
+                    Color.WHITE,
+                    Color.TRANSPARENT
                 ),
                 floatArrayOf(0f, 0.5f, 1f),
                 android.graphics.Shader.TileMode.CLAMP
@@ -142,30 +198,20 @@ class LiquidGlassView @JvmOverloads constructor(
             refractionPaint.shader = gradient
             canvas.drawPath(path, refractionPaint)
             
-        } catch (e: Exception) {
-            Log.e(TAG, "Error in drawInnerRefraction", e)
-        }
-    }
-    
-    private fun drawShineEffect(canvas: Canvas) {
-        try {
+            // Shine эффект
             val shinePaint = Paint().apply {
                 isAntiAlias = true
                 style = Paint.Style.FILL
-                alpha = (255 * 0.15f).toInt() // Увеличил прозрачность
+                alpha = (255 * 0.1f).toInt()
             }
             
-            // Создаем радиальный градиент для shine
             val centerX = width * 0.3f
             val centerY = height * 0.3f
-            val radius = kotlin.math.min(width, height) * 0.8f
+            val radius = min(width, height) * 0.8f
             
             val shineGradient = android.graphics.RadialGradient(
                 centerX, centerY, radius,
-                intArrayOf(
-                    ContextCompat.getColor(context, android.R.color.white),
-                    ContextCompat.getColor(context, android.R.color.transparent)
-                ),
+                intArrayOf(Color.WHITE, Color.TRANSPARENT),
                 floatArrayOf(0f, 1f),
                 android.graphics.Shader.TileMode.CLAMP
             )
@@ -174,24 +220,29 @@ class LiquidGlassView @JvmOverloads constructor(
             canvas.drawPath(path, shinePaint)
             
         } catch (e: Exception) {
-            Log.e(TAG, "Error in drawShineEffect", e)
+            Log.e(TAG, "Error in drawGlassEffects", e)
         }
     }
     
-    private fun drawBorderEffect(canvas: Canvas) {
+    private fun drawDragHandle(canvas: Canvas) {
         try {
-            val borderPaint = Paint().apply {
+            val handlePaint = Paint().apply {
                 isAntiAlias = true
-                style = Paint.Style.STROKE
-                strokeWidth = 2f
-                alpha = (255 * 0.1f).toInt()
-                color = ContextCompat.getColor(context, android.R.color.white)
+                style = Paint.Style.FILL
+                color = Color.GRAY
+                alpha = (255 * 0.5f).toInt()
             }
             
-            canvas.drawPath(path, borderPaint)
+            val handleWidth = 48f
+            val handleHeight = 6f
+            val handleX = (width - handleWidth) / 2f
+            val handleY = 12f
+            
+            val handleRect = RectF(handleX, handleY, handleX + handleWidth, handleY + handleHeight)
+            canvas.drawRoundRect(handleRect, 3f, 3f, handlePaint)
             
         } catch (e: Exception) {
-            Log.e(TAG, "Error in drawBorderEffect", e)
+            Log.e(TAG, "Error in drawDragHandle", e)
         }
     }
 } 
