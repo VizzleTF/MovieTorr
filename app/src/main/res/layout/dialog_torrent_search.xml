@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.movietorr.android.LiquidGlassView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootCardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:cornerRadius="28dp"
-    app:glassAlpha="0.3"
-    app:glassColor="?attr/colorSurface">
+    app:cardCornerRadius="28dp"
+    app:cardElevation="12dp"
+    app:cardBackgroundColor="?attr/colorSurfaceContainer">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -88,4 +88,4 @@
             android:clipToPadding="false" />
 
     </LinearLayout>
-</com.movietorr.android.LiquidGlassView> 
+</com.google.android.material.card.MaterialCardView> 
