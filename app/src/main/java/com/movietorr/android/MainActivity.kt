@@ -191,6 +191,14 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun setupBottomBar() {
+        // Центрируем нижнее меню программно
+        val bottomCardView = findViewById<com.google.android.material.card.MaterialCardView>(R.id.bottomCardView)
+        bottomCardView?.let { cardView ->
+            val layoutParams = cardView.layoutParams as? androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
+            layoutParams?.gravity = android.view.Gravity.CENTER_HORIZONTAL or android.view.Gravity.BOTTOM
+            cardView.layoutParams = layoutParams
+        }
+        
         updateSiteButton()
         siteButton.setOnClickListener {
             val sites = SiteSettingsManager.getEnabledSites(this)

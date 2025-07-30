@@ -2,7 +2,7 @@
     <!-- Основной полупрозрачный фон (как в CSS: rgba(255, 255, 255, 0.50)) -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#80FFFFFF"/>
+            <solid android:color="#CCFFFFFF"/>
             <corners android:radius="28dp"/>
         </shape>
     </item>

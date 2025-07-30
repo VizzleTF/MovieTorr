@@ -29,9 +29,10 @@
 
     <!-- Нижняя панель с кнопками -->
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottomCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="center_horizontal|bottom"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="24dp"

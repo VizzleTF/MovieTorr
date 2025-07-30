@@ -50,11 +50,12 @@ class SettingsFragment : DialogFragment() {
             // Центрируем диалог
             setGravity(android.view.Gravity.CENTER)
             
-            // Блюр для Android 12+ (как backdrop-filter в CSS)
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                setBackgroundBlurRadius(16)
-            }
+            // Универсальная прозрачность для всех устройств
+            setDimAmount(0.3f) // Затемняем фон на 30%
         }
+        
+        // Применяем прозрачность к корневому view
+        binding.root.alpha = 0.9f
     }
     
     private fun setupAllSitesRecycler() {
