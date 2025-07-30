@@ -20,6 +20,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var webView: WebView
     private lateinit var torApiService: TorApiService
+    private lateinit var siteButton: android.widget.TextView
+    private lateinit var searchButton: android.widget.ImageButton
+    private lateinit var settingsButton: android.widget.ImageButton
     
     companion object {
         private const val PREF_LAST_SOURCE = "last_source"
@@ -36,8 +39,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         
         torApiService = TorApiService()
+        siteButton = findViewById(R.id.siteButton)
+        searchButton = findViewById(R.id.searchButton)
+        settingsButton = findViewById(R.id.settingsButton)
         setupWebView()
-        setupButtons()
+        setupBottomBar()
         setupBackPressHandler()
         
         // Показываем правовое уведомление при первом запуске
@@ -230,142 +236,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    private fun setupButtons() {
-        // Кнопка поиска
-        binding.searchButton.setOnClickListener {
-            showHistoryFragment()
+    private fun setupBottomBar() {
+        updateSiteButton()
+        siteButton.setOnClickListener {
+            val sites = SiteSettingsManager.getEnabledSites(this)
+            val popup = android.widget.PopupMenu(this, siteButton)
+            sites.forEachIndexed { i, site ->
+                popup.menu.add(0, i, i, site.name)
+            }
+            popup.setOnMenuItemClickListener { item ->
+                val sitesList = SiteSettingsManager.getEnabledSites(this)
+                val site = sitesList.getOrNull(item.itemId)
+                if (site != null) {
+                    saveLastSource(site.id)
+                    updateSiteButton()
+                    loadSite(site.url, site.name)
+                }
+                true
+            }
+            popup.show()
         }
-        
-        // Кнопка настроек
-        binding.settingsButton.setOnClickListener {
+        searchButton.setOnClickListener {
+            showSearchDialog()
+        }
+        settingsButton.setOnClickListener {
             showSettingsDialog()
         }
-        
-        // Плавающая кнопка поиска торрентов
-        binding.torrentSearchFab.setOnClickListener {
-            extractMovieDataFromPage()
-        }
     }
-    
-    private fun showHistoryFragment() {
-        webView.visibility = View.GONE
-        hideFloatingButton()
-        
-        val historyFragment = SearchHistoryFragment()
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, historyFragment)
-            .addToBackStack("history")
-            .commit()
-        
-        binding.fragmentContainer.visibility = View.VISIBLE
+    private fun updateSiteButton() {
+        val sharedPrefs = getSharedPreferences("MovieTorrPrefs", MODE_PRIVATE)
+        val lastSource = sharedPrefs.getString(PREF_LAST_SOURCE, "freepik") ?: "freepik"
+        val sites = SiteSettingsManager.getEnabledSites(this)
+        val site = sites.find { it.id == lastSource } ?: sites.firstOrNull()
+        siteButton.text = site?.name ?: "Site"
     }
-    
-    private fun showFloatingButton() {
-        binding.torrentSearchFab.visibility = View.VISIBLE
-    }
-    
-    private fun hideFloatingButton() {
-        binding.torrentSearchFab.visibility = View.GONE
-    }
-    
-    private fun extractMovieDataFromPage() {
-        val script = """
-            (function() {
-                'use strict';
-                
-                // Функция для извлечения названия
-                function extractMovieData() {
-                    let title = '';
-                    let year = '';
-                    
-                    // Сначала пробуем извлечь из title страницы
-                    const pageTitle = document.title.trim();
-                    
-                    // Паттерны для извлечения названия и года из title
-                    const titlePatterns = [
-                        // "Название (год) — The Movie Database (TMDB)" или подобные суффиксы
-                        /^(.+?)\s*\((\d{4})\)\s*[—–-]\s*[^-]+$/,
-                        // "Название (год) - остальное" или "Название (год) | остальное"
-                        /^(.+?)\s*\((\d{4})\)\s*[-|]/,
-                        // "Название (год)" - только название и год
-                        /^(.+?)\s*\((\d{4})\)\s*$/,
-                        // "Название — остальное" - без года
-                        /^(.+?)\s*[—–-]\s*[^-]+$/,
-                        // "Название | остальное" - без года
-                        /^(.+?)\s*[-|]/,
-                        // Просто название без скобок и разделителей
-                        /^(.+?)\s*$/
-                    ];
-                    
-                    for (const pattern of titlePatterns) {
-                        const match = pageTitle.match(pattern);
-                        if (match) {
-                            title = match[1].trim();
-                            if (match[2]) {
-                                year = match[2];
-                            }
-                            break;
-                        }
-                    }
-                    
-                    // Если не удалось извлечь из title, пробуем DOM элементы
-                    if (!title) {
-                        const titleSelectors = [
-                            // Kinopoisk селекторы
-                            'h1[data-testid="hero-title-block__title"]',
-                            'h1.titleHeader__title',
-                            'h1[class*="title"]',
-                            'h1',
-                            '.film-header__title',
-                            '.movie-header__title',
-                            // IMDb селекторы
-                            'h1[data-testid="hero-title-block__title"]',
-                            'h1.titleHeader__title',
-                            'h1[class*="title"]',
-                            'h1',
-                            // TMDB селекторы
-                            'h2.title',
-                            'h1.title',
-                            '.title h1',
-                            '.title h2',
-                            'h1',
-                            'h2',
-                            // AniLiberty селекторы
-                            '.release-name',
-                            '.anime-title',
-                            'h1.release-name',
-                            'h1.anime-title',
-                            '.title h1',
-                            '.title h2',
-                            'h1',
-                            'h2'
-                        ];
-                        
-                        for (const selector of titleSelectors) {
-                            const element = document.querySelector(selector);
-                            if (element) {
-                                title = element.textContent.trim();
-                                break;
-                            }
-                        }
-                    }
-                    
-                    // Заменяем пробелы на + для URL
-                    const finalTitle = title.replace(/\\s+/g, '+');
-                    
-                    return { 
-                        title: finalTitle, 
-                        year: year, 
-                        success: finalTitle.length > 0
-                    };
-                }
-                
-                const result = extractMovieData();
-                Android.onMovieDataExtracted(result.title, result.year, result.success);
-            })();
-        """.trimIndent()
-        
-        webView.evaluateJavascript(script, null)
+    private fun showSearchDialog() {
+        TorrentSearchDialog(this, torApiService).show()
     }
     
     private fun setupBackPressHandler() {

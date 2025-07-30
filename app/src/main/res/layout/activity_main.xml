@@ -11,8 +11,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="80dp">
+        android:layout_height="match_parent">
 
         <WebView
             android:id="@+id/webView"
@@ -26,82 +25,57 @@
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="80dp"
         android:visibility="gone" />
 
     <!-- Нижняя панель с кнопками -->
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="28dp"
-        app:cardElevation="8dp"
-        app:strokeWidth="0dp"
-        app:cardBackgroundColor="?attr/colorSurfaceContainer">
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="?attr/colorSurface">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Кнопка выбора сайта -->
+        <TextView
+            android:id="@+id/siteButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp">
+            android:layout_weight="1"
+            android:text="Site"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:gravity="center"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="8dp"
+            android:background="@android:color/transparent"
+            android:textColor="?attr/colorPrimary"
+            android:ellipsize="end"
+            android:maxLines="1" />
 
-            <!-- Кнопка поиска -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/searchButton"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="4dp"
-                android:text="Поиск"
-                android:textAppearance="?attr/textAppearanceLabelLarge"
-                app:icon="@drawable/ic_search"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"
-                app:iconTint="?attr/colorOnSurfaceVariant"
-                app:cornerRadius="24dp"
-                app:backgroundTint="?attr/colorSurfaceContainerHigh"
-                app:strokeColor="?attr/colorOutline"
-                app:strokeWidth="1dp"
-                style="@style/Widget.Material3.Button.OutlinedButton" />
+        <!-- Кнопка поиска -->
+        <ImageButton
+            android:id="@+id/searchButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_search"
+            android:background="@android:color/transparent"
+            android:contentDescription="Поиск"
+            android:padding="12dp"
+            app:tint="?attr/colorOnSurfaceVariant" />
 
-            <!-- Кнопка настроек -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/settingsButton"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
-                android:layout_marginStart="4dp"
-                android:text="Настройки"
-                android:textAppearance="?attr/textAppearanceLabelLarge"
-                app:icon="@drawable/ic_settings"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"
-                app:iconTint="?attr/colorOnSurfaceVariant"
-                app:cornerRadius="24dp"
-                app:backgroundTint="?attr/colorSurfaceContainerHigh"
-                app:strokeColor="?attr/colorOutline"
-                app:strokeWidth="1dp"
-                style="@style/Widget.Material3.Button.OutlinedButton" />
+        <!-- Кнопка настроек -->
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_settings"
+            android:background="@android:color/transparent"
+            android:contentDescription="Настройки"
+            android:padding="12dp"
+            app:tint="?attr/colorOnSurfaceVariant" />
 
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Плавающая кнопка поиска торрентов -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/torrentSearchFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="100dp"
-        android:text="Поиск торрентов"
-        android:textAppearance="?attr/textAppearanceLabelLarge"
-        app:icon="@drawable/ic_utorrent"
-        android:visibility="gone"
-        app:backgroundTint="?attr/colorPrimaryContainer"
-        app:iconTint="?attr/colorOnPrimaryContainer"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout> 
