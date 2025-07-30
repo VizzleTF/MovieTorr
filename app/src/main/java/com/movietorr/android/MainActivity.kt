@@ -390,7 +390,13 @@ class MainActivity : AppCompatActivity() {
     private fun setupBackPressHandler() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (webView.canGoBack()) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                } else if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                    // Обновляем меню при возврате из настроек
+                    updateNavigationMenu()
+                } else if (webView.canGoBack()) {
                     webView.goBack()
                 } else {
                     isEnabled = false
@@ -410,20 +416,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack()
-            // Обновляем меню при возврате из настроек
-            updateNavigationMenu()
-        } else if (webView.canGoBack()) {
-            webView.goBack()
-        } else {
-            super.onBackPressed()
-        }
-    }
+
     
     // JavaScript Interface для взаимодействия с WebView
     inner class KinopoiskInterface {
