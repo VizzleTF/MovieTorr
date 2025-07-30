@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         loadLastSource()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (::webView.isInitialized && webView.canGoBack()) {
             webView.goBack()
@@ -204,7 +205,7 @@ class MainActivity : AppCompatActivity() {
     // JavaScript Interface для взаимодействия с WebView
     inner class KinopoiskInterface {
         @android.webkit.JavascriptInterface
-        fun onMovieDataExtracted(title: String, year: String, success: Boolean) {
+                        fun onMovieDataExtracted(title: String, unusedYear: String, success: Boolean) {
             runOnUiThread {
                 if (success) {
                     // Если удалось извлечь данные, открываем диалог с ними

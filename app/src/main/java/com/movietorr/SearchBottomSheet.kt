@@ -58,7 +58,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
         
         val searchEdit = view.findViewById<TextInputEditText>(R.id.editSearch)
         val searchInputLayout = view.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.searchInputLayout)
-        val progressBar = view.findViewById<com.google.android.material.progressindicator.LinearProgressIndicator>(R.id.progressBar)
+        // val progressBar = view.findViewById<com.google.android.material.progressindicator.LinearProgressIndicator>(R.id.progressBar)
         recyclerView = view.findViewById(R.id.recyclerView)
         statusText = view.findViewById(R.id.statusText)
         filterSpinner = view.findViewById(R.id.filterSpinner)
@@ -222,7 +222,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
     private fun updateFilterHint() {
         val categories = availableCategories.toList().sorted()
         if (categories.isNotEmpty()) {
-            val adapter = filterSpinner.adapter as android.widget.ArrayAdapter<String>
+            val adapter = (filterSpinner.adapter as? android.widget.ArrayAdapter<String>) ?: return
             adapter.clear()
             adapter.add("Все категории")
             adapter.addAll(categories)
@@ -304,7 +304,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
             }
 
             private fun setFilterCategory(category: String) {
-                val adapter = filterSpinner.adapter as android.widget.ArrayAdapter<String>
+                val adapter = (filterSpinner.adapter as? android.widget.ArrayAdapter<String>) ?: return
                 val position = adapter.getPosition(category)
                 if (position != -1) {
                     filterSpinner.setSelection(position)
