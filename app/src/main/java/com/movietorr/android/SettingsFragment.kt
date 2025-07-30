@@ -39,6 +39,7 @@ class SettingsFragment : DialogFragment() {
         setupAllSitesRecycler()
         setupAddSiteButton()
         setupKeyboardHandling()
+        setupThemeSelection()
         binding.btnLegalInfo?.setOnClickListener {
             showLegalInfoDialog()
         }
@@ -113,6 +114,40 @@ class SettingsFragment : DialogFragment() {
                 binding.root.post {
                     binding.root.requestLayout()
                 }
+            }
+        }
+    }
+
+    private fun setupThemeSelection() {
+        val sharedPrefs = requireContext().getSharedPreferences("MovieTorrPrefs", android.content.Context.MODE_PRIVATE)
+        val currentTheme = sharedPrefs.getInt("theme_mode", androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        
+        // Устанавливаем текущую выбранную тему
+        when (currentTheme) {
+            androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO -> binding.themeLight.isChecked = true
+            androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES -> binding.themeDark.isChecked = true
+            else -> binding.themeAuto.isChecked = true
+        }
+        
+        // Настраиваем обработчики
+        binding.themeAuto.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                sharedPrefs.edit().putInt("theme_mode", androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM).apply()
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+        }
+        
+        binding.themeLight.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                sharedPrefs.edit().putInt("theme_mode", androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO).apply()
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+        
+        binding.themeDark.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                sharedPrefs.edit().putInt("theme_mode", androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES).apply()
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES)
             }
         }
     }
