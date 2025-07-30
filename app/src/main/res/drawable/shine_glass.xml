@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Внутренний белый shine сверху -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#80FFFFFF"
+                android:endColor="#00FFFFFF"
+                android:angle="90" />
+        </shape>
+    </item>
+    <!-- Внутренний белый shine снизу -->
+    <item android:top="80%">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00FFFFFF"
+                android:endColor="#40FFFFFF"
+                android:angle="270" />
+        </shape>
+    </item>
+    <!-- Лёгкая белая рамка -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="28dp" />
+            <stroke android:width="2dp" android:color="#40FFFFFF" />
+        </shape>
+    </item>
+</layer-list>

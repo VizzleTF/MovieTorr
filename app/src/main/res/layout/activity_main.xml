@@ -45,13 +45,21 @@
         app:cardElevation="12dp"
         app:cardBackgroundColor="#CCFFFFFF"
         app:cardMaxWidth="480dp"
-        app:cardMinWidth="240dp">
+        app:cardMinWidth="240dp"
+        android:foreground="@drawable/shine_glass">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="8dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#80FFFFFF"
+                android:alpha="0.5"
+                android:layout_gravity="fill" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
