@@ -24,8 +24,7 @@ android {
     
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -36,24 +35,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
-    }
-    
-
-    
-    packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/license.txt'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/notice.txt'
-        exclude 'META-INF/ASL2.0'
-    }
-    
-    // Keep resources for launcher icons
-    androidResources {
-        noCompress += ['png', 'jpg', 'jpeg']
     }
 }
 
