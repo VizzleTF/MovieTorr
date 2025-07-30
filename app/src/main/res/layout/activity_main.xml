@@ -28,54 +28,65 @@
         android:visibility="gone" />
 
     <!-- Нижняя панель с кнопками -->
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:background="?attr/colorSurface">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="12dp"
+        app:cardBackgroundColor="?attr/colorSurfaceContainer">
 
-        <!-- Кнопка выбора сайта -->
-        <TextView
-            android:id="@+id/siteButton"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Site"
-            android:textAppearance="?attr/textAppearanceLabelLarge"
-            android:gravity="center"
-            android:paddingVertical="12dp"
-            android:paddingHorizontal="8dp"
-            android:background="@android:color/transparent"
-            android:textColor="?attr/colorPrimary"
-            android:ellipsize="end"
-            android:maxLines="1" />
+            android:orientation="horizontal"
+            android:padding="12dp">
 
-        <!-- Кнопка поиска -->
-        <ImageButton
-            android:id="@+id/searchButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_search"
-            android:background="@android:color/transparent"
-            android:contentDescription="Поиск"
-            android:padding="12dp"
-            app:tint="?attr/colorOnSurfaceVariant" />
+            <!-- Кнопка выбора сайта -->
+            <TextView
+                android:id="@+id/siteButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Site"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:gravity="center"
+                android:paddingVertical="12dp"
+                android:paddingHorizontal="8dp"
+                android:background="@android:color/transparent"
+                android:textColor="?attr/colorPrimary"
+                android:ellipsize="end"
+                android:maxLines="1" />
 
-        <!-- Кнопка настроек -->
-        <ImageButton
-            android:id="@+id/settingsButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_settings"
-            android:background="@android:color/transparent"
-            android:contentDescription="Настройки"
-            android:padding="12dp"
-            app:tint="?attr/colorOnSurfaceVariant" />
+            <!-- Кнопка поиска -->
+            <ImageButton
+                android:id="@+id/searchButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_search"
+                android:background="@android:color/transparent"
+                android:contentDescription="Поиск"
+                android:padding="12dp"
+                app:tint="?attr/colorOnSurfaceVariant" />
 
-    </LinearLayout>
+            <!-- Кнопка настроек -->
+            <ImageButton
+                android:id="@+id/settingsButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_settings"
+                android:background="@android:color/transparent"
+                android:contentDescription="Настройки"
+                android:padding="12dp"
+                app:tint="?attr/colorOnSurfaceVariant" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout> 
