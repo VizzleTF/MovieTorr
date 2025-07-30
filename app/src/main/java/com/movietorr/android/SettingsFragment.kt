@@ -44,8 +44,6 @@ class SettingsFragment : Fragment() {
                 SiteSettingsManager.removeDefaultSite(requireContext(), siteId)
             }
             updateAllSitesList()
-            // Обновляем меню в MainActivity после удаления
-            (activity as? MainActivity)?.updateNavigationMenu()
         }
         
         binding.recyclerAllSites.apply {
@@ -75,8 +73,6 @@ class SettingsFragment : Fragment() {
                 binding.editSiteName.text?.clear()
                 binding.editSiteUrl.text?.clear()
                 updateAllSitesList()
-                // Обновляем меню в MainActivity после добавления
-                (activity as? MainActivity)?.updateNavigationMenu()
                 Toast.makeText(context, "Сайт добавлен", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Ошибка при добавлении сайта", Toast.LENGTH_SHORT).show()
