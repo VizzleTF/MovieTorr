@@ -1,0 +1,107 @@
+name: Android CI/CD
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+jobs:
+  build-and-test:
+    name: Build, Test & Release
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Create keystore
+      run: |
+        mkdir -p app/keystore
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/keystore/release.keystore
+
+    - name: Build release APK
+      run: ./gradlew assembleRelease
+      env:
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+
+    - name: Check APK files
+      run: |
+        echo "Checking APK files..."
+        ls -la app/build/outputs/apk/release/
+        echo "APK files found!"
+        
+        echo "Verifying APK signature..."
+        jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release.apk
+        
+        echo "Renaming APK file..."
+        cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/MovieTorr-${{ github.ref_name }}.apk
+
+
+
+    - name: Get commit history for versioned release
+      id: get_commit_history
+      run: |
+        # Получаем версию из тега
+        VERSION=${GITHUB_REF#refs/tags/}
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Version from tag: $VERSION"
+        
+        # Обновляем версию в build.gradle
+        sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" app/build.gradle
+        
+        # Получаем номер версии для versionCode
+        VERSION_NUMBER=$(echo $VERSION | sed 's/v//' | sed 's/\.//g')
+        sed -i "s/versionCode .*/versionCode $VERSION_NUMBER/" app/build.gradle
+        
+        # Получаем историю коммитов с последнего тега
+        LATEST_TAG=$(git describe --tags --abbrev=0)
+        if git describe --tags --abbrev=0 $LATEST_TAG^ >/dev/null 2>&1; then
+          SECOND_LATEST_TAG=$(git describe --tags --abbrev=0 $LATEST_TAG^)
+          COMMIT_HISTORY=$(git log $SECOND_LATEST_TAG..$LATEST_TAG --pretty=format:"- %s")
+        else
+          COMMIT_HISTORY=$(git log --pretty=format:"- %s")
+        fi
+        
+        echo "commit_history<<EOF" >> $GITHUB_OUTPUT
+        echo "$COMMIT_HISTORY" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Create Release (Versioned)
+      id: create_release_versioned
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: MovieTorr ${{ steps.get_commit_history.outputs.version }}
+        body: |
+          ## 🎬 MovieTorr ${{ steps.get_commit_history.outputs.version }}
+          
+          ### 📝 Изменения в этой версии:
+          ${{ steps.get_commit_history.outputs.commit_history }}
+
+          ### 📥 Установка:
+          1. Скачайте APK файл
+          2. Разрешите установку из неизвестных источников
+          3. Установите приложение
+        draft: false
+        prerelease: false
+        files: app/build/outputs/apk/release/MovieTorr-${{ github.ref_name }}.apk 

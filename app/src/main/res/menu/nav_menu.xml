@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/nav_kinopoisk"
+                android:icon="@drawable/ic_movie"
+                android:title="Кинопоиск" />
+            <item
+                android:id="@+id/nav_imdb"
+                android:icon="@drawable/ic_imdb"
+                android:title="IMDb" />
+            <item
+                android:id="@+id/nav_tmdb"
+                android:icon="@drawable/ic_tmdb"
+                android:title="TMDB" />
+            <item
+                android:id="@+id/nav_history"
+                android:icon="@drawable/ic_history"
+                android:title="История поиска" />
+        </group>
+        
+        <group android:checkableBehavior="none">
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings"
+                android:title="Настройки" />
+            <item
+                android:id="@+id/nav_legal"
+                android:icon="@drawable/ic_info"
+                android:title="@string/nav_legal" />
+        </group>
+    </menu> 
