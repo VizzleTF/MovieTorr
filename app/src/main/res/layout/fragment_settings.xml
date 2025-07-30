@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:cardCornerRadius="28dp"
     app:cardElevation="12dp"
-    android:background="@drawable/liquid_glass_bg"
-    app:cardMaxWidth="480dp"
-    app:cardMaxHeight="600dp">
+    android:background="@drawable/liquid_glass_bg">
 
     <ScrollView
         android:layout_width="match_parent"
