@@ -30,18 +30,30 @@ class SettingsFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Центрируем диалог
-        dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-
         setupAllSitesRecycler()
         setupAddSiteButton()
         setupKeyboardHandling()
         setupThemeSelection()
         binding.btnLegalInfo?.setOnClickListener {
             showLegalInfoDialog()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Центрируем диалог программно
+        dialog?.window?.apply {
+            setLayout(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            // Центрируем диалог
+            setGravity(android.view.Gravity.CENTER)
+            
+            // Блюр для Android 12+ (как backdrop-filter в CSS)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                setBackgroundBlurRadius(16)
+            }
         }
     }
     

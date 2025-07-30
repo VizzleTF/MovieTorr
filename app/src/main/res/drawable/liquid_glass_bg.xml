@@ -1,36 +1,19 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Основной полупрозрачный фон -->
+    <!-- Основной полупрозрачный фон (как в CSS: rgba(255, 255, 255, 0.50)) -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#80FFFFFF"/>
+            <corners android:radius="28dp"/>
+        </shape>
+    </item>
+    <!-- Shine-эффект (как в CSS: box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5)) -->
     <item>
         <shape android:shape="rectangle">
             <gradient
                 android:type="linear"
-                android:angle="90"
-                android:startColor="#60FFFFFF"
+                android:angle="45"
+                android:startColor="#80FFFFFF"
                 android:centerColor="#40FFFFFF"
-                android:endColor="#20FFFFFF"/>
-            <corners android:radius="28dp"/>
-        </shape>
-    </item>
-    <!-- Дополнительный слой для эффекта стекла -->
-    <item>
-        <shape android:shape="rectangle">
-            <gradient
-                android:type="radial"
-                android:gradientRadius="200dp"
-                android:centerX="0.5"
-                android:centerY="0.3"
-                android:startColor="#30FFFFFF"
-                android:endColor="#00FFFFFF"/>
-            <corners android:radius="28dp"/>
-        </shape>
-    </item>
-    <!-- Shine-эффект -->
-    <item>
-        <shape android:shape="rectangle">
-            <gradient
-                android:type="linear"
-                android:angle="90"
-                android:startColor="#20FFFFFF"
                 android:endColor="#00FFFFFF"/>
             <corners android:radius="28dp"/>
         </shape>

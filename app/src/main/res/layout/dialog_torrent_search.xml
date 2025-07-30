@@ -4,7 +4,6 @@
     android:id="@+id/rootCardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
     app:cardCornerRadius="28dp"
     app:cardElevation="12dp"
     android:background="@drawable/liquid_glass_bg">

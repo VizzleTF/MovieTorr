@@ -59,6 +59,9 @@ class TorrentSearchDialog(
         val width = (displayMetrics.widthPixels * 0.95).toInt() // 95% ширины экрана
         dialog.window?.setLayout(width, android.view.ViewGroup.LayoutParams.WRAP_CONTENT)
         
+        // Центрируем диалог
+        dialog.window?.setGravity(android.view.Gravity.CENTER)
+        
         // Автоматически запускаем поиск если включен
         if (autoSearch && presetTitle.isNotEmpty()) {
             // Увеличиваем задержку для полной инициализации диалога
