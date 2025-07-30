@@ -62,8 +62,8 @@ class TorrentSearchDialog(
         // Центрируем диалог
         dialog.window?.setGravity(android.view.Gravity.CENTER)
         
-        // Применяем эффект жидкого стекла
-        applyLiquidGlassEffect(dialogView)
+        // Применяем прозрачность к корневому view
+        dialogView.findViewById<View>(R.id.rootCardView)?.alpha = 0.9f
         
         // Автоматически запускаем поиск если включен
         if (autoSearch && presetTitle.isNotEmpty()) {
@@ -171,32 +171,6 @@ class TorrentSearchDialog(
         statusText.text = "Найдено: ${allTorrents.size} " +
                          "(RuTracker: $ruTrackerCount, Kinozal: $kinozalCount, " +
                          "RuTor: $ruTorCount, NoName-Club: $noNameClubCount)"
-    }
-    
-    private fun applyLiquidGlassEffect(dialogView: View) {
-        try {
-            // Применяем блюр к корневому view
-            val rootCardView = dialogView.findViewById<View>(R.id.rootCardView)
-            rootCardView.post {
-                val blurredBitmap = BlurUtils.blurView(context, rootCardView, 8f)
-                blurredBitmap?.let { bitmap ->
-                    // Создаем фон с эффектом жидкого стекла
-                    val liquidGlassBg = BlurUtils.createLiquidGlassBackground(
-                        context = context,
-                        cornerRadius = 28f,
-                        blurRadius = 8f,
-                        alpha = 0.3f
-                    )
-                    
-                    // Применяем фон
-                    rootCardView.background = liquidGlassBg
-                }
-            }
-        } catch (e: Exception) {
-            // Если блюр не работает, используем стандартный фон
-            val rootCardView = dialogView.findViewById<View>(R.id.rootCardView)
-            rootCardView.alpha = 0.9f
-        }
     }
     
     inner class TorrentAdapter : RecyclerView.Adapter<TorrentAdapter.TorrentViewHolder>() {

@@ -42,12 +42,12 @@ def getVersionCode() {
 
 android {
     namespace 'com.movietorr.android'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.movietorr.android"
         minSdk 24
-        targetSdk 34
+        targetSdk 35
         versionCode 1
         versionName "1.0"
 
@@ -129,12 +129,10 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     
-    // Testing - обновлено на JUnit 5
-    testImplementation platform('org.junit:junit-bom:5.13.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.junit.vintage:junit-vintage-engine' // для совместимости с JUnit 4
+    // AndroidLiquidGlass библиотека
+    implementation 'com.github.Kyant0:AndroidLiquidGlass:1.0.0-alpha03'
+    
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation 'androidx.test:runner:1.5.2'
-    androidTestImplementation 'androidx.test:rules:1.5.0'
 } 
