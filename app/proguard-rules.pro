@@ -38,6 +38,40 @@
 # Keep your app's main classes
 -keep class com.movietorr.** { *; }
 
+# Keep all Activities
+-keep public class * extends android.app.Activity
+-keep public class * extends androidx.fragment.app.FragmentActivity
+-keep public class * extends android.app.Application
+
+# Keep AndroidManifest
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keepattributes Signature
+-keepattributes Exceptions
+
+# Keep MainActivity specifically
+-keep class com.movietorr.MainActivity { *; }
+
+# Keep all View classes
+-keep public class * extends android.view.View
+-keep public class * extends android.view.ViewGroup
+
+# Keep all Adapter classes
+-keep public class * extends android.widget.BaseAdapter
+-keep public class * extends androidx.recyclerview.widget.RecyclerView$Adapter
+
+# Keep all Fragment classes
+-keep public class * extends androidx.fragment.app.Fragment
+
+# Keep all Service classes
+-keep public class * extends android.app.Service
+
+# Keep all BroadcastReceiver classes
+-keep public class * extends android.content.BroadcastReceiver
+
+# Keep all ContentProvider classes
+-keep public class * extends android.content.ContentProvider
+
 # Remove logging
 -assumenosideeffects class android.util.Log {
     public static *** d(...);
