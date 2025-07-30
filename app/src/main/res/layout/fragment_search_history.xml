@@ -77,7 +77,6 @@
         android:textAppearance="?attr/textAppearanceLabelLarge"
         app:icon="@drawable/ic_clear"
         app:iconTint="?attr/colorOnPrimary"
-        app:textColor="?attr/colorOnPrimary"
         app:backgroundTint="?attr/colorPrimary"
         app:cornerRadius="24dp" />
 

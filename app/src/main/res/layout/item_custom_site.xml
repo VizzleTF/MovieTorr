@@ -54,7 +54,6 @@
             app:strokeColor="?attr/colorError"
             app:strokeWidth="1dp"
             app:iconTint="?attr/colorError"
-            app:textColor="?attr/colorError"
             style="@style/Widget.Material3.Button.OutlinedButton" />
 
     </LinearLayout>

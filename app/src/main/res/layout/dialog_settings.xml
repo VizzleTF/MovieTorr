@@ -206,7 +206,7 @@
             app:cornerRadius="20dp"
             app:backgroundTint="?attr/colorPrimary"
             app:iconTint="?attr/colorOnPrimary"
-            app:textColor="?attr/colorOnPrimary" />
+            style="@style/Widget.Material3.Button.ContainedButton" />
 
     </LinearLayout>
 

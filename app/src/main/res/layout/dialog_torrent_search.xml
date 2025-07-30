@@ -91,7 +91,6 @@
                 app:cornerRadius="16dp"
                 app:backgroundTint="?attr/colorPrimary"
                 app:iconTint="?attr/colorOnPrimary"
-                app:textColor="?attr/colorOnPrimary"
                 style="@style/Widget.Material3.Button" />
 
         </LinearLayout>
