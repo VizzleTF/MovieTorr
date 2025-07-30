@@ -1,4 +1,4 @@
-package com.librekinopoisk.android
+package com.movietorr.android
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
-import com.librekinopoisk.android.databinding.FragmentSettingsBinding
+import com.movietorr.android.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
     
@@ -33,6 +33,7 @@ class SettingsFragment : Fragment() {
         setupAllSitesRecycler()
         setupAddSiteButton()
         setupSaveButton()
+        setupKeyboardHandling()
     }
     
     private fun setupAllSitesRecycler() {
@@ -91,6 +92,27 @@ class SettingsFragment : Fragment() {
     private fun updateAllSitesList() {
         val allSites = SiteSettingsManager.getAllSites(requireContext())
         allSitesAdapter.updateSites(allSites)
+    }
+    
+    private fun setupKeyboardHandling() {
+        // Настраиваем обработку фокуса для полей ввода
+        binding.editSiteName.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // Прокручиваем к полю при получении фокуса
+                binding.root.post {
+                    binding.root.requestLayout()
+                }
+            }
+        }
+        
+        binding.editSiteUrl.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // Прокручиваем к полю при получении фокуса
+                binding.root.post {
+                    binding.root.requestLayout()
+                }
+            }
+        }
     }
     
     override fun onDestroyView() {
