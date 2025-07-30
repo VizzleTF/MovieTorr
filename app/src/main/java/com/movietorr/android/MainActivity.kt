@@ -93,48 +93,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    private fun showSettingsDialog() {
-        val dialogBinding = DialogSettingsBinding.inflate(layoutInflater)
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setView(dialogBinding.root)
-            .setCancelable(true)
-            .create()
-        
-        // Устанавливаем текущую тему
-        val sharedPrefs = getSharedPreferences("MovieTorrPrefs", MODE_PRIVATE)
-        val currentTheme = sharedPrefs.getInt(PREF_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        
-        when (currentTheme) {
-            AppCompatDelegate.MODE_NIGHT_NO -> dialogBinding.themeLight.isChecked = true
-            AppCompatDelegate.MODE_NIGHT_YES -> dialogBinding.themeDark.isChecked = true
-            else -> dialogBinding.themeAuto.isChecked = true
-        }
-        
-        // Обработчики кнопок
-        dialogBinding.cancelButton.setOnClickListener {
-            dialog.dismiss()
-        }
-        
-        dialogBinding.applyButton.setOnClickListener {
-            val newTheme = when (dialogBinding.themeRadioGroup.checkedRadioButtonId) {
-                R.id.themeLight -> AppCompatDelegate.MODE_NIGHT_NO
-                R.id.themeDark -> AppCompatDelegate.MODE_NIGHT_YES
-                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            }
-            
-            sharedPrefs.edit().putInt(PREF_THEME_MODE, newTheme).apply()
-            AppCompatDelegate.setDefaultNightMode(newTheme)
-            dialog.dismiss()
-        }
-        
-        dialogBinding.manageSitesButton.setOnClickListener {
-            dialog.dismiss()
-            showSettingsFragment()
-        }
-        
-        dialog.show()
-    }
-    
     private fun showSettingsFragment() {
         webView.visibility = View.GONE
         
@@ -256,7 +214,8 @@ class MainActivity : AppCompatActivity() {
             extractMovieDataFromPage()
         }
         settingsButton.setOnClickListener {
-            showSettingsDialog()
+            val dialog = SettingsFragment()
+            dialog.show(supportFragmentManager, "SettingsDialog")
         }
     }
     private fun updateSiteButton() {
