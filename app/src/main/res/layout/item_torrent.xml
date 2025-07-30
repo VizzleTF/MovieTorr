@@ -24,9 +24,9 @@
             android:id="@+id/metadataContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            flexbox:flexWrap="wrap"
-            flexbox:alignItems="center"
-            flexbox:justifyContent="flex_start"
+            app:flexWrap="wrap"
+            app:alignItems="center"
+            app:justifyContent="flex_start"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
