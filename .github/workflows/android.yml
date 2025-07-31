@@ -37,23 +37,6 @@ jobs:
         mkdir -p app/keystore
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/keystore/release.keystore
 
-    - name: Update version from tag
-      run: |
-        # Получаем версию из тега
-        VERSION=${GITHUB_REF#refs/tags/}
-        echo "Version from tag: $VERSION"
-        
-        # Обновляем версию в build.gradle
-        sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" app/build.gradle
-        
-        # Получаем номер версии для versionCode (преобразуем в десятичное число)
-        VERSION_NUMBER=$(echo $VERSION | sed 's/v//' | sed 's/\.//g' | sed 's/^0*//')
-        # Если VERSION_NUMBER пустой (было 0.0.0), устанавливаем 1
-        if [ -z "$VERSION_NUMBER" ]; then
-          VERSION_NUMBER=1
-        fi
-        sed -i "s/versionCode .*/versionCode $VERSION_NUMBER/" app/build.gradle
-
     - name: Build release APK
       run: ./gradlew assembleRelease
       env:
@@ -67,7 +50,8 @@ jobs:
         ls -la app/build/outputs/apk/release/
         echo "APK files found!"
         
-        echo "APK signature verification skipped for self-signed certificate"
+        echo "Verifying APK signature..."
+        jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release.apk
         
         echo "Renaming APK file..."
         cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/MovieTorr-${{ github.ref_name }}.apk
