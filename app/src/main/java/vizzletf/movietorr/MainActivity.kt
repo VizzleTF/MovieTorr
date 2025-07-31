@@ -77,94 +77,17 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
                         existingTheme.remove();
                     }
                     
+                    // Просто устанавливаем prefers-color-scheme для темной темы
+                    // Сайт сам переключится на темную тему, если она поддерживается
                     if (isDark) {
-                        // Применяем темную тему
                         const darkStyle = document.createElement('style');
                         darkStyle.id = 'app-theme-style';
                         darkStyle.textContent = `
-                            body, html {
-                                background-color: #121212 !important;
-                                color: #ffffff !important;
-                            }
-                            * {
-                                background-color: #121212 !important;
-                                color: #ffffff !important;
-                                border-color: #333333 !important;
-                            }
-                            a {
-                                color: #bb86fc !important;
-                            }
-                            a:hover {
-                                color: #d4a4ff !important;
-                            }
-                            input, textarea, select {
-                                background-color: #1e1e1e !important;
-                                color: #ffffff !important;
-                                border: 1px solid #333333 !important;
-                            }
-                            button {
-                                background-color: #bb86fc !important;
-                                color: #000000 !important;
-                            }
-                            button:hover {
-                                background-color: #d4a4ff !important;
-                            }
-                            .header, .navbar, .menu {
-                                background-color: #1e1e1e !important;
-                            }
-                            .content, .main {
-                                background-color: #121212 !important;
-                            }
-                            .card, .item, .post {
-                                background-color: #1e1e1e !important;
-                                border: 1px solid #333333 !important;
+                            :root {
+                                color-scheme: dark;
                             }
                         `;
                         document.head.appendChild(darkStyle);
-                    } else {
-                        // Применяем светлую тему
-                        const lightStyle = document.createElement('style');
-                        lightStyle.id = 'app-theme-style';
-                        lightStyle.textContent = `
-                            body, html {
-                                background-color: #ffffff !important;
-                                color: #000000 !important;
-                            }
-                            * {
-                                background-color: #ffffff !important;
-                                color: #000000 !important;
-                                border-color: #e0e0e0 !important;
-                            }
-                            a {
-                                color: #1976d2 !important;
-                            }
-                            a:hover {
-                                color: #1565c0 !important;
-                            }
-                            input, textarea, select {
-                                background-color: #f5f5f5 !important;
-                                color: #000000 !important;
-                                border: 1px solid #e0e0e0 !important;
-                            }
-                            button {
-                                background-color: #1976d2 !important;
-                                color: #ffffff !important;
-                            }
-                            button:hover {
-                                background-color: #1565c0 !important;
-                            }
-                            .header, .navbar, .menu {
-                                background-color: #f5f5f5 !important;
-                            }
-                            .content, .main {
-                                background-color: #ffffff !important;
-                            }
-                            .card, .item, .post {
-                                background-color: #f5f5f5 !important;
-                                border: 1px solid #e0e0e0 !important;
-                            }
-                        `;
-                        document.head.appendChild(lightStyle);
                     }
                 })();
             """.trimIndent()
