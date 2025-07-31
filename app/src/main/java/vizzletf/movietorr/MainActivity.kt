@@ -234,29 +234,10 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
                         }
                     }
                     
-                    // Очищаем название от лишних символов и слов
+                    // Простая обработка названия - только замена пробелов на +
                     if (title) {
-                        // Обрезаем до первой открывающей скобки
-                        const openBracketIndex = title.indexOf('(');
-                        if (openBracketIndex > 0) {
-                            title = title.substring(0, openBracketIndex).trim();
-                        }
-                        
-                        // Убираем "смотреть", "онлайн", "в хорошем качестве" и подобные слова
-                        title = title.replace(/\s*(смотреть|онлайн|в\s+хорошем\s+качестве|все\s+серии?|сериал|фильм|hd|fullhd|1080p|720p|480p)\s*/gi, ' ');
-                        // Убираем лишние символы (но не скобки, так как мы уже обрезали)
-                        title = title.replace(/[+\[\]{}|\\\/]/g, ' ');
                         // Убираем множественные пробелы
                         title = title.replace(/\s+/g, ' ').trim();
-                        // Ограничиваем длину названия (максимум 50 символов)
-                        if (title.length > 50) {
-                            title = title.substring(0, 50).trim();
-                            // Убираем последнее неполное слово
-                            const lastSpace = title.lastIndexOf(' ');
-                            if (lastSpace > 0) {
-                                title = title.substring(0, lastSpace);
-                            }
-                        }
                     }
                     
                     // Заменяем пробелы на + для URL
