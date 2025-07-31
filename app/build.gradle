@@ -4,55 +4,57 @@ plugins {
     id 'org.owasp.dependencycheck' version '11.1.0'
 }
 
-// Функция для определения версии
+// Функция для определения версии (оптимизированная)
 def getVersionName() {
-    def version = "0.0.1" // версия по умолчанию
-    
-    // Проверяем, есть ли тег
+    def version = "0.0.1"
     def tag = System.getenv("GITHUB_REF_NAME")
-    if (tag && tag.startsWith("v")) {
-        version = tag.substring(1) // убираем "v" из тега
-    } else {
-        // Если нет тега, используем количество коммитов
-        try {
-            def commitCount = "git rev-list --count HEAD".execute().text.trim()
-            version = "0.0.${commitCount}"
-        } catch (Exception e) {
-            // Если git недоступен, используем версию по умолчанию
-            version = "0.0.1"
-        }
+    if (tag?.startsWith("v")) {
+        return tag.substring(1)
     }
     
+    // Для локальной разработки используем git
+    if (project.hasProperty("buildDir")) {
+        try {
+            def commitCount = "git rev-list --count HEAD".execute().text.trim()
+            return "0.0.${commitCount}"
+        } catch (Exception ignored) {
+            return version
+        }
+    }
     return version
 }
 
 def getVersionCode() {
-    def versionCode = 1
+    def tag = System.getenv("GITHUB_REF_NAME")
+    if (tag?.startsWith("v")) {
+        // Используем timestamp для релизных версий
+        return (System.currentTimeMillis() / 1000).toInteger()
+    }
     
     try {
         def commitCount = "git rev-list --count HEAD".execute().text.trim()
-        versionCode = commitCount.toInteger()
-    } catch (Exception e) {
-        // Если git недоступен, используем код по умолчанию
-        versionCode = 1
+        return commitCount.toInteger()
+    } catch (Exception ignored) {
+        return 1
     }
-    
-    return versionCode
 }
 
 android {
     namespace 'com.movietorr'
-    compileSdk 34
+    compileSdk 35  // Обновлено
 
     defaultConfig {
         applicationId "com.movietorr"
         minSdk 24
-        targetSdk 34
+        targetSdk 35  // Обновлено
         versionCode getVersionCode()
         versionName getVersionName()
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Отключаем ненужные ресурсы
+        resourceConfigurations += ['en', 'ru']
     }
+    
     signingConfigs {
         release {
             storeFile file("keystore/release.keystore")
@@ -63,42 +65,72 @@ android {
     }
     
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
+            debuggable true
+            // Отключаем некоторые проверки для ускорения debug сборки
+            crunchPngs false
+        }
+        release {
+            minifyEnabled true  // Включаем для production
+            shrinkResources true  // Удаляем неиспользуемые ресурсы
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            
+            // Дополнительные оптимизации
+            zipAlignEnabled true
         }
     }
+    
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-    buildFeatures {
-        viewBinding true
+        sourceCompatibility JavaVersion.VERSION_17  // Обновлено
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
     }
     
-    lintOptions {
+    kotlinOptions {
+        jvmTarget = '17'  // Обновлено
+        freeCompilerArgs += [
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xjvm-default=all"
+        ]
+    }
+    
+    buildFeatures {
+        viewBinding true
+        buildConfig false  // Отключаем если не используется
+    }
+    
+    lint {
         abortOnError false
-        xmlReport true
-        htmlReport true
+        checkReleaseBuilds false
+        // Отключаем медленные проверки
+        disable 'UnusedResources', 'IconMissingDensityFolder'
     }
     
     testOptions {
         unitTests {
             returnDefaultValues = true
             includeAndroidResources = true
-            // Поддержка JUnit 5
             all {
                 useJUnitPlatform()
+                // Оптимизация тестов
+                maxHeapSize = "2g"
+                jvmArgs '-XX:+UseParallelGC'
             }
+        }
+        animationsDisabled = true
+    }
+    
+    // Отключаем неиспользуемые языки
+    bundle {
+        language {
+            enableSplit = false
         }
     }
 }
 
-// Настройка dependency-check
+// Оптимизация dependency-check
 dependencyCheck {
     format = 'HTML'
     suppressionFile = 'dependency-check-suppressions.xml'
@@ -107,32 +139,46 @@ dependencyCheck {
         assemblyEnabled = false
         nuspecEnabled = false
         centralEnabled = true
+        nodeEnabled = false  // Отключаем если не нужен
+        retirejs = false     // Отключаем если не нужен
     }
+    // Кешируем результаты
+    cacheDirectory = file("${buildDir}/dependency-check-cache")
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    // Core Android dependencies (обновлены версии)
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'androidx.webkit:webkit:1.8.0'
+    implementation 'androidx.webkit:webkit:1.12.1'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.fragment:fragment-ktx:1.6.2'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
-    implementation 'androidx.activity:activity-ktx:1.8.2'
+    implementation 'androidx.fragment:fragment-ktx:1.8.5'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
+    implementation 'androidx.activity:activity-ktx:1.9.3'
+    
+    // Network
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
-    implementation 'com.google.code.gson:gson:2.10.1'
+    
+    // JSON
+    implementation 'com.google.code.gson:gson:2.11.0'
+    
+    // UI
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     
-    // Testing - обновлено на JUnit 5
-    testImplementation platform('org.junit:junit-bom:5.13.0')
+    // Desugaring для Java 17 features
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
+    
+    // Testing
+    testImplementation platform('org.junit:junit-bom:5.11.3')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.junit.vintage:junit-vintage-engine' // для совместимости с JUnit 4
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation 'androidx.test:runner:1.5.2'
-    androidTestImplementation 'androidx.test:rules:1.5.0'
+    testImplementation 'org.junit.vintage:junit-vintage-engine'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
 }
