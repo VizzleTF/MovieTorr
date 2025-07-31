@@ -107,6 +107,10 @@ dependencyCheck {
         assemblyEnabled = false
         nuspecEnabled = false
         centralEnabled = true
+        nodeEnabled = false  // Отключаем если не нужен
+        retirejs {
+            enabled = false  // Отключаем если не нужен
+        }
     }
 }
 
