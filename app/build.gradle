@@ -140,10 +140,10 @@ dependencyCheck {
         nuspecEnabled = false
         centralEnabled = true
         nodeEnabled = false  // Отключаем если не нужен
-        retirejs = false     // Отключаем если не нужен
+        retirejs {
+            enabled = false  // Отключаем если не нужен
+        }
     }
-    // Кешируем результаты
-    cacheDirectory = file("${buildDir}/dependency-check-cache")
 }
 
 dependencies {
