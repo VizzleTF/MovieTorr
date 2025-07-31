@@ -23,6 +23,15 @@
     <string name="settings_legal_message">Это приложение предназначено для просмотра веб-сайтов. Пользователь несет ответственность за соблюдение авторских прав и других правовых норм при использовании приложения.</string>
     <string name="settings_legal_ok">Понятно</string>
     
+    <!-- Sort Settings -->
+    <string name="settings_sort">Сортировка торрентов</string>
+    <string name="settings_sort_default">По умолчанию</string>
+    <string name="settings_sort_size">По размеру</string>
+    <string name="settings_sort_date">По дате публикации</string>
+    <string name="settings_sort_seeds">По раздающим</string>
+    <string name="settings_sort_tracker">По трекеру</string>
+    <string name="settings_sort_category">По категории</string>
+    
     <!-- Site Management -->
     <string name="site_quick_access">Быстрый переход</string>
     <string name="site_add">Добавить сайт</string>

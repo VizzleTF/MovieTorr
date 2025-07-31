@@ -23,6 +23,15 @@
     <string name="settings_legal_message">This application is designed for viewing websites. The user is responsible for compliance with copyright and other legal regulations when using the application.</string>
     <string name="settings_legal_ok">Got it</string>
     
+    <!-- Sort Settings -->
+    <string name="settings_sort">Torrent Sorting</string>
+    <string name="settings_sort_default">Default</string>
+    <string name="settings_sort_size">By Size</string>
+    <string name="settings_sort_date">By Publication Date</string>
+    <string name="settings_sort_seeds">By Seeders</string>
+    <string name="settings_sort_tracker">By Tracker</string>
+    <string name="settings_sort_category">By Category</string>
+    
     <!-- Site Management -->
     <string name="site_quick_access">Quick Access</string>
     <string name="site_add">Add Site</string>

@@ -218,6 +218,9 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
             it.Category?.let { category -> availableCategories.add(category) }
         }
         
+        // Сортируем торренты согласно настройкам
+        sortTorrents()
+        
         // Применяем текущий фильтр
         applyFilter()
         
@@ -245,6 +248,57 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
         statusText.text = getString(R.string.search_found, filteredTorrents.size) +
                          "(RuTracker: $ruTrackerCount, Kinozal: $kinozalCount, " +
                          "RuTor: $ruTorCount, NoName-Club: $noNameClubCount)"
+    }
+    
+    private fun sortTorrents() {
+        val sharedPrefs = requireContext().getSharedPreferences("MovieTorrPrefs", 0)
+        val sortMode = sharedPrefs.getInt("sort_mode", 0)
+        
+        when (sortMode) {
+            SettingsBottomSheet.SORT_SIZE -> {
+                allTorrents.sortByDescending { parseSize(it.item.Size) }
+            }
+            SettingsBottomSheet.SORT_DATE -> {
+                allTorrents.sortByDescending { parseDate(it.item.Date) }
+            }
+            SettingsBottomSheet.SORT_SEEDS -> {
+                allTorrents.sortByDescending { it.item.Seeds.toIntOrNull() ?: 0 }
+            }
+            SettingsBottomSheet.SORT_TRACKER -> {
+                allTorrents.sortBy { it.source }
+            }
+            SettingsBottomSheet.SORT_CATEGORY -> {
+                allTorrents.sortBy { it.item.Category ?: "" }
+            }
+            else -> {
+                // По умолчанию - оставляем как есть (порядок от API)
+            }
+        }
+    }
+    
+    private fun parseSize(sizeStr: String): Long {
+        return try {
+            val size = sizeStr.replace(" ", "").lowercase()
+            val multiplier = when {
+                size.endsWith("gb") -> 1024 * 1024 * 1024L
+                size.endsWith("mb") -> 1024 * 1024L
+                size.endsWith("kb") -> 1024L
+                else -> 1L
+            }
+            val number = size.replace(Regex("[^0-9.]"), "").toDouble()
+            (number * multiplier).toLong()
+        } catch (e: Exception) {
+            0L
+        }
+    }
+    
+    private fun parseDate(dateStr: String): Long {
+        return try {
+            // Простая сортировка по строке даты (формат YYYY-MM-DD)
+            dateStr.replace("-", "").toLong()
+        } catch (e: Exception) {
+            0L
+        }
     }
 
     inner class TorrentAdapter : RecyclerView.Adapter<TorrentAdapter.TorrentViewHolder>() {

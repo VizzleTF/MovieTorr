@@ -16,6 +16,15 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
     
     companion object {
         private const val PREF_THEME_MODE = "theme_mode"
+        private const val PREF_SORT_MODE = "sort_mode"
+        
+        // Константы для сортировки
+        const val SORT_DEFAULT = 0
+        const val SORT_SIZE = 1
+        const val SORT_DATE = 2
+        const val SORT_SEEDS = 3
+        const val SORT_TRACKER = 4
+        const val SORT_CATEGORY = 5
     }
     
     interface ThemeChangeListener {
@@ -26,10 +35,14 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         val view = inflater.inflate(R.layout.bottom_sheet_settings, container, false)
         
         val themeRadioGroup = view.findViewById<RadioGroup>(R.id.radioTheme)
+        val sortRadioGroup = view.findViewById<RadioGroup>(R.id.radioSort)
         val legalButton = view.findViewById<MaterialButton>(R.id.btnLegal)
         
         // Устанавливаем текущую тему
         setupThemeSelection(themeRadioGroup)
+        
+        // Устанавливаем текущую сортировку
+        setupSortSelection(sortRadioGroup)
         
         // Обработка изменения темы
         themeRadioGroup.setOnCheckedChangeListener { _, checkedId ->
@@ -37,6 +50,18 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
                 R.id.radioAuto -> setThemeMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                 R.id.radioLight -> setThemeMode(AppCompatDelegate.MODE_NIGHT_NO)
                 R.id.radioDark -> setThemeMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+        }
+        
+        // Обработка изменения сортировки
+        sortRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.radioSortDefault -> setSortMode(SORT_DEFAULT)
+                R.id.radioSortSize -> setSortMode(SORT_SIZE)
+                R.id.radioSortDate -> setSortMode(SORT_DATE)
+                R.id.radioSortSeeds -> setSortMode(SORT_SEEDS)
+                R.id.radioSortTracker -> setSortMode(SORT_TRACKER)
+                R.id.radioSortCategory -> setSortMode(SORT_CATEGORY)
             }
         }
         
@@ -79,6 +104,27 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         
         // Уведомляем MainActivity об изменении темы
         (activity as? ThemeChangeListener)?.onThemeChanged(themeMode)
+    }
+    
+    private fun setupSortSelection(radioGroup: RadioGroup) {
+        val sharedPrefs = requireContext().getSharedPreferences("MovieTorrPrefs", 0)
+        val sortMode = sharedPrefs.getInt(PREF_SORT_MODE, SORT_DEFAULT)
+        
+        val radioButtonId = when (sortMode) {
+            SORT_SIZE -> R.id.radioSortSize
+            SORT_DATE -> R.id.radioSortDate
+            SORT_SEEDS -> R.id.radioSortSeeds
+            SORT_TRACKER -> R.id.radioSortTracker
+            SORT_CATEGORY -> R.id.radioSortCategory
+            else -> R.id.radioSortDefault
+        }
+        
+        radioGroup.check(radioButtonId)
+    }
+    
+    private fun setSortMode(sortMode: Int) {
+        val sharedPrefs = requireContext().getSharedPreferences("MovieTorrPrefs", 0)
+        sharedPrefs.edit().putInt(PREF_SORT_MODE, sortMode).apply()
     }
     
     private fun showLegalInfo() {
