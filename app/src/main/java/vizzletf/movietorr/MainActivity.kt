@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.button.MaterialButton
 import android.view.View
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListener {
     private lateinit var webView: WebView
     private lateinit var webViewProgress: com.google.android.material.progressindicator.LinearProgressIndicator
 
@@ -53,6 +53,124 @@ class MainActivity : AppCompatActivity() {
             AppCompatDelegate.MODE_NIGHT_YES -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
+        
+        // Применяем тему к WebView
+        applyWebViewTheme(themeMode)
+    }
+    
+    private fun applyWebViewTheme(themeMode: Int) {
+        if (::webView.isInitialized) {
+            val isDarkTheme = when (themeMode) {
+                AppCompatDelegate.MODE_NIGHT_YES -> true
+                AppCompatDelegate.MODE_NIGHT_NO -> false
+                else -> AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+            }
+            
+            val script = """
+                (function() {
+                    'use strict';
+                    const isDark = $isDarkTheme;
+                    
+                    // Удаляем существующие стили темы
+                    const existingTheme = document.getElementById('app-theme-style');
+                    if (existingTheme) {
+                        existingTheme.remove();
+                    }
+                    
+                    if (isDark) {
+                        // Применяем темную тему
+                        const darkStyle = document.createElement('style');
+                        darkStyle.id = 'app-theme-style';
+                        darkStyle.textContent = `
+                            body, html {
+                                background-color: #121212 !important;
+                                color: #ffffff !important;
+                            }
+                            * {
+                                background-color: #121212 !important;
+                                color: #ffffff !important;
+                                border-color: #333333 !important;
+                            }
+                            a {
+                                color: #bb86fc !important;
+                            }
+                            a:hover {
+                                color: #d4a4ff !important;
+                            }
+                            input, textarea, select {
+                                background-color: #1e1e1e !important;
+                                color: #ffffff !important;
+                                border: 1px solid #333333 !important;
+                            }
+                            button {
+                                background-color: #bb86fc !important;
+                                color: #000000 !important;
+                            }
+                            button:hover {
+                                background-color: #d4a4ff !important;
+                            }
+                            .header, .navbar, .menu {
+                                background-color: #1e1e1e !important;
+                            }
+                            .content, .main {
+                                background-color: #121212 !important;
+                            }
+                            .card, .item, .post {
+                                background-color: #1e1e1e !important;
+                                border: 1px solid #333333 !important;
+                            }
+                        `;
+                        document.head.appendChild(darkStyle);
+                    } else {
+                        // Применяем светлую тему
+                        const lightStyle = document.createElement('style');
+                        lightStyle.id = 'app-theme-style';
+                        lightStyle.textContent = `
+                            body, html {
+                                background-color: #ffffff !important;
+                                color: #000000 !important;
+                            }
+                            * {
+                                background-color: #ffffff !important;
+                                color: #000000 !important;
+                                border-color: #e0e0e0 !important;
+                            }
+                            a {
+                                color: #1976d2 !important;
+                            }
+                            a:hover {
+                                color: #1565c0 !important;
+                            }
+                            input, textarea, select {
+                                background-color: #f5f5f5 !important;
+                                color: #000000 !important;
+                                border: 1px solid #e0e0e0 !important;
+                            }
+                            button {
+                                background-color: #1976d2 !important;
+                                color: #ffffff !important;
+                            }
+                            button:hover {
+                                background-color: #1565c0 !important;
+                            }
+                            .header, .navbar, .menu {
+                                background-color: #f5f5f5 !important;
+                            }
+                            .content, .main {
+                                background-color: #ffffff !important;
+                            }
+                            .card, .item, .post {
+                                background-color: #f5f5f5 !important;
+                                border: 1px solid #e0e0e0 !important;
+                            }
+                        `;
+                        document.head.appendChild(lightStyle);
+                    }
+                })();
+            """.trimIndent()
+            
+            webView.evaluateJavascript(script, null)
+        }
     }
 
     private fun setupWebView() {
@@ -69,6 +187,11 @@ class MainActivity : AppCompatActivity() {
                 android.util.Log.d("MainActivity", "onPageFinished: $url")
                 webViewProgress.visibility = View.GONE
                 android.util.Log.d("MainActivity", "Progress visibility set to GONE")
+                
+                // Применяем тему к загруженной странице
+                val sharedPrefs = getSharedPreferences("MovieTorrPrefs", MODE_PRIVATE)
+                val themeMode = sharedPrefs.getInt(PREF_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                applyWebViewTheme(themeMode)
             }
         }
         webView.settings.javaScriptEnabled = true
@@ -218,5 +341,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+    
+    override fun onThemeChanged(themeMode: Int) {
+        // Применяем тему к WebView при изменении в настройках
+        applyWebViewTheme(themeMode)
     }
 }

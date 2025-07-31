@@ -18,6 +18,10 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         private const val PREF_THEME_MODE = "theme_mode"
     }
     
+    interface ThemeChangeListener {
+        fun onThemeChanged(themeMode: Int)
+    }
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.bottom_sheet_settings, container, false)
         
@@ -72,6 +76,9 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         sharedPrefs.edit().putInt(PREF_THEME_MODE, themeMode).apply()
         
         AppCompatDelegate.setDefaultNightMode(themeMode)
+        
+        // Уведомляем MainActivity об изменении темы
+        (activity as? ThemeChangeListener)?.onThemeChanged(themeMode)
     }
     
     private fun showLegalInfo() {
