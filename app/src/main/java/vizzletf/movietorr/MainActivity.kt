@@ -236,12 +236,16 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
                     
                     // Очищаем название от лишних символов и слов
                     if (title) {
-                        // Убираем год в скобках
-                        title = title.replace(/\s*\(\d{4}\)\s*/g, '');
+                        // Обрезаем до первой открывающей скобки
+                        const openBracketIndex = title.indexOf('(');
+                        if (openBracketIndex > 0) {
+                            title = title.substring(0, openBracketIndex).trim();
+                        }
+                        
                         // Убираем "смотреть", "онлайн", "в хорошем качестве" и подобные слова
                         title = title.replace(/\s*(смотреть|онлайн|в\s+хорошем\s+качестве|все\s+серии?|сериал|фильм|hd|fullhd|1080p|720p|480p)\s*/gi, ' ');
-                        // Убираем лишние символы
-                        title = title.replace(/[+()\[\]{}|\\\/]/g, ' ');
+                        // Убираем лишние символы (но не скобки, так как мы уже обрезали)
+                        title = title.replace(/[+\[\]{}|\\\/]/g, ' ');
                         // Убираем множественные пробелы
                         title = title.replace(/\s+/g, ' ').trim();
                         // Ограничиваем длину названия (максимум 50 символов)
