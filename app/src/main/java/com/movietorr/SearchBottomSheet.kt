@@ -166,19 +166,25 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
         
         torApiService.searchTorrents(query, object : TorApiService.TorrentSearchCallback {
             override fun onSuccess(response: TorApiService.TorrentResponse) {
-                requireActivity().runOnUiThread {
-                    // Скрываем анимацию поиска
-                    progressBar?.visibility = View.GONE
-                    searchInputLayout?.isEnabled = true
-                    displayResults(response)
+                activity?.runOnUiThread {
+                    // Проверяем что фрагмент еще прикреплен
+                    if (isAdded && !isDetached) {
+                        // Скрываем анимацию поиска
+                        progressBar?.visibility = View.GONE
+                        searchInputLayout?.isEnabled = true
+                        displayResults(response)
+                    }
                 }
             }
             override fun onError(error: String) {
-                requireActivity().runOnUiThread {
-                    // Скрываем анимацию поиска
-                    progressBar?.visibility = View.GONE
-                    searchInputLayout?.isEnabled = true
-                    Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                activity?.runOnUiThread {
+                    // Проверяем что фрагмент еще прикреплен
+                    if (isAdded && !isDetached) {
+                        // Скрываем анимацию поиска
+                        progressBar?.visibility = View.GONE
+                        searchInputLayout?.isEnabled = true
+                        Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         })
@@ -314,37 +320,45 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
             private fun getMagnetLink(source: String, id: String) {
                 torApiService.getMagnetLink(source, id, object : TorApiService.MagnetCallback {
                     override fun onSuccess(magnet: String, hash: String) {
-                        requireActivity().runOnUiThread {
-                            showMagnetOptions(magnet, hash)
+                        activity?.runOnUiThread {
+                            // Проверяем что фрагмент еще прикреплен
+                            if (isAdded && !isDetached) {
+                                showMagnetOptions(magnet, hash)
+                            }
                         }
                     }
                     
                     override fun onError(error: String) {
-                        requireActivity().runOnUiThread {
-                            Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                        activity?.runOnUiThread {
+                            // Проверяем что фрагмент еще прикреплен
+                            if (isAdded && !isDetached) {
+                                Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
                 })
             }
             
             private fun showMagnetOptions(magnet: String, hash: String) {
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Выберите действие")
-                    .setItems(arrayOf("Открыть магнитную ссылку", "Скопировать хеш")) { _, which ->
-                        when (which) {
-                            0 -> {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(magnet))
-                                context?.startActivity(intent)
-                            }
-                            1 -> {
-                                val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                val clip = ClipData.newPlainText("Torrent Hash", hash)
-                                clipboard.setPrimaryClip(clip)
-                                Toast.makeText(context, "Хеш скопирован в буфер обмена", Toast.LENGTH_SHORT).show()
+                context?.let { ctx ->
+                    MaterialAlertDialogBuilder(ctx)
+                        .setTitle("Выберите действие")
+                        .setItems(arrayOf("Открыть магнитную ссылку", "Скопировать хеш")) { _, which ->
+                            when (which) {
+                                0 -> {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(magnet))
+                                    ctx.startActivity(intent)
+                                }
+                                1 -> {
+                                    val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                    val clip = ClipData.newPlainText("Torrent Hash", hash)
+                                    clipboard.setPrimaryClip(clip)
+                                    Toast.makeText(ctx, "Хеш скопирован в буфер обмена", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
-                    }
-                    .show()
+                        .show()
+                }
             }
         }
     }
