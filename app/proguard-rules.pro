@@ -35,7 +35,24 @@
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
 
+# MovieTorr specific rules
+-keep class com.movietorr.** { *; }
+-keepclassmembers class com.movietorr.** { *; }
+
 # WebView JavaScript interface
 -keepclassmembers class com.movietorr.MainActivity$KinopoiskInterface {
    public *;
-} 
+}
+
+# BottomSheet fragments
+-keep class com.movietorr.SearchBottomSheet { *; }
+-keep class com.movietorr.SettingsBottomSheet { *; }
+-keep class com.movietorr.SiteBottomSheet { *; }
+
+# Data classes
+-keep class com.movietorr.SiteConfig { *; }
+-keep class com.movietorr.TorrentService { *; }
+-keep class com.movietorr.TorApiService { *; }
+
+# RecyclerView adapters
+-keep class com.movietorr.SitesAdapter { *; } 
