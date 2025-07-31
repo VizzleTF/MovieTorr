@@ -216,62 +216,7 @@ class TorApiService {
         })
     }
     
-    fun searchAllPages(query: String, callback: TorrentSearchCallback) {
-        val url = "$baseUrl/api/search/title/all?query=$query&page=all"
-        val request = Request.Builder()
-            .url(url)
-            .build()
-        
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                callback.onError("Ошибка сети: ${e.message}")
-            }
-            
-            override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    if (!response.isSuccessful) {
-                        callback.onError("Ошибка сервера: ${response.code}")
-                        return
-                    }
-                    
-                    try {
-                        val responseBody = response.body?.string()
-                        println("TorAPI Response (all pages): $responseBody")
-                        
-                        // Проверяем структуру ответа
-                        if (responseBody?.startsWith("{") == true) {
-                            try {
-                                val torrentResponse = gson.fromJson(responseBody, TorrentResponse::class.java)
-                                println("Успешно распарсили ответ от TorAPI (all pages)")
-                                callback.onSuccess(torrentResponse)
-                            } catch (parseException: Exception) {
-                                println("Ошибка парсинга JSON (all pages): ${parseException.message}")
-                                println("Пробуем альтернативный парсинг для диагностики...")
-                                
-                                // Попробуем парсить как Map для диагностики
-                                try {
-                                    val type = object : TypeToken<Map<String, Any>>() {}.type
-                                    val responseMap: Map<String, Any> = gson.fromJson(responseBody, type)
-                                    println("Структура ответа (all pages): ${responseMap.keys}")
-                                    
-                                    // Создаем пустой ответ
-                                    val emptyResponse = TorrentResponse()
-                                    callback.onSuccess(emptyResponse)
-                                } catch (mapException: Exception) {
-                                    println("Не удалось распарсить даже как Map (all pages): ${mapException.message}")
-                                    callback.onError("Ошибка парсинга ответа API: ${parseException.message}")
-                                }
-                            }
-                        } else {
-                            callback.onError("Неожиданный формат ответа от API")
-                        }
-                    } catch (e: Exception) {
-                        callback.onError("Ошибка чтения ответа: ${e.message}")
-                    }
-                }
-            }
-        })
-    }
+
     
     fun getMagnetLink(source: String, id: String, callback: MagnetCallback) {
         val url = "$baseUrl/api/search/id/${source.lowercase()}?query=$id"

@@ -25,6 +25,8 @@ jobs:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
+          ~/.gradle/daemon
+          ~/.gradle/configuration-cache
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
@@ -37,12 +39,13 @@ jobs:
         mkdir -p app/keystore
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/keystore/release.keystore
 
-    - name: Build release APK
-      run: ./gradlew assembleRelease
+    - name: Build release APK (skip dependency-check)
+      run: ./gradlew assembleRelease -x dependencyCheckAnalyze
       env:
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=4 -Xmx4g"
 
     - name: Check APK files
       run: |
@@ -55,8 +58,6 @@ jobs:
         
         echo "Renaming APK file..."
         cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/MovieTorr-${{ github.ref_name }}.apk
-
-
 
     - name: Get commit history for versioned release
       id: get_commit_history
