@@ -1,4 +1,4 @@
-package com.movietorr
+package vizzletf.movietorr
 
 import com.google.gson.Gson
 import okhttp3.*

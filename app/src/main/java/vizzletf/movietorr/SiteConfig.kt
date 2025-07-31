@@ -1,4 +1,4 @@
-package com.movietorr
+package vizzletf.movietorr
 
 data class SiteConfig(
     val id: String,

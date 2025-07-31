@@ -8,7 +8,7 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
--keepclassmembers class com.movietorr.MainActivity$KinopoiskInterface {
+-keepclassmembers class vizzletf.movietorr.MainActivity$KinopoiskInterface {
    public *;
 }
 
@@ -36,23 +36,23 @@
 -keep class * implements com.google.gson.JsonDeserializer
 
 # MovieTorr specific rules
--keep class com.movietorr.** { *; }
--keepclassmembers class com.movietorr.** { *; }
+-keep class vizzletf.movietorr.** { *; }
+-keepclassmembers class vizzletf.movietorr.** { *; }
 
 # WebView JavaScript interface
--keepclassmembers class com.movietorr.MainActivity$KinopoiskInterface {
+-keepclassmembers class vizzletf.movietorr.MainActivity$KinopoiskInterface {
    public *;
 }
 
 # BottomSheet fragments
--keep class com.movietorr.SearchBottomSheet { *; }
--keep class com.movietorr.SettingsBottomSheet { *; }
--keep class com.movietorr.SiteBottomSheet { *; }
+-keep class vizzletf.movietorr.SearchBottomSheet { *; }
+-keep class vizzletf.movietorr.SettingsBottomSheet { *; }
+-keep class vizzletf.movietorr.SiteBottomSheet { *; }
 
 # Data classes
--keep class com.movietorr.SiteConfig { *; }
--keep class com.movietorr.TorrentService { *; }
--keep class com.movietorr.TorApiService { *; }
+-keep class vizzletf.movietorr.SiteConfig { *; }
+-keep class vizzletf.movietorr.TorrentService { *; }
+-keep class vizzletf.movietorr.TorApiService { *; }
 
 # RecyclerView adapters
--keep class com.movietorr.SitesAdapter { *; } 
+-keep class vizzletf.movietorr.SitesAdapter { *; } 

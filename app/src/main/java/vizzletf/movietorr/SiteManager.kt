@@ -1,4 +1,4 @@
-package com.movietorr
+package vizzletf.movietorr
 
 import android.content.Context
 import com.google.gson.Gson

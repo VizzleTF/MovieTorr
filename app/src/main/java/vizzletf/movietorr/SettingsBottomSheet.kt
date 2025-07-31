@@ -1,4 +1,4 @@
-package com.movietorr
+package vizzletf.movietorr
 
 import android.os.Bundle
 import android.view.LayoutInflater

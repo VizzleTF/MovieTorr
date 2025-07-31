@@ -1,4 +1,4 @@
-package com.movietorr
+package vizzletf.movietorr
 
 import android.content.ClipData
 import android.content.ClipboardManager

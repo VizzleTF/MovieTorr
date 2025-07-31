@@ -41,11 +41,11 @@ def getVersionCode() {
 }
 
 android {
-    namespace 'com.movietorr'
+    namespace 'vizzletf.movietorr'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.movietorr"
+        applicationId "vizzletf.movietorr"
         minSdk 24
         targetSdk 34
         versionCode getVersionCode()
