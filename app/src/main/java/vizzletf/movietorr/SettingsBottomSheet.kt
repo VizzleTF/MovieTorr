@@ -75,12 +75,10 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
     }
     
     private fun showLegalInfo() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Правовая информация")
-            .setMessage("Это приложение предназначено для просмотра веб-сайтов. " +
-                    "Пользователь несет ответственность за соблюдение авторских прав " +
-                    "и других правовых норм при использовании приложения.")
-            .setPositiveButton("Понятно", null)
+                MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.settings_legal_info))
+            .setMessage(getString(R.string.settings_legal_message))
+            .setPositiveButton(getString(R.string.settings_legal_ok), null)
             .show()
     }
 }

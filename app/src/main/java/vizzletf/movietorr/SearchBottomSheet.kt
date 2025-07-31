@@ -78,7 +78,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
                 if (query.isNotBlank()) {
                     searchTorrents(query)
                 } else {
-                    Toast.makeText(context, "Введите название фильма", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.search_enter_movie), Toast.LENGTH_SHORT).show()
                 }
                 true
             } else {
@@ -92,7 +92,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
             if (query.isNotBlank()) {
                 searchTorrents(query)
             } else {
-                Toast.makeText(context, "Введите название фильма", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.search_enter_movie), Toast.LENGTH_SHORT).show()
             }
         }
         
@@ -120,7 +120,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
         val adapter = android.widget.ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            mutableListOf("Все категории")
+            mutableListOf(getString(R.string.search_all_categories))
         ).apply {
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
@@ -230,7 +230,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
         if (categories.isNotEmpty()) {
             val adapter = (filterSpinner.adapter as? android.widget.ArrayAdapter<String>) ?: return
             adapter.clear()
-            adapter.add("Все категории")
+            adapter.add(getString(R.string.search_all_categories))
             adapter.addAll(categories)
             adapter.notifyDataSetChanged()
         }
@@ -242,7 +242,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
         val ruTorCount = filteredTorrents.count { it.source == "RuTor" }
         val noNameClubCount = filteredTorrents.count { it.source == "NoNameClub" }
         
-        statusText.text = "Найдено: ${filteredTorrents.size} " +
+        statusText.text = getString(R.string.search_found, filteredTorrents.size) +
                          "(RuTracker: $ruTrackerCount, Kinozal: $kinozalCount, " +
                          "RuTor: $ruTorCount, NoName-Club: $noNameClubCount)"
     }
@@ -283,7 +283,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
 
                 sourceText.text = source
                 nameText.text = torrent.Name
-                categoryText.text = torrent.Category ?: "Без категории"
+                categoryText.text = torrent.Category ?: getString(R.string.search_no_category)
                 sizeText.text = torrent.Size
                 seedsText.text = "${torrent.Seeds}"
                 peersText.text = "${torrent.Peers}"
@@ -341,9 +341,9 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
             
             private fun showMagnetOptions(magnet: String, hash: String) {
                 context?.let { ctx ->
-                    MaterialAlertDialogBuilder(ctx)
-                        .setTitle("Выберите действие")
-                        .setItems(arrayOf("Открыть магнитную ссылку", "Скопировать хеш")) { _, which ->
+                            MaterialAlertDialogBuilder(ctx)
+            .setTitle(getString(R.string.magnet_title))
+            .setItems(arrayOf(getString(R.string.magnet_open), getString(R.string.magnet_copy_hash))) { _, which ->
                             when (which) {
                                 0 -> {
                                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(magnet))
@@ -353,7 +353,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
                                     val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                     val clip = ClipData.newPlainText("Torrent Hash", hash)
                                     clipboard.setPrimaryClip(clip)
-                                    Toast.makeText(ctx, "Хеш скопирован в буфер обмена", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(ctx, getString(R.string.magnet_hash_copied), Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }

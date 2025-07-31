@@ -36,14 +36,14 @@
                 android:id="@+id/btnSite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Сайт"
+                android:text="@string/tab_site"
                 style="@style/Widget.Material3.Button.TextButton" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Поиск"
+                android:text="@string/tab_search"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_marginStart="8dp" />
 
@@ -51,7 +51,7 @@
                 android:id="@+id/btnSettings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Настройки"
+                android:text="@string/tab_settings"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_marginStart="8dp" />
         </LinearLayout>

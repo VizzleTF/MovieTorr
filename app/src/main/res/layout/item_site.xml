@@ -28,9 +28,16 @@
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnEditSite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/site_edit"
+        style="@style/Widget.Material3.Button.TextButton" />
+        
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDeleteSite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Удалить"
+        android:text="@string/site_delete"
         style="@style/Widget.Material3.Button.TextButton" />
 </LinearLayout> 

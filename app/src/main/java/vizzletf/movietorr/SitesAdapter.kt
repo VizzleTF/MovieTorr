@@ -9,7 +9,8 @@ import com.google.android.material.button.MaterialButton
 
 class SitesAdapter(
     private val onSiteClick: (SiteConfig) -> Unit,
-    private val onSiteDelete: (SiteConfig) -> Unit
+    private val onSiteDelete: (SiteConfig) -> Unit,
+    private val onSiteEdit: (SiteConfig) -> Unit
 ) : RecyclerView.Adapter<SitesAdapter.SiteViewHolder>() {
     
     private var sites: List<SiteConfig> = emptyList()
@@ -34,6 +35,7 @@ class SitesAdapter(
         private val nameText: TextView = itemView.findViewById(R.id.textSiteName)
         private val urlText: TextView = itemView.findViewById(R.id.textSiteUrl)
         private val deleteButton: MaterialButton = itemView.findViewById(R.id.btnDeleteSite)
+        private val editButton: MaterialButton = itemView.findViewById(R.id.btnEditSite)
         
         fun bind(site: SiteConfig) {
             nameText.text = site.name
@@ -43,6 +45,14 @@ class SitesAdapter(
             
             deleteButton.visibility = View.VISIBLE
             deleteButton.setOnClickListener { onSiteDelete(site) }
+            
+            // Показываем кнопку редактирования только для пользовательских сайтов
+            if (site.id.startsWith("custom_")) {
+                editButton.visibility = View.VISIBLE
+                editButton.setOnClickListener { onSiteEdit(site) }
+            } else {
+                editButton.visibility = View.GONE
+            }
         }
     }
 } 

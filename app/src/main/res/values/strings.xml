@@ -1,3 +1,80 @@
 <resources>
-    <string name="app_name">LibreKinopoiskV2</string>
+    <string name="app_name">MovieTorr</string>
+    
+    <!-- Main Activity -->
+    <string name="tab_site">Сайт</string>
+    <string name="tab_search">Поиск</string>
+    <string name="tab_settings">Настройки</string>
+    
+    <!-- Search -->
+    <string name="search_hint">Название фильма</string>
+    <string name="search_placeholder">Введите название фильма для поиска</string>
+    <string name="search_enter_movie">Введите название фильма</string>
+    <string name="search_found">Найдено: %d</string>
+    <string name="search_no_category">Без категории</string>
+    <string name="search_all_categories">Все категории</string>
+    
+    <!-- Settings -->
+    <string name="settings_theme">Тема</string>
+    <string name="settings_theme_auto">Авто</string>
+    <string name="settings_theme_light">Светлая</string>
+    <string name="settings_theme_dark">Темная</string>
+    <string name="settings_legal_info">Правовая информация</string>
+    <string name="settings_legal_message">Это приложение предназначено для просмотра веб-сайтов. Пользователь несет ответственность за соблюдение авторских прав и других правовых норм при использовании приложения.</string>
+    <string name="settings_legal_ok">Понятно</string>
+    
+    <!-- Site Management -->
+    <string name="site_quick_access">Быстрый переход</string>
+    <string name="site_add">Добавить сайт</string>
+    <string name="site_edit">Изменить</string>
+    <string name="site_delete">Удалить</string>
+    <string name="site_name_hint">Название сайта</string>
+    <string name="site_url_hint">URL сайта</string>
+    <string name="site_address_hint">Адрес сайта</string>
+    <string name="site_added">Сайт добавлен</string>
+    <string name="site_updated">Сайт обновлен</string>
+    <string name="site_deleted">Сайт удален</string>
+    <string name="site_removed">Сайт удалён</string>
+    <string name="site_edit_error">Ошибка обновления сайта</string>
+    <string name="site_add_error">Ошибка добавления сайта</string>
+    <string name="site_builtin_edit_error">Встроенные сайты нельзя редактировать</string>
+    <string name="site_enter_address">Введите адрес сайта</string>
+    <string name="site_delete_confirm">Удалить сайт \"%s\"?</string>
+    
+    <!-- Dialogs -->
+    <string name="dialog_ok">Понятно</string>
+    <string name="dialog_cancel">Отмена</string>
+    <string name="dialog_add">Добавить</string>
+    <string name="dialog_save">Сохранить</string>
+    <string name="dialog_go">Перейти</string>
+    <string name="dialog_delete">Удалить</string>
+    <string name="dialog_edit_site">Редактировать сайт</string>
+    <string name="dialog_quick_site">Быстрый переход</string>
+    <string name="dialog_delete_site">Удалить сайт</string>
+    
+    <!-- Magnet Options -->
+    <string name="magnet_title">Выберите действие</string>
+    <string name="magnet_open">Открыть магнитную ссылку</string>
+    <string name="magnet_copy_hash">Скопировать хеш</string>
+    <string name="magnet_hash_copied">Хеш скопирован в буфер обмена</string>
+    
+    <!-- Torrent Items -->
+    <string name="torrent_rutracker">RuTracker</string>
+    <string name="torrent_movies">Фильмы</string>
+    <string name="torrent_size_sample">1.5 GB</string>
+    <string name="torrent_seeds_sample">↑ 150</string>
+    <string name="torrent_peers_sample">↓ 25</string>
+    <string name="torrent_date_sample">2024-01-15</string>
+    <string name="torrent_title_sample">Название фильма</string>
+    
+    <!-- Errors -->
+    <string name="error_network">Ошибка сети: %s</string>
+    <string name="error_server">Ошибка сервера: %d</string>
+    <string name="error_parsing">Ошибка парсинга данных: %s</string>
+    <string name="error_request">Ошибка запроса: %d</string>
+    <string name="error_parsing_response">Ошибка парсинга ответа API: %s</string>
+    <string name="error_unexpected_format">Неожиданный формат ответа от API</string>
+    <string name="error_reading_response">Ошибка чтения ответа: %s</string>
+    <string name="error_magnet_not_found">Магнитная ссылка не найдена</string>
+    <string name="error_parsing_magnet">Ошибка парсинга: %s</string>
 </resources>

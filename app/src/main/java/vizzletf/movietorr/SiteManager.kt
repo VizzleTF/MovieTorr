@@ -48,6 +48,21 @@ object SiteManager {
         saveCustomSites(context, customSites)
     }
     
+    fun updateCustomSite(context: Context, siteId: String, name: String, url: String): Boolean {
+        if (name.isBlank() || url.isBlank()) return false
+        val customSites = getCustomSites(context).toMutableList()
+        val siteIndex = customSites.indexOfFirst { it.id == siteId }
+        if (siteIndex == -1) return false
+        
+        customSites[siteIndex] = SiteConfig(
+            id = siteId,
+            name = name.trim(),
+            url = url.trim()
+        )
+        saveCustomSites(context, customSites)
+        return true
+    }
+    
     fun removeDefaultSite(context: Context, siteId: String) {
         val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val removed = getRemovedDefaultSites(context).toMutableSet()

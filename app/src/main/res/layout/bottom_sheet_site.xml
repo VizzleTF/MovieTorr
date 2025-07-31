@@ -12,8 +12,15 @@
         android:layout_marginBottom="16dp" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnQuickSite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/site_quick_access"
+        android:layout_marginBottom="8dp" />
+        
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAddSite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Добавить сайт" />
+        android:text="@string/site_add" />
 </LinearLayout>

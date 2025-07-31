@@ -30,6 +30,10 @@ class SiteBottomSheet : BottomSheetDialogFragment() {
             showAddSiteDialog()
         }
         
+        view.findViewById<MaterialButton>(R.id.btnQuickSite).setOnClickListener {
+            showQuickSiteDialog()
+        }
+        
         loadSites()
         return view
     }
@@ -64,7 +68,14 @@ class SiteBottomSheet : BottomSheetDialogFragment() {
                 } else {
                     SiteManager.removeDefaultSite(requireContext(), site.id)
                     loadSites()
-                    Toast.makeText(context, "Сайт удалён", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.site_removed), Toast.LENGTH_SHORT).show()
+                }
+            },
+            onSiteEdit = { site ->
+                if (site.id.startsWith("custom_")) {
+                    showEditSiteDialog(site)
+                } else {
+                    Toast.makeText(context, getString(R.string.site_builtin_edit_error), Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -76,33 +87,82 @@ class SiteBottomSheet : BottomSheetDialogFragment() {
         val urlEdit = dialogView.findViewById<TextInputEditText>(R.id.editSiteUrl)
         
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Добавить сайт")
+            .setTitle(getString(R.string.dialog_edit_site))
             .setView(dialogView)
-            .setPositiveButton("Добавить") { _, _ ->
+            .setPositiveButton(getString(R.string.dialog_add)) { _, _ ->
                 val name = nameEdit.text.toString()
                 val url = urlEdit.text.toString()
                 
                 if (SiteManager.addCustomSite(requireContext(), name, url)) {
                     loadSites()
-                    Toast.makeText(context, "Сайт добавлен", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.site_added), Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(context, "Ошибка добавления сайта", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.site_add_error), Toast.LENGTH_SHORT).show()
                 }
             }
-            .setNegativeButton("Отмена", null)
+            .setNegativeButton(getString(R.string.dialog_cancel), null)
+            .show()
+    }
+    
+    private fun showQuickSiteDialog() {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_quick_site, null)
+        val urlEdit = dialogView.findViewById<TextInputEditText>(R.id.editSiteUrl)
+        
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.dialog_quick_site))
+            .setView(dialogView)
+            .setPositiveButton(getString(R.string.dialog_go)) { _, _ ->
+                val url = urlEdit.text.toString()
+                if (url.isNotBlank()) {
+                    (activity as? MainActivity)?.let { mainActivity ->
+                        mainActivity.loadSite(url)
+                    }
+                    dismiss()
+                } else {
+                    Toast.makeText(context, getString(R.string.site_enter_address), Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton(getString(R.string.dialog_cancel), null)
+            .show()
+    }
+    
+    private fun showEditSiteDialog(site: SiteConfig) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_site, null)
+        val nameEdit = dialogView.findViewById<TextInputEditText>(R.id.editSiteName)
+        val urlEdit = dialogView.findViewById<TextInputEditText>(R.id.editSiteUrl)
+        
+        // Заполняем поля текущими значениями
+        nameEdit.setText(site.name)
+        urlEdit.setText(site.url)
+        
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.dialog_edit_site))
+            .setView(dialogView)
+            .setPositiveButton(getString(R.string.dialog_save)) { _, _ ->
+                val name = nameEdit.text.toString()
+                val url = urlEdit.text.toString()
+                
+                if (SiteManager.updateCustomSite(requireContext(), site.id, name, url)) {
+                    loadSites()
+                    Toast.makeText(context, getString(R.string.site_updated), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, getString(R.string.site_edit_error), Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton(getString(R.string.dialog_cancel), null)
             .show()
     }
     
     private fun showDeleteConfirmDialog(site: SiteConfig) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Удалить сайт")
-            .setMessage("Удалить сайт \"${site.name}\"?")
-            .setPositiveButton("Удалить") { _, _ ->
+            .setTitle(getString(R.string.dialog_delete_site))
+            .setMessage(getString(R.string.site_delete_confirm, site.name))
+            .setPositiveButton(getString(R.string.dialog_delete)) { _, _ ->
                 SiteManager.removeCustomSite(requireContext(), site.id)
                 loadSites()
-                Toast.makeText(context, "Сайт удален", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.site_deleted), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Отмена", null)
+            .setNegativeButton(getString(R.string.dialog_cancel), null)
             .show()
     }
 }

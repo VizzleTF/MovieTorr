@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Тема"
+        android:text="@string/settings_theme"
         android:textAppearance="?attr/textAppearanceHeadlineSmall"
         android:layout_marginBottom="8dp" />
 
@@ -20,23 +20,23 @@
             android:id="@+id/radioAuto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Авто" />
+                            android:text="@string/settings_theme_auto" />
         <RadioButton
             android:id="@+id/radioLight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Светлая" />
+                            android:text="@string/settings_theme_light" />
         <RadioButton
             android:id="@+id/radioDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Темная" />
+                            android:text="@string/settings_theme_dark" />
     </RadioGroup>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLegal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Правовая информация"
+        android:text="@string/settings_legal_info"
         android:layout_marginTop="16dp" />
 </LinearLayout>

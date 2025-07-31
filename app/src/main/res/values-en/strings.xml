@@ -1,0 +1,80 @@
+<resources>
+    <string name="app_name">MovieTorr</string>
+    
+    <!-- Main Activity -->
+    <string name="tab_site">Site</string>
+    <string name="tab_search">Search</string>
+    <string name="tab_settings">Settings</string>
+    
+    <!-- Search -->
+    <string name="search_hint">Movie title</string>
+    <string name="search_placeholder">Enter movie title to search</string>
+    <string name="search_enter_movie">Enter movie title</string>
+    <string name="search_found">Found: %d</string>
+    <string name="search_no_category">No category</string>
+    <string name="search_all_categories">All categories</string>
+    
+    <!-- Settings -->
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_auto">Auto</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_legal_info">Legal Information</string>
+    <string name="settings_legal_message">This application is designed for viewing websites. The user is responsible for compliance with copyright and other legal regulations when using the application.</string>
+    <string name="settings_legal_ok">Got it</string>
+    
+    <!-- Site Management -->
+    <string name="site_quick_access">Quick Access</string>
+    <string name="site_add">Add Site</string>
+    <string name="site_edit">Edit</string>
+    <string name="site_delete">Delete</string>
+    <string name="site_name_hint">Site name</string>
+    <string name="site_url_hint">Site URL</string>
+    <string name="site_address_hint">Site address</string>
+    <string name="site_added">Site added</string>
+    <string name="site_updated">Site updated</string>
+    <string name="site_deleted">Site deleted</string>
+    <string name="site_removed">Site removed</string>
+    <string name="site_edit_error">Error updating site</string>
+    <string name="site_add_error">Error adding site</string>
+    <string name="site_builtin_edit_error">Built-in sites cannot be edited</string>
+    <string name="site_enter_address">Enter site address</string>
+    <string name="site_delete_confirm">Delete site \"%s\"?</string>
+    
+    <!-- Dialogs -->
+    <string name="dialog_ok">Got it</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_add">Add</string>
+    <string name="dialog_save">Save</string>
+    <string name="dialog_go">Go</string>
+    <string name="dialog_delete">Delete</string>
+    <string name="dialog_edit_site">Edit Site</string>
+    <string name="dialog_quick_site">Quick Access</string>
+    <string name="dialog_delete_site">Delete Site</string>
+    
+    <!-- Magnet Options -->
+    <string name="magnet_title">Choose action</string>
+    <string name="magnet_open">Open magnet link</string>
+    <string name="magnet_copy_hash">Copy hash</string>
+    <string name="magnet_hash_copied">Hash copied to clipboard</string>
+    
+    <!-- Torrent Items -->
+    <string name="torrent_rutracker">RuTracker</string>
+    <string name="torrent_movies">Movies</string>
+    <string name="torrent_size_sample">1.5 GB</string>
+    <string name="torrent_seeds_sample">↑ 150</string>
+    <string name="torrent_peers_sample">↓ 25</string>
+    <string name="torrent_date_sample">2024-01-15</string>
+    <string name="torrent_title_sample">Movie title</string>
+    
+    <!-- Errors -->
+    <string name="error_network">Network error: %s</string>
+    <string name="error_server">Server error: %d</string>
+    <string name="error_parsing">Data parsing error: %s</string>
+    <string name="error_request">Request error: %d</string>
+    <string name="error_parsing_response">API response parsing error: %s</string>
+    <string name="error_unexpected_format">Unexpected API response format</string>
+    <string name="error_reading_response">Response reading error: %s</string>
+    <string name="error_magnet_not_found">Magnet link not found</string>
+    <string name="error_parsing_magnet">Parsing error: %s</string>
+</resources>

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="Название сайта">
+        android:hint="@string/site_name_hint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editSiteName"
@@ -20,7 +20,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="URL сайта">
+        android:hint="@string/site_url_hint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editSiteUrl"
