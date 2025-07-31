@@ -1,0 +1,5 @@
+# The Appfile is a specification of your app and its metadata
+# Learn more: https://docs.fastlane.tools/advanced/#appfile
+
+app_identifier("vizzletf.movietorr") # The bundle identifier of your app
+android_package_name("vizzletf.movietorr") # e.g. com.krausefx.app 

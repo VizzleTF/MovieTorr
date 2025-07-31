@@ -1,0 +1,46 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+# This is the minimum version number required.
+# Update this, if you use features of a newer version
+fastlane_version "2.212.2"
+
+default_platform(:android)
+
+platform :android do
+  desc "Deploy to F-Droid"
+  lane :fdroid do
+    gradle(
+      task: "clean assembleRelease",
+      project_dir: "."
+    )
+  end
+
+  desc "Build debug APK"
+  lane :debug do
+    gradle(
+      task: "assembleDebug",
+      project_dir: "."
+    )
+  end
+
+  desc "Build release APK"
+  lane :release do
+    gradle(
+      task: "assembleRelease",
+      project_dir: "."
+    )
+  end
+end 

@@ -1,0 +1,24 @@
+MovieTorr is an Android application for searching torrents across multiple trackers. The app extracts movie titles from web pages and performs searches across RuTracker, Kinozal, RuTor, and NoNameClub.
+
+Features:
+- Multi-tracker search functionality
+- Material Design 3 interface with theme support
+- Built-in web browser for site navigation
+- Category-based filtering
+- Magnet link handling
+- Clean Architecture with MVVM pattern
+
+Technical specifications:
+- FLOSS dependencies only
+- OWASP Dependency Check integration
+- ProGuard/R8 obfuscation
+- JUnit 5 testing
+- Safe fragment lifecycle management
+
+API Integration:
+The application uses TorAPI (https://github.com/Lifailon/TorAPI) as a gateway for requests to torrent trackers. This allows:
+- Accessing data from RuTracker, Kinozal, RuTor and NoNameClub without VPN
+- Using a unified API for all trackers
+- Ensuring application stability
+
+The application is designed for educational purposes and promotes responsible use of torrent technology for legal content discovery. 

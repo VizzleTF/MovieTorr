@@ -1,0 +1,1 @@
+Initial release with multi-tracker search functionality and Material Design 3 interface. 
