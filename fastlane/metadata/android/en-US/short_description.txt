@@ -1,1 +1,1 @@
-Android torrent search application with Material Design and multi-tracker support. 
+Multi-tracker search application with web browser.
