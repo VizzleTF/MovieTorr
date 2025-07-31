@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Поддержка светлой темы для WebView -->
-        <item name="android:isLightTheme">true</item>
+        <!-- Поддержка темной темы для WebView -->
+        <item name="android:isLightTheme">false</item>
     </style>
-</resources>
+</resources> 

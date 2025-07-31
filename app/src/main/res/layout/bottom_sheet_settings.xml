@@ -12,70 +12,26 @@
         android:textAppearance="?attr/textAppearanceHeadlineSmall"
         android:layout_marginBottom="8dp" />
 
-    <RadioGroup
-        android:id="@+id/radioTheme"
+    <Spinner
+        android:id="@+id/spinnerTheme"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RadioButton
-            android:id="@+id/radioAuto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-                            android:text="@string/settings_theme_auto" />
-        <RadioButton
-            android:id="@+id/radioLight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-                            android:text="@string/settings_theme_light" />
-        <RadioButton
-            android:id="@+id/radioDark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-                            android:text="@string/settings_theme_dark" />
-    </RadioGroup>
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_background"
+        android:layout_marginBottom="16dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/settings_sort"
         android:textAppearance="?attr/textAppearanceHeadlineSmall"
-        android:layout_marginTop="24dp"
         android:layout_marginBottom="8dp" />
 
-    <RadioGroup
-        android:id="@+id/radioSort"
+    <Spinner
+        android:id="@+id/spinnerSort"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RadioButton
-            android:id="@+id/radioSortDefault"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_sort_default" />
-        <RadioButton
-            android:id="@+id/radioSortSize"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_sort_size" />
-        <RadioButton
-            android:id="@+id/radioSortDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_sort_date" />
-        <RadioButton
-            android:id="@+id/radioSortSeeds"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_sort_seeds" />
-        <RadioButton
-            android:id="@+id/radioSortTracker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_sort_tracker" />
-        <RadioButton
-            android:id="@+id/radioSortCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_sort_category" />
-    </RadioGroup>
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_background"
+        android:layout_marginBottom="16dp" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLegal"

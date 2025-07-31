@@ -7,6 +7,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.webkit.WebSettingsCompat
+import androidx.webkit.WebViewFeature
 import com.google.android.material.button.MaterialButton
 import android.view.View
 
@@ -36,12 +38,49 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
     }
 
     @Deprecated("Deprecated in Java")
+    @Suppress("DEPRECATION")
     override fun onBackPressed() {
         if (::webView.isInitialized && webView.canGoBack()) {
             webView.goBack()
         } else {
             super.onBackPressed()
         }
+    }
+    
+    override fun onPause() {
+        super.onPause()
+        // Приостанавливаем WebView при уходе из приложения
+        if (::webView.isInitialized) {
+            webView.onPause()
+        }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        // Возобновляем WebView при возвращении в приложение
+        if (::webView.isInitialized) {
+            webView.onResume()
+        }
+    }
+    
+    override fun onDestroy() {
+        // Правильная очистка WebView для предотвращения утечек памяти
+        if (::webView.isInitialized) {
+            webView.apply {
+                clearHistory()
+                clearCache(true)
+                loadUrl("about:blank")
+                onPause()
+                removeAllViews()
+                @Suppress("DEPRECATION")
+                destroyDrawingCache()
+                
+                // Удаляем из родительского контейнера
+                (parent as? android.view.ViewGroup)?.removeView(this)
+                destroy()
+            }
+        }
+        super.onDestroy()
     }
 
     private fun applyThemeMode() {
@@ -54,49 +93,23 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
         
-        // Применяем тему к WebView
-        applyWebViewTheme(themeMode)
+        // Применяем тему к WebView после изменения темы приложения
+        if (::webView.isInitialized) {
+            setupWebViewDarkTheme()
+        }
     }
     
-    private fun applyWebViewTheme(themeMode: Int) {
+    private fun applyWebViewTheme(@Suppress("UNUSED_PARAMETER") themeMode: Int) {
+        // Применяем настройки темной темы к WebView
         if (::webView.isInitialized) {
-            val isDarkTheme = when (themeMode) {
-                AppCompatDelegate.MODE_NIGHT_YES -> true
-                AppCompatDelegate.MODE_NIGHT_NO -> false
-                else -> AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-            }
-            
-            val script = """
-                (function() {
-                    'use strict';
-                    const isDark = $isDarkTheme;
-                    
-                    // Удаляем существующие стили темы
-                    const existingTheme = document.getElementById('app-theme-style');
-                    if (existingTheme) {
-                        existingTheme.remove();
-                    }
-                    
-                    // Просто устанавливаем prefers-color-scheme для темной темы
-                    // Сайт сам переключится на темную тему, если она поддерживается
-                    if (isDark) {
-                        const darkStyle = document.createElement('style');
-                        darkStyle.id = 'app-theme-style';
-                        darkStyle.textContent = `
-                            :root {
-                                color-scheme: dark;
-                            }
-                        `;
-                        document.head.appendChild(darkStyle);
-                    }
-                })();
-            """.trimIndent()
-            
-            webView.evaluateJavascript(script, null)
+            setupWebViewDarkTheme()
         }
     }
 
     private fun setupWebView() {
+        // Аппаратное ускорение для лучшей производительности
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
                 super.onPageStarted(view, url, favicon)
@@ -111,22 +124,89 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
                 webViewProgress.visibility = View.GONE
                 android.util.Log.d("MainActivity", "Progress visibility set to GONE")
                 
+                // Включаем загрузку изображений после завершения основного контента
+                view?.settings?.apply {
+                    blockNetworkImage = false
+                    loadsImagesAutomatically = true
+                }
+                
                 // Применяем тему к загруженной странице
                 val sharedPrefs = getSharedPreferences("MovieTorrPrefs", MODE_PRIVATE)
                 val themeMode = sharedPrefs.getInt(PREF_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                 applyWebViewTheme(themeMode)
             }
         }
-        webView.settings.javaScriptEnabled = true
-        webView.settings.domStorageEnabled = true
-        webView.settings.loadsImagesAutomatically = true
-        webView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
-        webView.clearCache(true)
+        
+        // Оптимизированные настройки WebView
+        webView.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            databaseEnabled = true
+            
+            // Кеширование для лучшей производительности
+            cacheMode = WebSettings.LOAD_DEFAULT
+            
+            // Отложенная загрузка изображений для ускорения
+            blockNetworkImage = true
+            loadsImagesAutomatically = false
+            
+            // Оптимизация рендеринга
+            useWideViewPort = true
+            loadWithOverviewMode = true
+            
+            // Отключаем ненужные функции
+            javaScriptCanOpenWindowsAutomatically = false
+        }
+        
+        // Настройки кеширования
         CookieManager.getInstance().setAcceptCookie(true)
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
         
+        // Настраиваем темную тему для WebView
+        setupWebViewDarkTheme()
+        
         // Добавляем JavaScript интерфейс
         webView.addJavascriptInterface(KinopoiskInterface(), "Android")
+    }
+    
+    private fun setupWebViewDarkTheme() {
+        val sharedPrefs = getSharedPreferences("MovieTorrPrefs", MODE_PRIVATE)
+        val themeMode = sharedPrefs.getInt(PREF_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        
+        // Настраиваем алгоритмическое затемнение для Android 13+
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+            val isDarkTheme = when (themeMode) {
+                AppCompatDelegate.MODE_NIGHT_YES -> true
+                AppCompatDelegate.MODE_NIGHT_NO -> false
+                else -> AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+            }
+            WebSettingsCompat.setAlgorithmicDarkeningAllowed(webView.settings, isDarkTheme)
+        }
+        
+        // Настраиваем Force Dark для Android 12 и ниже
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            @Suppress("DEPRECATION")
+            when (themeMode) {
+                AppCompatDelegate.MODE_NIGHT_YES -> {
+                    WebSettingsCompat.setForceDark(webView.settings, WebSettingsCompat.FORCE_DARK_ON)
+                }
+                AppCompatDelegate.MODE_NIGHT_NO -> {
+                    WebSettingsCompat.setForceDark(webView.settings, WebSettingsCompat.FORCE_DARK_OFF)
+                }
+                else -> {
+                    WebSettingsCompat.setForceDark(webView.settings, WebSettingsCompat.FORCE_DARK_AUTO)
+                }
+            }
+        }
+        
+        // Настраиваем стратегию темной темы
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK_STRATEGY)) {
+            @Suppress("DEPRECATION")
+            WebSettingsCompat.setForceDarkStrategy(
+                webView.settings,
+                WebSettingsCompat.DARK_STRATEGY_PREFER_WEB_THEME_OVER_USER_AGENT_DARKENING
+            )
+        }
     }
 
     private fun setupButtons() {
@@ -172,31 +252,59 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
         val script = """
             (function() {
                 'use strict';
+                
+                function extractTitleFromJsonLd() {
+                    const currentUrl = window.location.href;
+                    if (!currentUrl.includes('kinopoisk.ru') && !currentUrl.includes('hd.kinopoisk.ru')) {
+                        return null;
+                    }
+                    
+                    const jsonLdScripts = document.querySelectorAll('script[type="application/ld+json"]');
+                    for (const script of jsonLdScripts) {
+                        try {
+                            const data = JSON.parse(script.textContent);
+                            if (data && data.name) {
+                                return data.name.trim();
+                            }
+                        } catch (e) {
+                            // Игнорируем ошибки парсинга JSON
+                        }
+                    }
+                    return null;
+                }
+                
                 // Функция для извлечения названия
                 function extractMovieData() {
                     let title = '';
                     let year = '';
-                    // Сначала пробуем извлечь из title страницы
-                    const pageTitle = document.title.trim();
-                    // Паттерны для извлечения названия и года из title
-                    const titlePatterns = [
-                        /^(.+?)\s*\((\d{4})\)\s*[—–-]\s*[^-]+$/,
-                        /^(.+?)\s*\((\d{4})\)\s*[-|]/,
-                        /^(.+?)\s*\((\d{4})\)\s*$/,
-                        /^(.+?)\s*[—–-]\s*[^-]+$/,
-                        /^(.+?)\s*[-|]/,
-                        /^(.+?)\s*$/
-                    ];
-                    for (const pattern of titlePatterns) {
-                        const match = pageTitle.match(pattern);
-                        if (match) {
-                            title = match[1].trim();
-                            if (match[2]) {
-                                year = match[2];
+                    
+                    // Сначала пробуем извлечь из JSON-LD данных (только для Кинопоиск)
+                    title = extractTitleFromJsonLd();
+                    
+                    // Если не удалось извлечь из JSON-LD, пробуем из title страницы
+                    if (!title) {
+                        const pageTitle = document.title.trim();
+                        // Паттерны для извлечения названия и года из title
+                        const titlePatterns = [
+                            /^(.+?)\s*\((\d{4})\)\s*[—–-]\s*[^-]+$/,
+                            /^(.+?)\s*\((\d{4})\)\s*[-|]/,
+                            /^(.+?)\s*\((\d{4})\)\s*$/,
+                            /^(.+?)\s*[—–-]\s*[^-]+$/,
+                            /^(.+?)\s*[-|]/,
+                            /^(.+?)\s*$/
+                        ];
+                        for (const pattern of titlePatterns) {
+                            const match = pageTitle.match(pattern);
+                            if (match) {
+                                title = match[1].trim();
+                                if (match[2]) {
+                                    year = match[2];
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
+                    
                     // Если не удалось извлечь из title, пробуем DOM элементы
                     if (!title) {
                         const titleSelectors = [
@@ -234,10 +342,29 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
                         }
                     }
                     
-                    // Простая обработка названия - только замена пробелов на +
+                    // Очищаем название от лишних символов и слов
                     if (title) {
+                        // Обрезаем до первой открывающей скобки
+                        const openBracketIndex = title.indexOf('(');
+                        if (openBracketIndex > 0) {
+                            title = title.substring(0, openBracketIndex).trim();
+                        }
+                        
+                        // Убираем "смотреть", "онлайн", "в хорошем качестве" и подобные слова
+                        title = title.replace(/\s*(смотреть|онлайн|в\s+хорошем\s+качестве|все\s+серии?|сериал|фильм|hd|fullhd|1080p|720p|480p)\s*/gi, ' ');
+                        // Убираем лишние символы (но не скобки, так как мы уже обрезали)
+                        title = title.replace(/[+\[\]{}|\\\/]/g, ' ');
                         // Убираем множественные пробелы
                         title = title.replace(/\s+/g, ' ').trim();
+                        // Ограничиваем длину названия (максимум 50 символов)
+                        if (title.length > 50) {
+                            title = title.substring(0, 50).trim();
+                            // Убираем последнее неполное слово
+                            const lastSpace = title.lastIndexOf(' ');
+                            if (lastSpace > 0) {
+                                title = title.substring(0, lastSpace);
+                            }
+                        }
                     }
                     
                     // Заменяем пробелы на + для URL
@@ -258,7 +385,7 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
     // JavaScript Interface для взаимодействия с WebView
     inner class KinopoiskInterface {
         @android.webkit.JavascriptInterface
-                        fun onMovieDataExtracted(title: String, unusedYear: String, success: Boolean) {
+                        fun onMovieDataExtracted(title: String, @Suppress("UNUSED_PARAMETER") unusedYear: String, success: Boolean) {
             runOnUiThread {
                 if (success) {
                     // Если удалось извлечь данные, открываем диалог с ними
@@ -275,6 +402,8 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
     
     override fun onThemeChanged(themeMode: Int) {
         // Применяем тему к WebView при изменении в настройках
-        applyWebViewTheme(themeMode)
+        if (::webView.isInitialized) {
+            setupWebViewDarkTheme()
+        }
     }
 }

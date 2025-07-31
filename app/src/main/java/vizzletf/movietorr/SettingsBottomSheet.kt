@@ -8,9 +8,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.radiobutton.MaterialRadioButton
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 
 class SettingsBottomSheet : BottomSheetDialogFragment() {
     
@@ -34,35 +33,41 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.bottom_sheet_settings, container, false)
         
-        val themeRadioGroup = view.findViewById<RadioGroup>(R.id.radioTheme)
-        val sortRadioGroup = view.findViewById<RadioGroup>(R.id.radioSort)
+        val themeSpinner = view.findViewById<Spinner>(R.id.spinnerTheme)
+        val sortSpinner = view.findViewById<Spinner>(R.id.spinnerSort)
         val legalButton = view.findViewById<MaterialButton>(R.id.btnLegal)
         
         // Устанавливаем текущую тему
-        setupThemeSelection(themeRadioGroup)
+        setupThemeSelection(themeSpinner)
         
         // Устанавливаем текущую сортировку
-        setupSortSelection(sortRadioGroup)
+        setupSortSelection(sortSpinner)
         
         // Обработка изменения темы
-        themeRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.radioAuto -> setThemeMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                R.id.radioLight -> setThemeMode(AppCompatDelegate.MODE_NIGHT_NO)
-                R.id.radioDark -> setThemeMode(AppCompatDelegate.MODE_NIGHT_YES)
+        themeSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> setThemeMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    1 -> setThemeMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    2 -> setThemeMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }
             }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
         }
         
         // Обработка изменения сортировки
-        sortRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.radioSortDefault -> setSortMode(SORT_DEFAULT)
-                R.id.radioSortSize -> setSortMode(SORT_SIZE)
-                R.id.radioSortDate -> setSortMode(SORT_DATE)
-                R.id.radioSortSeeds -> setSortMode(SORT_SEEDS)
-                R.id.radioSortTracker -> setSortMode(SORT_TRACKER)
-                R.id.radioSortCategory -> setSortMode(SORT_CATEGORY)
+        sortSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> setSortMode(SORT_DEFAULT)
+                    1 -> setSortMode(SORT_SIZE)
+                    2 -> setSortMode(SORT_DATE)
+                    3 -> setSortMode(SORT_SEEDS)
+                    4 -> setSortMode(SORT_TRACKER)
+                    5 -> setSortMode(SORT_CATEGORY)
+                }
             }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
         }
         
         // Обработка кнопки правовой информации
@@ -83,17 +88,27 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         }
     }
     
-    private fun setupThemeSelection(radioGroup: RadioGroup) {
+    private fun setupThemeSelection(spinner: Spinner) {
+        val themeOptions = arrayOf(
+            getString(R.string.settings_theme_auto),
+            getString(R.string.settings_theme_light),
+            getString(R.string.settings_theme_dark)
+        )
+        
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, themeOptions)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        
         val sharedPrefs = requireContext().getSharedPreferences("MovieTorrPrefs", 0)
         val themeMode = sharedPrefs.getInt(PREF_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         
-        val radioButtonId = when (themeMode) {
-            AppCompatDelegate.MODE_NIGHT_NO -> R.id.radioLight
-            AppCompatDelegate.MODE_NIGHT_YES -> R.id.radioDark
-            else -> R.id.radioAuto
+        val position = when (themeMode) {
+            AppCompatDelegate.MODE_NIGHT_NO -> 1
+            AppCompatDelegate.MODE_NIGHT_YES -> 2
+            else -> 0
         }
         
-        radioGroup.check(radioButtonId)
+        spinner.setSelection(position)
     }
     
     private fun setThemeMode(themeMode: Int) {
@@ -106,20 +121,33 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         (activity as? ThemeChangeListener)?.onThemeChanged(themeMode)
     }
     
-    private fun setupSortSelection(radioGroup: RadioGroup) {
+    private fun setupSortSelection(spinner: Spinner) {
+        val sortOptions = arrayOf(
+            getString(R.string.settings_sort_default),
+            getString(R.string.settings_sort_size),
+            getString(R.string.settings_sort_date),
+            getString(R.string.settings_sort_seeds),
+            getString(R.string.settings_sort_tracker),
+            getString(R.string.settings_sort_category)
+        )
+        
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, sortOptions)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        
         val sharedPrefs = requireContext().getSharedPreferences("MovieTorrPrefs", 0)
         val sortMode = sharedPrefs.getInt(PREF_SORT_MODE, SORT_DEFAULT)
         
-        val radioButtonId = when (sortMode) {
-            SORT_SIZE -> R.id.radioSortSize
-            SORT_DATE -> R.id.radioSortDate
-            SORT_SEEDS -> R.id.radioSortSeeds
-            SORT_TRACKER -> R.id.radioSortTracker
-            SORT_CATEGORY -> R.id.radioSortCategory
-            else -> R.id.radioSortDefault
+        val position = when (sortMode) {
+            SORT_SIZE -> 1
+            SORT_DATE -> 2
+            SORT_SEEDS -> 3
+            SORT_TRACKER -> 4
+            SORT_CATEGORY -> 5
+            else -> 0
         }
         
-        radioGroup.check(radioButtonId)
+        spinner.setSelection(position)
     }
     
     private fun setSortMode(sortMode: Int) {
