@@ -37,6 +37,19 @@ jobs:
         mkdir -p app/keystore
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/keystore/release.keystore
 
+    - name: Update version from tag
+      run: |
+        # Получаем версию из тега
+        VERSION=${GITHUB_REF#refs/tags/}
+        echo "Version from tag: $VERSION"
+        
+        # Обновляем версию в build.gradle
+        sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" app/build.gradle
+        
+        # Получаем номер версии для versionCode
+        VERSION_NUMBER=$(echo $VERSION | sed 's/v//' | sed 's/\.//g')
+        sed -i "s/versionCode .*/versionCode $VERSION_NUMBER/" app/build.gradle
+
     - name: Build release APK
       run: ./gradlew assembleRelease
       env:
@@ -64,13 +77,6 @@ jobs:
         VERSION=${GITHUB_REF#refs/tags/}
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         echo "Version from tag: $VERSION"
-        
-        # Обновляем версию в build.gradle
-        sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" app/build.gradle
-        
-        # Получаем номер версии для versionCode
-        VERSION_NUMBER=$(echo $VERSION | sed 's/v//' | sed 's/\.//g')
-        sed -i "s/versionCode .*/versionCode $VERSION_NUMBER/" app/build.gradle
         
         # Получаем историю коммитов с последнего тега
         LATEST_TAG=$(git describe --tags --abbrev=0)
