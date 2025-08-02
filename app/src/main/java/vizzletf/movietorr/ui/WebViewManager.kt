@@ -22,6 +22,7 @@ class WebViewManager(
     
     private var webView: WebView? = null
     private var currentFilters: SearchFilters? = null
+    private var currentUrl: String? = null
     
     fun setupWebView(webView: WebView) {
         this.webView = webView
@@ -29,6 +30,9 @@ class WebViewManager(
         setupWebViewClient()
         setupWebViewDarkTheme()
         setupJavaScriptInterface()
+        
+        // Восстанавливаем последний URL при инициализации
+        restoreLastUrl()
     }
     
     private fun setupWebViewSettings() {
@@ -67,11 +71,20 @@ class WebViewManager(
         webView?.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
                 super.onPageStarted(view, url, favicon)
+                // Сохраняем URL при начале загрузки страницы
+                if (!url.isNullOrEmpty() && url != "about:blank") {
+                    currentUrl = url
+                }
                 onPageStarted()
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
+                
+                // Сохраняем URL при завершении загрузки страницы
+                if (!url.isNullOrEmpty() && url != "about:blank") {
+                    currentUrl = url
+                }
                 
                 // Включаем загрузку изображений после завершения основного контента
                 view?.settings?.apply {
@@ -132,6 +145,12 @@ class WebViewManager(
     }
     
     fun loadUrl(url: String) {
+        currentUrl = url
+        // Сохраняем URL в SharedPreferences для восстановления
+        context.getSharedPreferences("WebViewState", Context.MODE_PRIVATE)
+            .edit()
+            .putString("last_url", url)
+            .apply()
         webView?.loadUrl(url)
     }
     
@@ -274,7 +293,36 @@ class WebViewManager(
     }
     
     fun updateTheme() {
+        // Сохраняем текущий URL перед обновлением темы
+        val savedUrl = webView?.url ?: currentUrl
+        
+        // Обновляем настройки темы
         setupWebViewDarkTheme()
+        
+        // Восстанавливаем URL если страница пустая или была перезагружена
+        if (savedUrl != null && (webView?.url.isNullOrEmpty() || webView?.url == "about:blank")) {
+            webView?.loadUrl(savedUrl)
+            currentUrl = savedUrl
+        }
+    }
+    
+    fun restoreLastUrl() {
+        // Сначала пробуем восстановить из памяти
+        currentUrl?.let { url ->
+            if (!url.isEmpty() && url != "about:blank") {
+                webView?.loadUrl(url)
+                return
+            }
+        }
+        
+        // Если в памяти нет, пробуем восстановить из SharedPreferences
+        val savedUrl = context.getSharedPreferences("WebViewState", Context.MODE_PRIVATE)
+            .getString("last_url", null)
+        
+        if (!savedUrl.isNullOrEmpty() && savedUrl != "about:blank") {
+            webView?.loadUrl(savedUrl)
+            currentUrl = savedUrl
+        }
     }
     
     fun onPause() {

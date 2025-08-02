@@ -110,8 +110,19 @@
     </style>
 
     <style name="Theme.MovieTorr.SettingsDialog" parent="Theme.Material3.DayNight.Dialog">
-        <item name="android:windowBackground">@drawable/settings_background</item>
+        <item name="android:windowBackground">@drawable/settings_background_ios</item>
         <item name="android:windowMinWidthMajor">85%</item>
         <item name="android:windowMinWidthMinor">85%</item>
     </style>
+
+    <!-- Стили для dropdown меню в стиле iOS 18 -->
+    <style name="Widget.MovieTorr.DropdownMenu" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxStrokeColor">?attr/colorOutline</item>
+        <item name="boxStrokeWidth">0.5dp</item>
+        <item name="hintTextColor">?attr/colorOnSurfaceVariant</item>
+        <item name="endIconTint">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textColorHint">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+
 </resources>

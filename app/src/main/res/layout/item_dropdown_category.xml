@@ -9,5 +9,6 @@
     android:textAppearance="?attr/textAppearanceBodyMedium"
     android:textColor="?attr/colorOnSurface"
     android:background="?attr/selectableItemBackground"
+    android:stateListAnimator="@null"
     android:clickable="true"
     android:focusable="true" /> 

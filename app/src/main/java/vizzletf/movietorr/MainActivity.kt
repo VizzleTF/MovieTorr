@@ -160,7 +160,17 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
     
     override fun onThemeChanged(themeMode: Int) {
         viewModel.updateTheme(themeMode)
+        
+        // Проверяем, что WebView не потерял состояние после смены темы
         webViewManager.updateTheme()
+        
+        // Дополнительная проверка через небольшую задержку
+        webView.postDelayed({
+            if (webView.url.isNullOrEmpty() || webView.url == "about:blank") {
+                // Если WebView пустой, восстанавливаем последний URL
+                webViewManager.restoreLastUrl()
+            }
+        }, 500)
     }
     
     override fun onFiltersChanged() {

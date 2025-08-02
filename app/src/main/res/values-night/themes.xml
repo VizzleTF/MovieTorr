@@ -84,4 +84,14 @@
     <style name="TextAppearance.MovieTorr.LabelSmall.Dark" parent="TextAppearance.MovieTorr.LabelSmall">
         <item name="android:textColor">@color/ios_dark_text_tertiary</item>
     </style>
+
+    <!-- Стили для dropdown меню в темной теме iOS 18 -->
+    <style name="Widget.MovieTorr.DropdownMenu.Dark" parent="Widget.MovieTorr.DropdownMenu">
+        <item name="boxStrokeColor">@color/ios_dark_outline</item>
+        <item name="hintTextColor">@color/ios_dark_text_secondary</item>
+        <item name="endIconTint">@color/ios_dark_text_secondary</item>
+        <item name="android:textColorHint">@color/ios_dark_text_secondary</item>
+    </style>
+
+
 </resources> 

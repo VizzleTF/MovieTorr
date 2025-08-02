@@ -13,12 +13,9 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import android.widget.TextView
-import android.widget.Spinner
-import android.widget.LinearLayout
 import android.widget.AutoCompleteTextView
 import vizzletf.movietorr.data.PreferencesRepository
 import android.graphics.Canvas
@@ -119,6 +116,22 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
             behavior.skipCollapsed = false
             behavior.halfExpandedRatio = 0.5f
             behavior.expandedOffset = 0
+            
+            // Настраиваем правильное поведение скроллинга
+            behavior.addBottomSheetCallback(object : com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    // Обработка изменений состояния
+                }
+                
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    // Обработка скольжения
+                }
+            })
+            
+            // Настраиваем поведение скроллинга для RecyclerView
+            behavior.isDraggable = true
+            behavior.setHideable(true)
+            behavior.setSkipCollapsed(false)
         }
     }
 
@@ -126,6 +139,10 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         torrentAdapter = TorrentAdapter()
         recyclerView.adapter = torrentAdapter
+        
+        // Настраиваем правильное поведение скроллинга
+        recyclerView.isNestedScrollingEnabled = true
+        recyclerView.overScrollMode = View.OVER_SCROLL_NEVER
         
         // Добавляем разделители в стиле настроек
         recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
@@ -138,7 +155,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
             }
             
             override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-                val divider = ContextCompat.getDrawable(parent.context, R.drawable.settings_divider)
+                val divider = ContextCompat.getDrawable(parent.context, R.drawable.settings_divider_ios)
                 val leftMargin = parent.context.resources.getDimensionPixelSize(R.dimen.divider_margin_start)
                 val rightMargin = parent.context.resources.getDimensionPixelSize(R.dimen.divider_margin_end)
                 
@@ -165,7 +182,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setupFilter() {
-        // Создаем адаптер для AutoCompleteTextView
+        // Создаем адаптер для AutoCompleteTextView с новым стилем iOS 18
         val adapter = android.widget.ArrayAdapter<String>(
             requireContext(),
             R.layout.item_dropdown_category,

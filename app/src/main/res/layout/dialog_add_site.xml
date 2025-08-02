@@ -23,7 +23,10 @@
         app:boxCornerRadiusTopStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusBottomEnd="16dp">
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxStrokeColor="?attr/colorOutline"
+        app:boxStrokeWidth="0.5dp"
+        app:hintTextColor="?attr/colorOnSurfaceVariant">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editSiteName"
@@ -43,7 +46,10 @@
         app:boxCornerRadiusTopStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusBottomEnd="16dp">
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxStrokeColor="?attr/colorOutline"
+        app:boxStrokeWidth="0.5dp"
+        app:hintTextColor="?attr/colorOnSurfaceVariant">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editSiteUrl"

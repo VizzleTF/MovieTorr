@@ -22,7 +22,8 @@
             app:boxCornerRadiusBottomStart="24dp"
             app:boxCornerRadiusBottomEnd="24dp"
             app:boxStrokeColor="?attr/colorOutline"
-            app:boxStrokeWidth="1dp">
+            app:boxStrokeWidth="0.5dp"
+            app:hintTextColor="?attr/colorOnSurfaceVariant">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editSearch"
@@ -56,16 +57,13 @@
             android:hint=""
             app:startIconDrawable="@drawable/ic_filter"
             app:startIconTint="?attr/colorOnSurfaceVariant"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/Widget.MovieTorr.DropdownMenu"
             app:boxCornerRadiusTopStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
-            app:boxStrokeColor="?attr/colorOutline"
-            app:boxStrokeWidth="0.5dp"
             app:endIconMode="custom"
-            app:endIconDrawable="@drawable/ic_arrow_drop_down"
-            app:endIconTint="?attr/colorOnSurfaceVariant">
+            app:endIconDrawable="@drawable/ic_arrow_drop_down">
 
             <AutoCompleteTextView
                 android:id="@+id/filterAutoComplete"
@@ -99,6 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:nestedScrollingEnabled="false" />
+            android:nestedScrollingEnabled="true"
+            android:overScrollMode="never" />
 
 </LinearLayout> 
