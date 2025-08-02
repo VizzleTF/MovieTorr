@@ -13,7 +13,7 @@ import vizzletf.movietorr.ui.MainViewModel
 import vizzletf.movietorr.ui.MainViewModelFactory
 import vizzletf.movietorr.ui.WebViewManager
 
-class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListener {
+class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListener, SettingsBottomSheet.FiltersChangeListener {
     private lateinit var webView: WebView
     private lateinit var webViewProgress: com.google.android.material.progressindicator.LinearProgressIndicator
     
@@ -69,6 +69,12 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
                 val searchSheet = SearchBottomSheet.newInstance("")
                 searchSheet.show(supportFragmentManager, "search")
             }
+        }
+        
+        // Наблюдаем за изменениями фильтров
+        viewModel.searchFilters.observe(this) { filters ->
+            // Обновляем фильтры в WebViewManager
+            webViewManager.updateSearchFilters(filters)
         }
     }
     
@@ -131,8 +137,6 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
         webViewManager.updateTheme()
     }
 
-
-
     private fun setupButtons() {
         findViewById<MaterialButton>(R.id.btnSite).setOnClickListener {
             SiteBottomSheet().show(supportFragmentManager, "site")
@@ -141,7 +145,8 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
             webViewManager.extractMovieData()
         }
         findViewById<MaterialButton>(R.id.btnSettings).setOnClickListener {
-            SettingsBottomSheet().show(supportFragmentManager, "settings")
+            val settingsSheet = SettingsBottomSheet()
+            settingsSheet.show(supportFragmentManager, "settings")
         }
     }
 
@@ -152,11 +157,13 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
     fun saveLastSource(source: String) {
         viewModel.saveLastSource(source)
     }
-
-
     
     override fun onThemeChanged(themeMode: Int) {
         viewModel.updateTheme(themeMode)
         webViewManager.updateTheme()
+    }
+    
+    override fun onFiltersChanged() {
+        viewModel.loadSearchFilters()
     }
 }

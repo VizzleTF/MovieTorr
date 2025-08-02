@@ -1,6 +1,87 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Темная тема в стиле iOS -->
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Поддержка темной темы для WebView -->
         <item name="android:isLightTheme">false</item>
+        
+        <!-- Цвета в стиле iOS 18/26 для темной темы -->
+        <item name="colorPrimary">@color/ios_dark_text_primary</item>
+        <item name="colorPrimaryVariant">@color/ios_dark_text_primary</item>
+        <item name="colorOnPrimary">@color/ios_dark_background</item>
+        <item name="colorSecondary">@color/ios_dark_text_primary</item>
+        <item name="colorSecondaryVariant">@color/ios_dark_text_primary</item>
+        <item name="colorOnSecondary">@color/ios_dark_background</item>
+        <item name="colorSurface">@color/ios_dark_surface</item>
+        <item name="colorSurfaceVariant">@color/ios_dark_surface_variant</item>
+        <item name="colorOnSurface">@color/ios_dark_text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/ios_dark_text_secondary</item>
+
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/ios_dark_text_primary</item>
+        <item name="colorOutline">@color/ios_dark_outline</item>
+        <item name="colorOutlineVariant">@color/ios_dark_outline_variant</item>
+        
+        <!-- Типографика в стиле iOS для темной темы -->
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.MovieTorr.HeadlineLarge.Dark</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.MovieTorr.HeadlineMedium.Dark</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.MovieTorr.HeadlineSmall.Dark</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.MovieTorr.TitleLarge.Dark</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.MovieTorr.TitleMedium.Dark</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.MovieTorr.TitleSmall.Dark</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.MovieTorr.BodyLarge.Dark</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.MovieTorr.BodyMedium.Dark</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.MovieTorr.BodySmall.Dark</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.MovieTorr.LabelLarge.Dark</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.MovieTorr.LabelMedium.Dark</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.MovieTorr.LabelSmall.Dark</item>
+    </style>
+
+    <!-- Типографика для темной темы iOS 18/26 -->
+    <style name="TextAppearance.MovieTorr.HeadlineLarge.Dark" parent="TextAppearance.MovieTorr.HeadlineLarge">
+        <item name="android:textColor">@color/ios_dark_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.MovieTorr.HeadlineMedium.Dark" parent="TextAppearance.MovieTorr.HeadlineMedium">
+        <item name="android:textColor">@color/ios_dark_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.MovieTorr.HeadlineSmall.Dark" parent="TextAppearance.MovieTorr.HeadlineSmall">
+        <item name="android:textColor">@color/ios_dark_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.MovieTorr.TitleLarge.Dark" parent="TextAppearance.MovieTorr.TitleLarge">
+        <item name="android:textColor">@color/ios_dark_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.MovieTorr.TitleMedium.Dark" parent="TextAppearance.MovieTorr.TitleMedium">
+        <item name="android:textColor">@color/ios_dark_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.MovieTorr.TitleSmall.Dark" parent="TextAppearance.MovieTorr.TitleSmall">
+        <item name="android:textColor">@color/ios_dark_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.MovieTorr.BodyLarge.Dark" parent="TextAppearance.MovieTorr.BodyLarge">
+        <item name="android:textColor">@color/ios_dark_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.MovieTorr.BodyMedium.Dark" parent="TextAppearance.MovieTorr.BodyMedium">
+        <item name="android:textColor">@color/ios_dark_text_secondary</item>
+    </style>
+
+    <style name="TextAppearance.MovieTorr.BodySmall.Dark" parent="TextAppearance.MovieTorr.BodySmall">
+        <item name="android:textColor">@color/ios_dark_text_tertiary</item>
+    </style>
+
+    <style name="TextAppearance.MovieTorr.LabelLarge.Dark" parent="TextAppearance.MovieTorr.LabelLarge">
+        <item name="android:textColor">@color/ios_dark_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.MovieTorr.LabelMedium.Dark" parent="TextAppearance.MovieTorr.LabelMedium">
+        <item name="android:textColor">@color/ios_dark_text_secondary</item>
+    </style>
+
+    <style name="TextAppearance.MovieTorr.LabelSmall.Dark" parent="TextAppearance.MovieTorr.LabelSmall">
+        <item name="android:textColor">@color/ios_dark_text_tertiary</item>
     </style>
 </resources> 

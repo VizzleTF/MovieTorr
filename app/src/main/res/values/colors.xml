@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Основные цвета в стиле iOS -->
+    <color name="primary">#000000</color>
+    <color name="primary_dark">#000000</color>
+    <color name="primary_variant">#000000</color>
+    <color name="on_primary">#FFFFFF</color>
+    
+    <!-- Вторичные цвета -->
+    <color name="secondary">#000000</color>
+    <color name="secondary_variant">#000000</color>
+    <color name="on_secondary">#FFFFFF</color>
+    
+    <!-- Поверхности -->
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F5F5F5</color>
+    <color name="on_surface">#000000</color>
+    <color name="on_surface_variant">#666666</color>
+    
+    <!-- Фон -->
+    <color name="background">#FFFFFF</color>
+    <color name="on_background">#000000</color>
+    
+    <!-- Ошибки -->
+    <color name="error">#FF3B30</color>
+    <color name="on_error">#FFFFFF</color>
+    
+    <!-- Контуры -->
+    <color name="outline">#E0E0E0</color>
+    <color name="outline_variant">#F0F0F0</color>
+    
+    <!-- Дополнительные цвета -->
+    <color name="ripple_light">#1A000000</color>
+    <color name="ripple_dark">#1AFFFFFF</color>
+    
+    <!-- Цвета для состояний -->
+    <color name="success">#34C759</color>
+    <color name="warning">#FF9500</color>
+    <color name="info">#007AFF</color>
+    
+    <!-- Нейтральные цвета -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Оттенки серого -->
+    <color name="gray_50">#FAFAFA</color>
+    <color name="gray_100">#F5F5F5</color>
+    <color name="gray_200">#EEEEEE</color>
+    <color name="gray_300">#E0E0E0</color>
+    <color name="gray_400">#BDBDBD</color>
+    <color name="gray_500">#9E9E9E</color>
+    <color name="gray_600">#757575</color>
+    <color name="gray_700">#616161</color>
+    <color name="gray_800">#424242</color>
+    <color name="gray_900">#212121</color>
+    
+    <!-- iOS 18/26 Dark Theme Colors -->
+    <color name="ios_dark_background">#000000</color>
+    <color name="ios_dark_surface">#1C1C1E</color>
+    <color name="ios_dark_surface_variant">#2C2C2E</color>
+    <color name="ios_dark_surface_secondary">#3A3A3C</color>
+    <color name="ios_dark_on_surface">#FFFFFF</color>
+    <color name="ios_dark_on_surface_secondary">#EBEBF5</color>
+    <color name="ios_dark_on_surface_tertiary">#EBEBF599</color>
+    <color name="ios_dark_outline">#38383A</color>
+    <color name="ios_dark_outline_variant">#48484A</color>
+    <color name="ios_dark_separator">#38383A</color>
+    <color name="ios_dark_text_primary">#FFFFFF</color>
+    <color name="ios_dark_text_secondary">#EBEBF5</color>
+    <color name="ios_dark_text_tertiary">#EBEBF599</color>
+    <color name="ios_dark_text_quaternary">#EBEBF54D</color>
+</resources> 

@@ -9,7 +9,7 @@ class TorApiService {
     
     private val client = OkHttpClient()
     private val gson = Gson()
-    private val baseUrl = "https://torapi.vercel.app"
+    private val baseUrl = "https://torapi-vizzletf.vercel.app"
     
     // Универсальная модель для всех трекеров
     data class TorrentItem(

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import vizzletf.movietorr.data.PreferencesRepository
+import vizzletf.movietorr.SearchFilters
 
 class WebViewManager(
     private val context: Context,
@@ -20,6 +21,7 @@ class WebViewManager(
 ) {
     
     private var webView: WebView? = null
+    private var currentFilters: SearchFilters? = null
     
     fun setupWebView(webView: WebView) {
         this.webView = webView
@@ -131,6 +133,10 @@ class WebViewManager(
     
     fun loadUrl(url: String) {
         webView?.loadUrl(url)
+    }
+    
+    fun updateSearchFilters(filters: SearchFilters) {
+        currentFilters = filters
     }
     
     fun extractMovieData() {

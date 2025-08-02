@@ -45,6 +45,11 @@ class SiteBottomSheet : BottomSheetDialogFragment() {
         bottomSheet?.let {
             val behavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(it)
             behavior.state = com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+            behavior.isDraggable = true
+            behavior.isHideable = true
+            behavior.skipCollapsed = false
+            behavior.halfExpandedRatio = 0.5f
+            behavior.expandedOffset = 0
         }
     }
     

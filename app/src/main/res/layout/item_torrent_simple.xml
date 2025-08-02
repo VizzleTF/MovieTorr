@@ -1,25 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:orientation="vertical"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/nameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:text="Название фильма" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:flexDirection="row"
-            app:flexWrap="wrap"
-            app:alignItems="center"
-            app:justifyContent="flex_start">
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/sourceText"
@@ -29,8 +40,7 @@
                 android:textColor="?attr/colorPrimary"
                 android:background="?attr/selectableItemBackground"
                 android:padding="4dp"
-                android:text="RuTracker"
-                app:layout_flexShrink="0" />
+                android:text="RuTracker" />
 
             <TextView
                 android:id="@+id/categoryText"
@@ -43,18 +53,23 @@
                 android:background="?attr/selectableItemBackground"
                 android:padding="4dp"
                 android:clickable="true"
-                android:focusable="true"
-                app:layout_flexShrink="0" />
+                android:focusable="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
 
             <TextView
                 android:id="@+id/sizeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorOnSurfaceVariant"
-                android:text="1.5 GB"
-                app:layout_flexShrink="0" />
+                android:text="1.5 GB" />
 
             <TextView
                 android:id="@+id/seedsText"
@@ -63,8 +78,7 @@
                 android:layout_marginStart="8dp"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorPrimary"
-                android:text="↑ 150"
-                app:layout_flexShrink="0" />
+                android:text="↑ 150" />
 
             <TextView
                 android:id="@+id/peersText"
@@ -73,8 +87,7 @@
                 android:layout_marginStart="8dp"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorError"
-                android:text="↓ 25"
-                app:layout_flexShrink="0" />
+                android:text="↓ 25" />
 
             <TextView
                 android:id="@+id/dateText"
@@ -83,19 +96,10 @@
                 android:layout_marginStart="8dp"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorOnSurfaceVariant"
-                android:text="2024-01-15"
-                app:layout_flexShrink="0" />
-        </com.google.android.flexbox.FlexboxLayout>
+                android:text="2024-01-15" />
 
-        <TextView
-            android:id="@+id/nameText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurface"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:text="Название фильма" />
+        </LinearLayout>
+
     </LinearLayout>
-</com.google.android.material.card.MaterialCardView> 
+
+</LinearLayout> 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="chipThemeAuto" type="id"/>
+    <item name="chipThemeLight" type="id"/>
+    <item name="chipThemeDark" type="id"/>
+    <item name="themeContainer" type="id"/>
+    <item name="sortContainer" type="id"/>
+    <item name="searchModeContainer" type="id"/>
+    <item name="minSeedsContainer" type="id"/>
+    <item name="trackersContainer" type="id"/>
+    <item name="sizeFilterContainer" type="id"/>
+</resources> 

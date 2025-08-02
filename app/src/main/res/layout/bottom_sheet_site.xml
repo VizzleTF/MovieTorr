@@ -1,26 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fillViewport="true"
+    android:nestedScrollingEnabled="true">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerSites"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginBottom="16dp" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnQuickSite"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/site_quick_access"
-        android:layout_marginBottom="8dp" />
-        
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAddSite"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/site_add" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sites"
+            android:textAppearance="?attr/textAppearanceHeadlineSmall"
+            android:textColor="?attr/colorOnSurface"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Sites Container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/settings_background_ios"
+            android:layout_marginBottom="16dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerSites"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnQuickSite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/site_quick_access"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_marginBottom="8dp" />
+            
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddSite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/site_add"
+            style="@style/Widget.Material3.Button" />
+    </LinearLayout>
+
+</ScrollView>
