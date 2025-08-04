@@ -352,8 +352,9 @@ class WebViewManager(
     
     private inner class WebViewInterface {
         @android.webkit.JavascriptInterface
-        fun onMovieDataExtracted(title: String, @Suppress("UNUSED_PARAMETER") unusedYear: String, success: Boolean) {
-            onMovieDataExtracted(title, success)
+        fun onMovieDataExtracted(title: String, year: String, success: Boolean) {
+            val titleWithYear = if (year.isNotEmpty()) "$title ($year)" else title
+            onMovieDataExtracted(titleWithYear, success)
         }
     }
-} 
+}

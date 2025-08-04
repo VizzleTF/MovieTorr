@@ -419,7 +419,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
                 size.endsWith("kb") -> 1024L
                 else -> 1L
             }
-            val number = size.replace(Regex("[^0-9.]"), "").toDouble()
+            val number = size.filter { it.isDigit() || it == '.' }.toDouble()
             (number * multiplier).toLong()
         } catch (e: Exception) {
             0L
@@ -548,4 +548,4 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
             }
         }
     }
-} 
+}

@@ -1,10 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Темная тема в стиле iOS -->
+    <!-- Темная тема в стиле iOS 18 -->
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Поддержка темной темы для WebView -->
         <item name="android:isLightTheme">false</item>
         
-        <!-- Цвета в стиле iOS 18/26 для темной темы -->
+        <!-- Обновленные цвета в стиле iOS 18 для темной темы -->
         <item name="colorPrimary">@color/ios_dark_text_primary</item>
         <item name="colorPrimaryVariant">@color/ios_dark_text_primary</item>
         <item name="colorOnPrimary">@color/ios_dark_background</item>
@@ -21,6 +21,19 @@
         <item name="colorOutline">@color/ios_dark_outline</item>
         <item name="colorOutlineVariant">@color/ios_dark_outline_variant</item>
         
+        <!-- Дополнительные настройки для iOS 18 темной темы -->
+        <item name="android:windowBackground">@color/ios_dark_background</item>
+        
+        <!-- Стили для карточек в iOS 18 -->
+        <item name="materialCardViewStyle">@style/Widget.MovieTorr.CardView.Dark</item>
+        
+        <!-- Стили для кнопок в iOS 18 -->
+        <item name="materialButtonStyle">@style/Widget.MovieTorr.Button.Dark</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.MovieTorr.Button.OutlinedButton.Dark</item>
+        
+        <!-- Стили для прогресс-индикаторов в iOS 18 -->
+        <item name="linearProgressIndicatorStyle">@style/Widget.MovieTorr.LinearProgressIndicator.Dark</item>
+        
         <!-- Типографика в стиле iOS для темной темы -->
         <item name="textAppearanceHeadlineLarge">@style/TextAppearance.MovieTorr.HeadlineLarge.Dark</item>
         <item name="textAppearanceHeadlineMedium">@style/TextAppearance.MovieTorr.HeadlineMedium.Dark</item>
@@ -36,7 +49,7 @@
         <item name="textAppearanceLabelSmall">@style/TextAppearance.MovieTorr.LabelSmall.Dark</item>
     </style>
 
-    <!-- Типографика для темной темы iOS 18/26 -->
+    <!-- Типографика для темной темы iOS 18 -->
     <style name="TextAppearance.MovieTorr.HeadlineLarge.Dark" parent="TextAppearance.MovieTorr.HeadlineLarge">
         <item name="android:textColor">@color/ios_dark_text_primary</item>
     </style>
@@ -92,6 +105,62 @@
         <item name="endIconTint">@color/ios_dark_text_secondary</item>
         <item name="android:textColorHint">@color/ios_dark_text_secondary</item>
     </style>
+    
+    <!-- Стили для BottomSheet в темной теме iOS 18 -->
+    <style name="ThemeOverlay.MovieTorr.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.MovieTorr.BottomSheet</item>
+    </style>
+    
+    <style name="Widget.MovieTorr.BottomSheet" parent="Widget.Material3.BottomSheet">
+        <item name="backgroundTint">@color/ios_dark_surface</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.MovieTorr.LargeComponent</item>
+        <item name="android:elevation">8dp</item>
+    </style>
+    
+    <style name="ShapeAppearance.MovieTorr.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+    
+    <!-- Стили для карточек в темной теме iOS 18 -->
+    <style name="Widget.MovieTorr.CardView.Dark" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/ios_dark_surface</item>
+        <item name="cardElevation">2dp</item>
+        <item name="strokeColor">@color/ios_dark_outline</item>
+        <item name="strokeWidth">0.5dp</item>
+        <item name="cardCornerRadius">16dp</item>
+    </style>
+    
+    <!-- Стили для кнопок в темной теме iOS 18 -->
+    <style name="Widget.MovieTorr.Button.Dark" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/ios_dark_surface_variant</item>
+        <item name="android:textColor">@color/ios_dark_text_primary</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    
+    <style name="Widget.MovieTorr.Button.OutlinedButton.Dark" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/ios_dark_outline</item>
+        <item name="android:textColor">@color/ios_dark_text_primary</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    
+    <!-- Стиль для прогресс-индикатора в темной теме iOS 18 -->
+    <style name="Widget.MovieTorr.LinearProgressIndicator.Dark" parent="Widget.Material3.LinearProgressIndicator">
+        <item name="indicatorColor">@color/ios_dark_text_primary</item>
+        <item name="trackColor">@color/ios_dark_surface_variant</item>
+        <item name="trackThickness">2dp</item>
+    </style>
 
-
-</resources> 
+</resources>

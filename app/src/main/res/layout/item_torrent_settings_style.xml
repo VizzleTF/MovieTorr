@@ -4,15 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="?attr/selectableItemBackground"
+    android:background="@drawable/settings_background_ios"
     android:clickable="true"
     android:focusable="true"
-    android:padding="8dp">
+    android:layout_marginBottom="8dp"
+    android:foreground="?attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="12dp">
 
         <TextView
             android:id="@+id/nameText"
@@ -109,4 +111,4 @@
 
     </LinearLayout>
 
-</LinearLayout> 
+</LinearLayout>

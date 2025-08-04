@@ -41,6 +41,17 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
         
         setupButtons()
         setupObservers()
+        
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (::webView.isInitialized && webView.canGoBack()) {
+                    webView.goBack()
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
     }
     
     private fun setupObservers() {
@@ -97,16 +108,6 @@ class MainActivity : AppCompatActivity(), SettingsBottomSheet.ThemeChangeListene
                 runOnUiThread { viewModel.onMovieDataExtracted(title, success) }
             }
         )
-    }
-
-    @Deprecated("Deprecated in Java")
-    @Suppress("DEPRECATION")
-    override fun onBackPressed() {
-        if (::webView.isInitialized && webView.canGoBack()) {
-            webView.goBack()
-        } else {
-            super.onBackPressed()
-        }
     }
     
     override fun onPause() {

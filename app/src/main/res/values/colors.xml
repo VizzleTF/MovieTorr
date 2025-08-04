@@ -55,19 +55,19 @@
     <color name="gray_800">#424242</color>
     <color name="gray_900">#212121</color>
     
-    <!-- iOS 18/26 Dark Theme Colors -->
-    <color name="ios_dark_background">#000000</color>
-    <color name="ios_dark_surface">#1C1C1E</color>
-    <color name="ios_dark_surface_variant">#2C2C2E</color>
-    <color name="ios_dark_surface_secondary">#3A3A3C</color>
+    <!-- iOS 18 Dark Theme Colors - Обновленная палитра -->
+    <color name="ios_dark_background">#1C1C1E</color>
+    <color name="ios_dark_surface">#2C2C2E</color>
+    <color name="ios_dark_surface_variant">#3A3A3C</color>
+    <color name="ios_dark_surface_secondary">#48484A</color>
     <color name="ios_dark_on_surface">#FFFFFF</color>
     <color name="ios_dark_on_surface_secondary">#EBEBF5</color>
     <color name="ios_dark_on_surface_tertiary">#EBEBF599</color>
-    <color name="ios_dark_outline">#38383A</color>
-    <color name="ios_dark_outline_variant">#48484A</color>
-    <color name="ios_dark_separator">#38383A</color>
+    <color name="ios_dark_outline">#48484A</color>
+    <color name="ios_dark_outline_variant">#58585A</color>
+    <color name="ios_dark_separator">#48484A</color>
     <color name="ios_dark_text_primary">#FFFFFF</color>
     <color name="ios_dark_text_secondary">#EBEBF5</color>
     <color name="ios_dark_text_tertiary">#EBEBF599</color>
     <color name="ios_dark_text_quaternary">#EBEBF54D</color>
-</resources> 
+</resources>
