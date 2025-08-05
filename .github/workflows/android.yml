@@ -21,11 +21,23 @@ jobs:
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
+      with:
+        packages: 'build-tools;33.0.1 platforms;android-34'
+        cache: true
+
+    - name: Cache Gradle Wrapper
+      uses: actions/cache@v4
+      with:
+        path: ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-wrapper-
 
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v3
       with:
         cache-read-only: false
+        gradle-version: 8.14.3
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
