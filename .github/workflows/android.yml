@@ -30,9 +30,6 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Pre-download dependencies
-      run: ./gradlew dependencies --configuration-cache --parallel
-
     - name: Create keystore
       run: |
         mkdir -p app/keystore
