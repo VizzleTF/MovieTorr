@@ -13,6 +13,9 @@ import android.widget.LinearLayout
 import vizzletf.movietorr.data.PreferencesRepository
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.AutoCompleteTextView
 
 class SettingsBottomSheet : BottomSheetDialogFragment() {
     
@@ -48,17 +51,17 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         // Находим новые элементы интерфейса
         val themeValue = view.findViewById<TextView>(R.id.themeValue)
         val sortValue = view.findViewById<TextView>(R.id.sortValue)
-        val searchModeValue = view.findViewById<TextView>(R.id.searchModeValue)
         val minSeedsValue = view.findViewById<TextView>(R.id.minSeedsValue)
         val trackersValue = view.findViewById<TextView>(R.id.trackersValue)
         val sizeFilterValue = view.findViewById<TextView>(R.id.sizeFilterValue)
+        val dateFilterValue = view.findViewById<TextView>(R.id.dateFilterValue)
         val legalButton = view.findViewById<MaterialButton>(R.id.btnLegal)
         
         // Устанавливаем текущие значения
-        setupCurrentValues(themeValue, sortValue, searchModeValue, minSeedsValue, trackersValue, sizeFilterValue)
+        setupCurrentValues(themeValue, sortValue, minSeedsValue, trackersValue, sizeFilterValue, dateFilterValue)
         
         // Обработчики кликов для новых элементов
-        setupClickHandlers(view, themeValue, sortValue, searchModeValue, minSeedsValue, trackersValue, sizeFilterValue)
+        setupClickHandlers(view, themeValue, sortValue, minSeedsValue, trackersValue, sizeFilterValue)
         
         // Обработка кнопки правовой информации
         legalButton.setOnClickListener {
@@ -86,10 +89,10 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
     private fun setupCurrentValues(
         themeValue: TextView,
         sortValue: TextView,
-        searchModeValue: TextView,
         minSeedsValue: TextView,
         trackersValue: TextView,
-        sizeFilterValue: TextView
+        sizeFilterValue: TextView,
+        dateFilterValue: TextView
     ) {
         // Тема
         val themeMode = preferencesRepository.getThemeMode()
@@ -113,14 +116,6 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         }
         sortValue.text = sortText
         
-        // Режим поиска
-        val searchMode = preferencesRepository.getSearchMode()
-        val searchModeText = if (searchMode == 0) {
-            getString(R.string.settings_search_mode_standard)
-        } else {
-            getString(R.string.settings_search_mode_advanced)
-        }
-        searchModeValue.text = searchModeText
         
         // Минимальные сиды
         val minSeeds = preferencesRepository.getMinSeeds()
@@ -143,6 +138,17 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         }
         trackersValue.text = trackersText
         
+        // Фильтр даты
+        val dateFilterMode = preferencesRepository.getDateFilterMode()
+        val dateFilterText = when (dateFilterMode) {
+            SearchFilters.DATE_FILTER_DAY -> getString(R.string.filter_date_day)
+            SearchFilters.DATE_FILTER_WEEK -> getString(R.string.filter_date_week)
+            SearchFilters.DATE_FILTER_MONTH -> getString(R.string.filter_date_month)
+            SearchFilters.DATE_FILTER_YEAR -> getString(R.string.filter_date_year)
+            else -> getString(R.string.filter_date_off)
+        }
+        dateFilterValue.text = dateFilterText
+        
         // Фильтр размера
         val minSize = preferencesRepository.getSizeFilterMin()
         val maxSize = preferencesRepository.getSizeFilterMax()
@@ -160,7 +166,6 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         view: View,
         themeValue: TextView,
         sortValue: TextView,
-        searchModeValue: TextView,
         minSeedsValue: TextView,
         trackersValue: TextView,
         sizeFilterValue: TextView
@@ -175,10 +180,6 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
             showSortDialog(sortValue)
         }
         
-        // Обработчик для режима поиска
-        view.findViewById<LinearLayout>(R.id.searchModeContainer)?.setOnClickListener {
-            showSearchModeDialog(searchModeValue)
-        }
         
         // Обработчик для минимальных сидов
         view.findViewById<LinearLayout>(R.id.minSeedsContainer)?.setOnClickListener {
@@ -193,6 +194,11 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         // Обработчик для фильтра размера
         view.findViewById<LinearLayout>(R.id.sizeFilterContainer)?.setOnClickListener {
             showSizeFilterDialog(sizeFilterValue)
+        }
+        
+        // Обработчик для фильтра даты
+        view.findViewById<LinearLayout>(R.id.dateFilterContainer)?.setOnClickListener {
+            showDateFilterDialog(view.findViewById(R.id.dateFilterValue))
         }
     }
     
@@ -237,21 +243,7 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
             .show()
     }
     
-    private fun showSearchModeDialog(searchModeValue: TextView) {
-        val searchModeOptions = arrayOf(
-            getString(R.string.settings_search_mode_standard),
-            getString(R.string.settings_search_mode_advanced)
-        )
-        
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.settings_search_mode))
-            .setItems(searchModeOptions) { _, which ->
-                preferencesRepository.setSearchMode(which)
-                searchModeValue.text = searchModeOptions[which]
-                notifyFiltersChanged()
-            }
-            .show()
-    }
+
     
     private fun showMinSeedsDialog(minSeedsValue: TextView) {
         val minSeedsOptions = arrayOf(
@@ -387,6 +379,54 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
     
     private fun notifyFiltersChanged() {
         (activity as? FiltersChangeListener)?.onFiltersChanged()
+    }
+    
+    private fun showDateFilterDialog(dateFilterValue: TextView) {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        val dialogView = layoutInflater.inflate(R.layout.dialog_date_filter, null)
+        builder.setView(dialogView)
+        
+        val radioGroup = dialogView.findViewById<RadioGroup>(R.id.radioGroupDateFilter)
+        
+        // Устанавливаем текущее значение
+        val currentDateFilterMode = preferencesRepository.getDateFilterMode()
+        when (currentDateFilterMode) {
+            SearchFilters.DATE_FILTER_DAY -> dialogView.findViewById<RadioButton>(R.id.radioDateDay).isChecked = true
+            SearchFilters.DATE_FILTER_WEEK -> dialogView.findViewById<RadioButton>(R.id.radioDateWeek).isChecked = true
+            SearchFilters.DATE_FILTER_MONTH -> dialogView.findViewById<RadioButton>(R.id.radioDateMonth).isChecked = true
+            SearchFilters.DATE_FILTER_YEAR -> dialogView.findViewById<RadioButton>(R.id.radioDateYear).isChecked = true
+            else -> dialogView.findViewById<RadioButton>(R.id.radioDateOff).isChecked = true
+        }
+        
+        builder.setPositiveButton("Применить") { dialog, _ ->
+            val selectedDateFilterMode = when (radioGroup.checkedRadioButtonId) {
+                R.id.radioDateDay -> SearchFilters.DATE_FILTER_DAY
+                R.id.radioDateWeek -> SearchFilters.DATE_FILTER_WEEK
+                R.id.radioDateMonth -> SearchFilters.DATE_FILTER_MONTH
+                R.id.radioDateYear -> SearchFilters.DATE_FILTER_YEAR
+                else -> SearchFilters.DATE_FILTER_OFF
+            }
+            
+            preferencesRepository.setDateFilterMode(selectedDateFilterMode)
+            
+            val dateFilterText = when (selectedDateFilterMode) {
+                SearchFilters.DATE_FILTER_DAY -> getString(R.string.filter_date_day)
+                SearchFilters.DATE_FILTER_WEEK -> getString(R.string.filter_date_week)
+                SearchFilters.DATE_FILTER_MONTH -> getString(R.string.filter_date_month)
+                SearchFilters.DATE_FILTER_YEAR -> getString(R.string.filter_date_year)
+                else -> getString(R.string.filter_date_off)
+            }
+            dateFilterValue.text = dateFilterText
+            
+            // Уведомляем об изменении фильтров
+            notifyFiltersChanged()
+            
+            dialog.dismiss()
+        }
+        
+        builder.setNegativeButton("Отмена") { dialog, _ -> dialog.dismiss() }
+        
+        builder.show()
     }
     
     private fun showLegalInfo() {

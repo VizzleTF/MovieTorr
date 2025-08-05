@@ -70,15 +70,21 @@ class MainViewModel(
     }
     
     fun loadSearchFilters() {
-        val filters = SearchFilters(
-            enabledTrackers = preferencesRepository.getEnabledTrackers(),
-            sizeFilterMin = preferencesRepository.getSizeFilterMin(),
-            sizeFilterMax = preferencesRepository.getSizeFilterMax(),
-            sizeFilterUnit = preferencesRepository.getSizeFilterUnit(),
-            searchMode = preferencesRepository.getSearchMode(),
-            minSeeds = preferencesRepository.getMinSeeds()
+        val enabledTrackers = preferencesRepository.getEnabledTrackers()
+        val sizeFilterMin = preferencesRepository.getSizeFilterMin()
+        val sizeFilterMax = preferencesRepository.getSizeFilterMax()
+        val sizeFilterUnit = preferencesRepository.getSizeFilterUnit()
+        val minSeeds = preferencesRepository.getMinSeeds()
+        val dateFilterMode = preferencesRepository.getDateFilterMode()
+        
+        _searchFilters.value = SearchFilters(
+            enabledTrackers = enabledTrackers,
+            sizeFilterMin = sizeFilterMin,
+            sizeFilterMax = sizeFilterMax,
+            sizeFilterUnit = sizeFilterUnit,
+            minSeeds = minSeeds,
+            dateFilterMode = dateFilterMode
         )
-        _searchFilters.value = filters
     }
     
     fun applyFiltersToResults(results: List<TorrentResult>): List<TorrentResult> {
@@ -110,6 +116,11 @@ class MainViewModel(
                 return@filter false
             }
             
+            // Фильтр по дате добавления
+            if (filters.isDateFilterEnabled() && !isWithinDateFilter(torrent.date, filters.dateFilterMode)) {
+                return@filter false
+            }
+            
             true
         }
     }
@@ -120,6 +131,48 @@ class MainViewModel(
             "MB" -> size
             "KB" -> size / 1024
             else -> size
+        }
+    }
+    
+    private fun isWithinDateFilter(dateStr: String, filterMode: Int): Boolean {
+        try {
+            // Предполагаем, что дата в формате "dd.MM.yyyy" или "yyyy-MM-dd"
+            val date = parseDate(dateStr) ?: return true // Если не удалось распарсить дату, пропускаем фильтр
+            val now = System.currentTimeMillis()
+            val diff = now - date
+            
+            return when (filterMode) {
+                SearchFilters.DATE_FILTER_DAY -> diff <= 24 * 60 * 60 * 1000 // 1 день в миллисекундах
+                SearchFilters.DATE_FILTER_WEEK -> diff <= 7 * 24 * 60 * 60 * 1000 // 1 неделя
+                SearchFilters.DATE_FILTER_MONTH -> diff <= 30 * 24 * 60 * 60 * 1000 // ~1 месяц
+                SearchFilters.DATE_FILTER_YEAR -> diff <= 365 * 24 * 60 * 60 * 1000 // ~1 год
+                else -> true // Если фильтр не установлен, пропускаем все
+            }
+        } catch (e: Exception) {
+            return true // В случае ошибки пропускаем фильтр
+        }
+    }
+    
+    private fun parseDate(dateStr: String): Long? {
+        return try {
+            // Пробуем разные форматы даты
+            val formats = listOf(
+                java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault()),
+                java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()),
+                java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+            )
+            
+            for (format in formats) {
+                try {
+                    return format.parse(dateStr)?.time
+                } catch (e: Exception) {
+                    // Пробуем следующий формат
+                }
+            }
+            
+            null // Не удалось распарсить дату
+        } catch (e: Exception) {
+            null
         }
     }
     
@@ -144,4 +197,4 @@ class MainViewModel(
         val date: String,
         val magnetLink: String
     )
-} 
+}

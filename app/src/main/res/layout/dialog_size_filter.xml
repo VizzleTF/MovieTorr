@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Настройка фильтра размера"
+        android:text="@string/filter_size_dialog_title"
         android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textColor="?attr/colorOnSurface"
         android:layout_marginBottom="16dp" />
@@ -33,7 +33,7 @@
         app:boxStrokeColor="?attr/colorOutline"
         app:boxStrokeWidth="0.5dp"
         app:hintTextColor="?attr/colorOnSurfaceVariant"
-        android:hint="От">
+        android:hint="@string/filter_size_min">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editSizeMin"
@@ -60,7 +60,7 @@
             app:boxStrokeColor="?attr/colorOutline"
             app:boxStrokeWidth="0.5dp"
             app:hintTextColor="?attr/colorOnSurfaceVariant"
-            android:hint="До">
+            android:hint="@string/filter_size_max">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editSizeMax"
@@ -79,7 +79,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Единицы измерения"
+        android:text="@string/filter_size_unit"
         android:textAppearance="?attr/textAppearanceBodyMedium"
         android:textColor="?attr/colorOnSurface"
         android:layout_marginBottom="8dp" />
@@ -92,7 +92,7 @@
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusBottomEnd="16dp"
-        android:hint="Выберите единицы">
+        android:hint="@string/filter_size_select_unit">
 
         <AutoCompleteTextView
             android:id="@+id/spinnerSizeUnit"
@@ -106,4 +106,4 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout> 
+</LinearLayout>

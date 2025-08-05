@@ -23,8 +23,10 @@ class PreferencesRepository(context: Context) {
         private const val KEY_SIZE_FILTER_MIN = "size_filter_min"
         private const val KEY_SIZE_FILTER_MAX = "size_filter_max"
         private const val KEY_SIZE_FILTER_UNIT = "size_filter_unit"
-        private const val KEY_SEARCH_MODE = "search_mode"
         private const val KEY_MIN_SEEDS = "min_seeds"
+        private const val KEY_DATE_FILTER_MODE = "date_filter_mode"
+        private const val KEY_SELECTED_CATEGORY = "selected_category"
+        private const val KEY_SORT_MODE = "sort_mode"
     }
     
     fun getThemeMode(): Int = prefs.getInt(KEY_THEME_MODE, 0)
@@ -86,15 +88,41 @@ class PreferencesRepository(context: Context) {
         prefs.edit { putString(KEY_SIZE_FILTER_UNIT, unit) }
     }
     
-    fun getSearchMode(): Int = prefs.getInt(KEY_SEARCH_MODE, 0)
-    
-    fun setSearchMode(mode: Int) {
-        prefs.edit { putInt(KEY_SEARCH_MODE, mode) }
-    }
     
     fun getMinSeeds(): Int = prefs.getInt(KEY_MIN_SEEDS, 0)
     
     fun setMinSeeds(seeds: Int) {
         prefs.edit { putInt(KEY_MIN_SEEDS, seeds) }
     }
-} 
+    
+    fun getDateFilterMode(): Int = prefs.getInt(KEY_DATE_FILTER_MODE, 0)
+    
+    fun setDateFilterMode(mode: Int) {
+        prefs.edit { putInt(KEY_DATE_FILTER_MODE, mode) }
+    }
+    
+    fun getSelectedCategory(): String? = prefs.getString(KEY_SELECTED_CATEGORY, "all")
+    
+    fun setSelectedCategory(category: String) {
+        prefs.edit { putString(KEY_SELECTED_CATEGORY, category) }
+    }
+    
+    fun getSortMode(): Int = prefs.getInt(KEY_SORT_MODE, 0)
+
+    fun setSortMode(mode: Int) {
+        prefs.edit { putInt(KEY_SORT_MODE, mode) }
+    }
+    
+
+    
+    // Alias methods for compatibility
+    fun getMinSizeFilter(): Int = getSizeFilterMin()
+    fun setMinSizeFilter(value: Int) = setSizeFilterMin(value)
+    
+    fun getMaxSizeFilter(): Int = getSizeFilterMax()
+    fun setMaxSizeFilter(value: Int) = setSizeFilterMax(value)
+    
+    fun getSizeUnit(): String = getSizeFilterUnit()
+    
+    fun setMinSeedsFilter(seeds: Int) = setMinSeeds(seeds)
+}

@@ -3,120 +3,142 @@
     <string name="app_name">MovieTorr</string>
     
     <!-- Main Activity -->
-    <string name="tab_site">Сайт</string>
-    <string name="tab_search">Поиск</string>
-    <string name="tab_settings">Настройки</string>
+    <string name="tab_site">Site</string>
+    <string name="tab_search">Search</string>
+    <string name="tab_settings">Settings</string>
     
     <!-- Search -->
-    <string name="search_hint">Название фильма</string>
-    <string name="search_button">Поиск</string>
-    <string name="search_placeholder">Введите название фильма для поиска</string>
-    <string name="search_enter_movie">Введите название фильма</string>
-    <string name="search_found">Найдено: %d</string>
-    <string name="search_no_category">Без категории</string>
-    <string name="search_all_categories">Все категории</string>
+    <string name="search_hint">Movie title</string>
+    <string name="search_button">Search</string>
+    <string name="search_placeholder">Enter movie title to search</string>
+    <string name="search_enter_movie">Enter movie title</string>
+    <string name="search_found">Found: %d</string>
+    <string name="search_no_category">No category</string>
+    <string name="search_all_categories">All categories</string>
     
     <!-- Settings -->
-    <string name="settings">Настройки</string>
-    <string name="settings_theme">Тема</string>
-    <string name="settings_theme_auto">Авто</string>
-    <string name="settings_theme_light">Светлая</string>
-    <string name="settings_theme_dark">Темная</string>
-    <string name="settings_legal_info">Правовая информация</string>
-    <string name="settings_legal_message">Это приложение предназначено для просмотра веб-сайтов. Пользователь несет ответственность за соблюдение авторских прав и других правовых норм при использовании приложения.</string>
-    <string name="settings_legal_ok">Понятно</string>
+    <string name="settings">Settings</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_auto">Auto</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_legal_info">Legal Information</string>
+    <string name="settings_legal_message">This application is designed for viewing websites. The user is responsible for compliance with copyright and other legal regulations when using the application.</string>
+    <string name="settings_legal_ok">Got it</string>
     
     <!-- Sort Settings -->
-    <string name="settings_sort">Сортировка торрентов</string>
-    <string name="settings_sort_default">По умолчанию</string>
-    <string name="settings_sort_size">По размеру</string>
-    <string name="settings_sort_date">По дате публикации</string>
-    <string name="settings_sort_seeds">По раздающим</string>
-    <string name="settings_sort_tracker">По трекеру</string>
-    <string name="settings_sort_category">По категории</string>
+    <string name="settings_sort">Torrent Sorting</string>
+    <string name="settings_sort_default">Default</string>
+    <string name="settings_sort_size">By Size</string>
+    <string name="settings_sort_date">By Publication Date</string>
+    <string name="settings_sort_seeds">By Seeders</string>
+    <string name="settings_sort_tracker">By Tracker</string>
+    <string name="settings_sort_category">By Category</string>
     
     <!-- Site Management -->
-    <string name="sites">Сайты</string>
-    <string name="site_quick_access">Быстрый переход</string>
-    <string name="add_site">Добавить сайт</string>
-    <string name="site_add">Добавить сайт</string>
-    <string name="site_edit">Изменить</string>
-    <string name="site_delete">Удалить</string>
-    <string name="site_name">Название сайта</string>
-    <string name="site_url">URL сайта</string>
-    <string name="site_name_hint">Название сайта</string>
-    <string name="site_url_hint">URL сайта</string>
-    <string name="site_address_hint">Адрес сайта</string>
-    <string name="site_added">Сайт добавлен</string>
-    <string name="site_updated">Сайт обновлен</string>
-    <string name="site_deleted">Сайт удален</string>
-    <string name="site_removed">Сайт удалён</string>
-    <string name="site_edit_error">Ошибка обновления сайта</string>
-    <string name="site_add_error">Ошибка добавления сайта</string>
-    <string name="site_builtin_edit_error">Встроенные сайты нельзя редактировать</string>
-    <string name="site_enter_address">Введите адрес сайта</string>
-    <string name="site_delete_confirm">Удалить сайт \"%s\"?</string>
+    <string name="sites">Sites</string>
+    <string name="site_quick_access">Quick Access</string>
+    <string name="add_site">Add Site</string>
+    <string name="site_add">Add Site</string>
+    <string name="site_edit">Edit</string>
+    <string name="site_delete">Delete</string>
+    <string name="site_name">Site Name</string>
+    <string name="site_url">Site URL</string>
+    <string name="site_name_hint">Site name</string>
+    <string name="site_url_hint">Site URL</string>
+    <string name="site_address_hint">Site address</string>
+    <string name="site_added">Site added</string>
+    <string name="site_updated">Site updated</string>
+    <string name="site_deleted">Site deleted</string>
+    <string name="site_removed">Site removed</string>
+    <string name="site_edit_error">Error updating site</string>
+    <string name="site_add_error">Error adding site</string>
+    <string name="site_builtin_edit_error">Built-in sites cannot be edited</string>
+    <string name="site_enter_address">Enter site address</string>
+    <string name="site_delete_confirm">Delete site \"%s\"?</string>
     
     <!-- Dialogs -->
-    <string name="cancel">Отмена</string>
-    <string name="save">Сохранить</string>
-    <string name="delete">Удалить</string>
-    <string name="edit">Редактировать</string>
-    <string name="dialog_ok">Понятно</string>
-    <string name="dialog_cancel">Отмена</string>
-    <string name="dialog_add">Добавить</string>
-    <string name="dialog_save">Сохранить</string>
-    <string name="dialog_go">Перейти</string>
-    <string name="dialog_delete">Удалить</string>
-    <string name="dialog_edit_site">Редактировать сайт</string>
-    <string name="dialog_quick_site">Быстрый переход</string>
-    <string name="dialog_delete_site">Удалить сайт</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="dialog_ok">Got it</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_add">Add</string>
+    <string name="dialog_save">Save</string>
+    <string name="dialog_go">Go</string>
+    <string name="dialog_delete">Delete</string>
+    <string name="dialog_edit_site">Edit Site</string>
+    <string name="dialog_quick_site">Quick Access</string>
+    <string name="dialog_delete_site">Delete Site</string>
     
     <!-- Errors -->
-    <string name="error_invalid_url">Неверный URL</string>
-    <string name="error_site_exists">Сайт уже существует</string>
-    <string name="error_network">Ошибка сети: %s</string>
-    <string name="error_server">Ошибка сервера: %d</string>
-    <string name="error_parsing">Ошибка парсинга данных: %s</string>
-    <string name="error_request">Ошибка запроса: %d</string>
-    <string name="error_parsing_response">Ошибка парсинга ответа API: %s</string>
-    <string name="error_unexpected_format">Неожиданный формат ответа от API</string>
-    <string name="error_reading_response">Ошибка чтения ответа: %s</string>
-    <string name="error_magnet_not_found">Магнитная ссылка не найдена</string>
-    <string name="error_parsing_magnet">Ошибка парсинга: %s</string>
+    <string name="error_invalid_url">Invalid URL</string>
+    <string name="error_site_exists">Site already exists</string>
+    <string name="error_network">Network error: %s</string>
+    <string name="error_server">Server error: %d</string>
+    <string name="error_parsing">Data parsing error: %s</string>
+    <string name="error_request">Request error: %d</string>
+    <string name="error_parsing_response">API response parsing error: %s</string>
+    <string name="error_unexpected_format">Unexpected API response format</string>
+    <string name="error_reading_response">Response reading error: %s</string>
+    <string name="error_magnet_not_found">Magnet link not found</string>
+    <string name="error_parsing_magnet">Parsing error: %s</string>
     
     <!-- Magnet Options -->
-    <string name="magnet_title">Выберите действие</string>
-    <string name="magnet_open">Открыть магнитную ссылку</string>
-    <string name="magnet_copy_hash">Скопировать хеш</string>
-    <string name="magnet_hash_copied">Хеш скопирован в буфер обмена</string>
+    <string name="magnet_title">Choose action</string>
+    <string name="magnet_open">Open magnet link</string>
+    <string name="magnet_copy_hash">Copy hash</string>
+    <string name="magnet_hash_copied">Hash copied to clipboard</string>
     
     <!-- Torrent Items -->
     <string name="torrent_rutracker">RuTracker</string>
-    <string name="torrent_movies">Фильмы</string>
+    <string name="torrent_movies">Movies</string>
     <string name="torrent_size_sample">1.5 GB</string>
     <string name="torrent_seeds_sample">↑ 150</string>
     <string name="torrent_peers_sample">↓ 25</string>
     <string name="torrent_date_sample">2024-01-15</string>
-    <string name="torrent_title_sample">Название фильма</string>
     
-    <!-- Новые строки для фильтров -->
-    <string name="settings_trackers">Трекеры</string>
-    <string name="settings_trackers_hint">Выберите трекеры для поиска</string>
-    <string name="settings_size_filter">Фильтр по размеру</string>
-    <string name="settings_size_filter_from">От</string>
-    <string name="settings_size_filter_to">До</string>
-    <string name="settings_size_filter_mb">МБ</string>
-    <string name="settings_size_filter_gb">ГБ</string>
-    <string name="settings_search_mode">Режим поиска</string>
-    <string name="settings_search_mode_standard">Стандартный</string>
-    <string name="settings_search_mode_advanced">С дополнительными фильтрами</string>
-    <string name="settings_min_seeds">Минимум сидов</string>
-    <string name="settings_min_seeds_off">Выкл</string>
+    <!-- Search Filters -->
+    <string name="filter_date_title">Date Added</string>
+    <string name="filter_date_off">Any date</string>
+    <string name="filter_date_day">Last day</string>
+    <string name="filter_date_week">Last week</string>
+    <string name="filter_date_month">Last month</string>
+    <string name="filter_date_year">Last year</string>
+    <string name="filter_date_dialog_title">Date Filter</string>
+    <string name="filter_size_dialog_title">Size Filter Settings</string>
+    <string name="filter_size_min">From</string>
+    <string name="filter_size_max">To</string>
+    <string name="filter_size_unit">Units</string>
+    <string name="filter_size_select_unit">Select units</string>
+    <string name="torrent_title_sample">Movie title</string>
+    
+    <!-- Filter Settings -->
+    <string name="settings_trackers">Trackers</string>
+    <string name="settings_trackers_hint">Select trackers for search</string>
+    <string name="settings_size_filter">Size Filter</string>
+    <string name="settings_size_filter_from">From</string>
+    <string name="settings_size_filter_to">To</string>
+    <string name="settings_size_filter_mb">MB</string>
+    <string name="settings_size_filter_gb">GB</string>
+
+    <string name="settings_min_seeds">Minimum Seeds</string>
+    <string name="settings_min_seeds_off">Off</string>
     <string name="settings_min_seeds_1">1</string>
     <string name="settings_min_seeds_10">10</string>
     <string name="settings_min_seeds_100">100</string>
     
-    <!-- Search -->
-
+    <!-- Category Filter -->
+    <string name="filter_category_title">Category</string>
+    <string name="filter_category_all">All categories</string>
+    
+    <!-- Sort Filter -->
+    <string name="sort_title">Sort</string>
+    <string name="sort_default">Default</string>
+    <string name="sort_size">By size</string>
+    <string name="sort_date">By date</string>
+    <string name="sort_seeds">By seeds</string>
+    <string name="sort_name">By name</string>
+    
 </resources>

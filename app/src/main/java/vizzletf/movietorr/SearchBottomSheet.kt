@@ -17,23 +17,53 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import android.widget.TextView
 import android.widget.AutoCompleteTextView
+import android.widget.LinearLayout
+import android.widget.RadioGroup
+import android.widget.RadioButton
 import vizzletf.movietorr.data.PreferencesRepository
 import android.graphics.Canvas
 import android.graphics.Rect
 import androidx.core.content.ContextCompat
+import vizzletf.movietorr.SettingsBottomSheet.FiltersChangeListener
 
-class SearchBottomSheet : BottomSheetDialogFragment() {
+class SearchBottomSheet : BottomSheetDialogFragment(), FiltersChangeListener {
     private lateinit var torApiService: TorApiService
     private lateinit var preferencesRepository: PreferencesRepository
     private var initialQuery: String? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var emptyStateText: TextView
-    private lateinit var filterAutoComplete: AutoCompleteTextView
     private lateinit var torrentAdapter: TorrentAdapter
     private var allTorrents = mutableListOf<TorrentItemWithSource>()
     private var filteredTorrents = mutableListOf<TorrentItemWithSource>()
     private var availableCategories = mutableSetOf<String>()
     private var selectedCategory: String? = null
+    
+    // Локальные фильтры для текущего поиска (не изменяют глобальные настройки)
+    private var localSizeFilterMin: Int = 0
+    private var localSizeFilterMax: Int = 0
+    private var localSizeFilterUnit: String = "MB"
+    private var localMinSeeds: Int = 0
+    private var localDateFilterMode: Int = SearchFilters.DATE_FILTER_OFF
+    private var localSelectedCategory: String = "all"
+    private var localSortMode: Int = SearchFilters.SORT_DEFAULT
+    
+    // UI элементы для дополнительных фильтров
+    private lateinit var filtersToggleContainer: LinearLayout
+    private lateinit var filtersToggleIcon: android.widget.ImageView
+    private lateinit var advancedFiltersContainer: LinearLayout
+    private lateinit var sizeFilterContainer: LinearLayout
+    private lateinit var minSeedsContainer: LinearLayout
+    private lateinit var dateFilterContainer: LinearLayout
+    private lateinit var categoryFilterContainer: LinearLayout
+    private lateinit var sizeFilterValue: TextView
+    private lateinit var minSeedsValue: TextView
+    private lateinit var dateFilterValue: TextView
+    private lateinit var categoryFilterValue: TextView
+
+    private lateinit var sortFilterContainer: LinearLayout
+    private lateinit var sortFilterValue: TextView
+    
+    private var filtersExpanded = false
 
     companion object {
         private const val ARG_QUERY = "query"
@@ -56,6 +86,17 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
         initialQuery = arguments?.getString(ARG_QUERY)
         torApiService = TorApiService()
         preferencesRepository = PreferencesRepository(requireContext())
+        loadLocalFiltersFromPreferences()
+    }
+    
+    private fun loadLocalFiltersFromPreferences() {
+        // Load settings from main preferences to local filters
+        localSizeFilterMin = preferencesRepository.getSizeFilterMin()
+        localSizeFilterMax = preferencesRepository.getSizeFilterMax()
+        localSizeFilterUnit = preferencesRepository.getSizeFilterUnit()
+        localMinSeeds = preferencesRepository.getMinSeeds()
+        localDateFilterMode = preferencesRepository.getDateFilterMode()
+        localSortMode = preferencesRepository.getSortMode()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -66,10 +107,27 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
         // val progressBar = view.findViewById<com.google.android.material.progressindicator.LinearProgressIndicator>(R.id.progressBar)
         recyclerView = view.findViewById(R.id.recyclerView)
         emptyStateText = view.findViewById(R.id.emptyStateText)
-        filterAutoComplete = view.findViewById(R.id.filterAutoComplete)
+        
+        // Инициализация элементов дополнительных фильтров
+        filtersToggleContainer = view.findViewById(R.id.filtersToggleContainer)
+        filtersToggleIcon = view.findViewById(R.id.filtersToggleIcon)
+        advancedFiltersContainer = view.findViewById(R.id.advancedFiltersContainer)
+        sizeFilterContainer = view.findViewById(R.id.sizeFilterContainer)
+        minSeedsContainer = view.findViewById(R.id.minSeedsContainer)
+        dateFilterContainer = view.findViewById(R.id.dateFilterContainer)
+        categoryFilterContainer = view.findViewById(R.id.categoryFilterContainer)
+        sortFilterContainer = view.findViewById(R.id.sortFilterContainer)
+        sizeFilterValue = view.findViewById(R.id.sizeFilterValue)
+        minSeedsValue = view.findViewById(R.id.minSeedsValue)
+        dateFilterValue = view.findViewById(R.id.dateFilterValue)
+        categoryFilterValue = view.findViewById(R.id.categoryFilterValue)
+        sortFilterValue = view.findViewById(R.id.sortFilterValue)
         
         setupRecyclerView()
-        setupFilter()
+        setupAdvancedFilters()
+        setupFiltersToggle()
+        updateAdvancedFiltersVisibility()
+        updateFilterValues()
         
         if (!initialQuery.isNullOrBlank()) {
             searchEdit.setText(initialQuery)
@@ -179,45 +237,167 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
                 }
             }
         })
+        
+        // Добавляем слушатель прокрутки для скрытия фильтров
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0 && filtersExpanded) {
+                    // Скрываем фильтры при прокрутке вниз
+                    filtersExpanded = false
+                    updateFiltersVisibility()
+                }
+            }
+        })
     }
 
-    private fun setupFilter() {
-        // Создаем адаптер для AutoCompleteTextView с новым стилем iOS 18
-        val adapter = android.widget.ArrayAdapter<String>(
-            requireContext(),
-            R.layout.item_dropdown_category,
-            mutableListOf(getString(R.string.search_all_categories))
-        )
-        
-        filterAutoComplete.setAdapter(adapter)
-        filterAutoComplete.setText(getString(R.string.search_all_categories), false)
-        
-        // Настраиваем показ выпадающего списка при клике
-        filterAutoComplete.setOnClickListener {
-            filterAutoComplete.showDropDown()
+    private fun setupFiltersToggle() {
+        filtersToggleContainer.setOnClickListener {
+            filtersExpanded = !filtersExpanded
+            updateFiltersVisibility()
         }
         
-        filterAutoComplete.setOnItemClickListener { parent, view, position, id ->
-            if (position == 0) {
-                selectedCategory = null
-            } else {
-                selectedCategory = filterAutoComplete.text.toString()
-            }
-            applyFilter()
+        // Изначально фильтры скрыты
+        updateFiltersVisibility()
+    }
+    
+    private fun updateFiltersVisibility() {
+        val toggleText = filtersToggleContainer.findViewById<TextView>(R.id.filtersToggleText)
+        
+        if (filtersExpanded) {
+            // Show filters with animation
+            advancedFiltersContainer.visibility = View.VISIBLE
+            advancedFiltersContainer.alpha = 0f
+            advancedFiltersContainer.animate()
+                .alpha(1f)
+                .setDuration(300)
+                .start()
+            
+            // Rotate arrow and update text
+            filtersToggleIcon.animate()
+                .rotation(180f)
+                .setDuration(300)
+                .start()
+            
+            toggleText?.text = "Скрыть"
+        } else {
+            // Hide filters with animation
+            advancedFiltersContainer.animate()
+                .alpha(0f)
+                .setDuration(300)
+                .withEndAction {
+                    advancedFiltersContainer.visibility = View.GONE
+                }
+                .start()
+            
+            // Rotate arrow back and update text
+            filtersToggleIcon.animate()
+                .rotation(0f)
+                .setDuration(300)
+                .start()
+            
+            toggleText?.text = "Показать"
+        }
+    }
+
+    private fun setupAdvancedFilters() {
+        // Обработчики кликов для дополнительных фильтров
+        sizeFilterContainer.setOnClickListener {
+            showSizeFilterDialog()
+        }
+        
+        minSeedsContainer.setOnClickListener {
+            showMinSeedsDialog()
+        }
+        
+        dateFilterContainer.setOnClickListener {
+            showDateFilterDialog()
+        }
+        
+        categoryFilterContainer.setOnClickListener {
+            showCategoryFilterDialog()
+        }
+
+        
+        sortFilterContainer.setOnClickListener {
+            showSortFilterDialog()
+        }
+        
+        updateFilterValues()
+    }
+    
+    private fun updateAdvancedFiltersVisibility() {
+        // Always show advanced filters
+        advancedFiltersContainer.visibility = View.VISIBLE
+    }
+    
+    private fun updateFilterValues() {
+        // Обновление значений фильтров
+        updateSizeFilterValue()
+        updateMinSeedsValue()
+        updateDateFilterValue()
+        updateCategoryFilterValue()
+        updateSortFilterValue()
+    }
+    
+    private fun updateSizeFilterValue() {
+        val sizeText = when {
+            localSizeFilterMin == 0 && localSizeFilterMax == 0 -> "Без ограничений"
+            localSizeFilterMin > 0 && localSizeFilterMax == 0 -> "От ${localSizeFilterMin} ${localSizeFilterUnit}"
+            localSizeFilterMin == 0 && localSizeFilterMax > 0 -> "До ${localSizeFilterMax} ${localSizeFilterUnit}"
+            else -> "${localSizeFilterMin}-${localSizeFilterMax} ${localSizeFilterUnit}"
+        }
+        sizeFilterValue.text = sizeText
+    }
+    
+    private fun updateMinSeedsValue() {
+        val minSeedsText = when (localMinSeeds) {
+            0 -> "Без ограничений"
+            else -> "Минимум $localMinSeeds"
+        }
+        minSeedsValue.text = minSeedsText
+    }
+    
+    private fun updateDateFilterValue() {
+        val dateFilterText = when (localDateFilterMode) {
+            SearchFilters.DATE_FILTER_DAY -> getString(R.string.filter_date_day)
+            SearchFilters.DATE_FILTER_WEEK -> getString(R.string.filter_date_week)
+            SearchFilters.DATE_FILTER_MONTH -> getString(R.string.filter_date_month)
+            SearchFilters.DATE_FILTER_YEAR -> getString(R.string.filter_date_year)
+            else -> getString(R.string.filter_date_off)
+        }
+        dateFilterValue.text = dateFilterText
+    }
+    
+    private fun updateCategoryFilterValue() {
+        categoryFilterValue.text = if (localSelectedCategory == "all") {
+            "Все категории"
+        } else {
+            localSelectedCategory
+        }
+    }
+    
+    private fun updateSortFilterValue() {
+        sortFilterValue.text = when (localSortMode) {
+            SearchFilters.SORT_BY_SIZE -> "По размеру"
+            SearchFilters.SORT_BY_DATE -> "По дате"
+            SearchFilters.SORT_BY_SEEDS -> "По сидам"
+            SearchFilters.SORT_BY_NAME -> "По названию"
+            else -> "По умолчанию"
         }
     }
 
     private fun applyFilter() {
         filteredTorrents.clear()
         
-        // Применяем фильтры из настроек
+        // Always use local filters (advanced mode)
         val searchFilters = SearchFilters(
             enabledTrackers = preferencesRepository.getEnabledTrackers(),
-            sizeFilterMin = preferencesRepository.getSizeFilterMin(),
-            sizeFilterMax = preferencesRepository.getSizeFilterMax(),
-            sizeFilterUnit = preferencesRepository.getSizeFilterUnit(),
-            searchMode = preferencesRepository.getSearchMode(),
-            minSeeds = preferencesRepository.getMinSeeds()
+            sizeFilterMin = localSizeFilterMin,
+            sizeFilterMax = localSizeFilterMax,
+            sizeFilterUnit = localSizeFilterUnit,
+            minSeeds = localMinSeeds,
+            dateFilterMode = localDateFilterMode
         )
         
         var filteredList = allTorrents.toMutableList()
@@ -251,12 +431,20 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
             }.toMutableList()
         }
         
+        // Фильтр по дате добавления
+        if (searchFilters.isDateFilterEnabled()) {
+            filteredList = filteredList.filter { torrent ->
+                isWithinDateFilter(torrent.item.Date, searchFilters.dateFilterMode)
+            }.toMutableList()
+        }
+        
         // Фильтр по категории
-        if (selectedCategory == null) {
+        val categoryToFilter = localSelectedCategory
+        if (categoryToFilter == null || categoryToFilter == "all") {
             filteredTorrents.addAll(filteredList)
         } else {
             filteredTorrents.addAll(filteredList.filter { 
-                it.item.Category == selectedCategory
+                it.item.Category == categoryToFilter
             })
         }
         
@@ -358,23 +546,9 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
         
         // Применяем текущий фильтр
         applyFilter()
-        
-        // Обновляем подсказку фильтра
-        updateFilterHint()
     }
 
-    private fun updateFilterHint() {
-        val categories = availableCategories.toList().sorted()
-        if (categories.isNotEmpty()) {
-            val adapter = android.widget.ArrayAdapter<String>(
-                requireContext(),
-                R.layout.item_dropdown_category,
-                mutableListOf(getString(R.string.search_all_categories))
-            )
-            adapter.addAll(categories)
-            filterAutoComplete.setAdapter(adapter)
-        }
-    }
+
 
     private fun updateStatusText() {
         // Показываем или скрываем сообщение "Ничего не найдено"
@@ -385,24 +559,21 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
     }
     
     private fun sortTorrents() {
-        val sharedPrefs = requireContext().getSharedPreferences("MovieTorrPrefs", 0)
-        val sortMode = sharedPrefs.getInt("sort_mode", 0)
+        // Always use local sort mode (advanced mode)
+        val sortMode = localSortMode
         
         when (sortMode) {
-            SettingsBottomSheet.SORT_SIZE -> {
+            SearchFilters.SORT_BY_SIZE -> {
                 allTorrents.sortByDescending { parseSize(it.item.Size) }
             }
-            SettingsBottomSheet.SORT_DATE -> {
+            SearchFilters.SORT_BY_DATE -> {
                 allTorrents.sortByDescending { parseDate(it.item.Date) }
             }
-            SettingsBottomSheet.SORT_SEEDS -> {
+            SearchFilters.SORT_BY_SEEDS -> {
                 allTorrents.sortByDescending { it.item.Seeds.toIntOrNull() ?: 0 }
             }
-            SettingsBottomSheet.SORT_TRACKER -> {
-                allTorrents.sortBy { it.source }
-            }
-            SettingsBottomSheet.SORT_CATEGORY -> {
-                allTorrents.sortBy { it.item.Category ?: "" }
+            SearchFilters.SORT_BY_NAME -> {
+                allTorrents.sortBy { it.item.Name ?: "" }
             }
             else -> {
                 // По умолчанию - оставляем как есть (порядок от API)
@@ -434,7 +605,269 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
             0L
         }
     }
+    
+    private fun isWithinDateFilter(dateStr: String, filterMode: Int): Boolean {
+        try {
+            // Предполагаем, что дата в формате "dd.MM.yyyy" или "yyyy-MM-dd"
+            val date = parseDateForFilter(dateStr) ?: return true // Если не удалось распарсить дату, пропускаем фильтр
+            val now = System.currentTimeMillis()
+            val diff = now - date
+            
+            return when (filterMode) {
+                SearchFilters.DATE_FILTER_DAY -> diff <= 24 * 60 * 60 * 1000 // 1 день в миллисекундах
+                SearchFilters.DATE_FILTER_WEEK -> diff <= 7 * 24 * 60 * 60 * 1000 // 1 неделя
+                SearchFilters.DATE_FILTER_MONTH -> diff <= 30 * 24 * 60 * 60 * 1000 // ~1 месяц
+                SearchFilters.DATE_FILTER_YEAR -> diff <= 365 * 24 * 60 * 60 * 1000 // ~1 год
+                else -> true // Если фильтр не установлен, пропускаем все
+            }
+        } catch (e: Exception) {
+            return true // В случае ошибки пропускаем фильтр
+        }
+    }
+    
+    private fun parseDateForFilter(dateStr: String): Long? {
+        return try {
+            // Пробуем разные форматы даты
+            val formats = listOf(
+                java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault()),
+                java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()),
+                java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+            )
+            
+            for (format in formats) {
+                try {
+                    return format.parse(dateStr)?.time
+                } catch (e: Exception) {
+                    // Пробуем следующий формат
+                }
+            }
+            
+            null // Не удалось распарсить дату
+        } catch (e: Exception) {
+            null
+        }
+    }
+    
+    private fun showSizeFilterDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        val dialogView = layoutInflater.inflate(R.layout.dialog_size_filter, null)
+        builder.setView(dialogView)
+        
+        val editSizeMin = dialogView.findViewById<TextInputEditText>(R.id.editSizeMin)
+        val editSizeMax = dialogView.findViewById<TextInputEditText>(R.id.editSizeMax)
+        val spinnerSizeUnit = dialogView.findViewById<AutoCompleteTextView>(R.id.spinnerSizeUnit)
+        
+        // Setup size unit dropdown
+        val sizeUnits = arrayOf("MB", "GB")
+        val adapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, sizeUnits)
+        spinnerSizeUnit.setAdapter(adapter)
+        
+        // Set current values
+        if (localSizeFilterMin > 0) editSizeMin.setText(localSizeFilterMin.toString())
+        if (localSizeFilterMax > 0) editSizeMax.setText(localSizeFilterMax.toString())
+        spinnerSizeUnit.setText(localSizeFilterUnit, false)
+        
+        builder.setPositiveButton("Применить") { dialog, _ ->
+            val minSize = editSizeMin.text.toString().toIntOrNull() ?: 0
+            val maxSize = editSizeMax.text.toString().toIntOrNull() ?: 0
+            val sizeUnit = spinnerSizeUnit.text.toString().ifEmpty { "MB" }
+            
+            localSizeFilterMin = minSize
+            localSizeFilterMax = maxSize
+            localSizeFilterUnit = sizeUnit
+            
+            updateSizeFilterValue()
+            applyFilter()
+            dialog.dismiss()
+        }
+        
+        builder.setNegativeButton("Отмена") { dialog, _ ->
+            dialog.dismiss()
+        }
+        
+        builder.show()
+    }
+    
+    private fun showMinSeedsDialog() {
+        val minSeedsOptions = arrayOf(
+            "Без ограничений",
+            "Минимум 1",
+            "Минимум 10",
+            "Минимум 100"
+        )
+        
+        val selectedIndex = when (localMinSeeds) {
+            SearchFilters.MIN_SEEDS_1 -> 1
+            SearchFilters.MIN_SEEDS_10 -> 2
+            SearchFilters.MIN_SEEDS_100 -> 3
+            else -> 0
+        }
+        
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Минимальное количество сидов")
+            .setSingleChoiceItems(minSeedsOptions, selectedIndex) { dialog, which ->
+                val newMinSeeds = when (which) {
+                    1 -> SearchFilters.MIN_SEEDS_1
+                    2 -> SearchFilters.MIN_SEEDS_10
+                    3 -> SearchFilters.MIN_SEEDS_100
+                    else -> SearchFilters.MIN_SEEDS_OFF
+                }
+                
+                localMinSeeds = newMinSeeds
+                updateMinSeedsValue()
+                applyFilter()
+                dialog.dismiss()
+            }
+            .show()
+    }
+    
+    private fun showDateFilterDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        val dialogView = layoutInflater.inflate(R.layout.dialog_date_filter, null)
+        builder.setView(dialogView)
+        
+        val radioGroup = dialogView.findViewById<RadioGroup>(R.id.radioGroupDateFilter)
+        
+        // Устанавливаем текущее значение
+        when (localDateFilterMode) {
+            SearchFilters.DATE_FILTER_DAY -> dialogView.findViewById<RadioButton>(R.id.radioDateDay).isChecked = true
+            SearchFilters.DATE_FILTER_WEEK -> dialogView.findViewById<RadioButton>(R.id.radioDateWeek).isChecked = true
+            SearchFilters.DATE_FILTER_MONTH -> dialogView.findViewById<RadioButton>(R.id.radioDateMonth).isChecked = true
+            SearchFilters.DATE_FILTER_YEAR -> dialogView.findViewById<RadioButton>(R.id.radioDateYear).isChecked = true
+            else -> dialogView.findViewById<RadioButton>(R.id.radioDateOff).isChecked = true
+        }
+        
+        builder.setPositiveButton("Применить") { dialog, _ ->
+            val selectedDateFilterMode = when (radioGroup.checkedRadioButtonId) {
+                R.id.radioDateDay -> SearchFilters.DATE_FILTER_DAY
+                R.id.radioDateWeek -> SearchFilters.DATE_FILTER_WEEK
+                R.id.radioDateMonth -> SearchFilters.DATE_FILTER_MONTH
+                R.id.radioDateYear -> SearchFilters.DATE_FILTER_YEAR
+                else -> SearchFilters.DATE_FILTER_OFF
+            }
+            
+            localDateFilterMode = selectedDateFilterMode
+            updateDateFilterValue()
+            applyFilter()
+            dialog.dismiss()
+        }
+        
+        builder.setNegativeButton("Отмена") { dialog, _ ->
+            dialog.dismiss()
+        }
+        
+        builder.show()
+    }
+    
+    private fun showCategoryFilterDialog() {
+        val categories = mutableListOf<Pair<String, String>>()
+        categories.add("all" to "Все категории")
+        
+        // Add available categories from torrents
+        availableCategories.sorted().forEach { category ->
+            categories.add(category to category)
+        }
+        
+        val categoryNames = categories.map { it.second }.toTypedArray()
+        val selectedIndex = categories.indexOfFirst { it.first == localSelectedCategory }
+        
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Выберите категорию")
+            .setSingleChoiceItems(categoryNames, selectedIndex) { dialog, which ->
+                val selectedCategoryPair = categories[which]
+                localSelectedCategory = selectedCategoryPair.first
+                updateCategoryFilterValue()
+                applyFilter()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Отмена") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+    
+    private fun showSortFilterDialog() {
+        val sortModes = listOf(
+            SearchFilters.SORT_DEFAULT,
+            SearchFilters.SORT_BY_SIZE,
+            SearchFilters.SORT_BY_DATE,
+            SearchFilters.SORT_BY_SEEDS,
+            SearchFilters.SORT_BY_NAME
+        )
+        val sortNames = listOf("По умолчанию", "По размеру", "По дате", "По сидам", "По названию")
+        
+        val selectedIndex = sortModes.indexOf(localSortMode)
+        
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Выберите сортировку")
+            .setSingleChoiceItems(sortNames.toTypedArray(), selectedIndex) { dialog, which ->
+                val selectedSort = sortModes[which]
+                localSortMode = selectedSort
+                updateSortFilterValue()
+                sortTorrents()
+                applyFilter()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Отмена") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
 
+    override fun onFiltersChanged() {
+        // Reload local filters from main preferences when settings change
+        loadLocalFiltersFromPreferences()
+        updateAdvancedFiltersVisibility()
+        updateFilterValues()
+        sortTorrents()
+        applyFilter()
+    }
+    
+    private fun getMagnetLink(source: String, id: String) {
+        torApiService.getMagnetLink(source, id, object : TorApiService.MagnetCallback {
+            override fun onSuccess(magnet: String, hash: String) {
+                activity?.runOnUiThread {
+                    // Проверяем что фрагмент еще прикреплен
+                    if (isAdded && !isDetached) {
+                        showMagnetOptions(magnet, hash)
+                    }
+                }
+            }
+            
+            override fun onError(error: String) {
+                activity?.runOnUiThread {
+                    // Проверяем что фрагмент еще прикреплен
+                    if (isAdded && !isDetached) {
+                        Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        })
+    }
+    
+    private fun showMagnetOptions(magnet: String, hash: String) {
+        context?.let { ctx ->
+            MaterialAlertDialogBuilder(ctx)
+                .setTitle("Magnet Link")
+                .setItems(arrayOf("Open", "Copy Hash")) { _, which ->
+                    when (which) {
+                        0 -> {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(magnet))
+                            ctx.startActivity(intent)
+                        }
+                        1 -> {
+                            val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("Torrent Hash", hash)
+                            clipboard.setPrimaryClip(clip)
+                            Toast.makeText(ctx, "Hash copied to clipboard", Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {}
+                    }
+                }
+                .show()
+        }
+    }
+    
     inner class TorrentAdapter : RecyclerView.Adapter<TorrentAdapter.TorrentViewHolder>() {
         
         private var torrents = listOf<TorrentItemWithSource>()
@@ -487,63 +920,16 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
                 categoryText.setOnClickListener {
                     val category = torrent.Category
                     if (category != null) {
-                        setFilterCategory(category)
+                        selectedCategory = category
+                        localSelectedCategory = category
+                        updateCategoryFilterValue()
+                        applyFilter()
                     }
                 }
 
                 // Делаем всю карточку кликабельной для магнитной ссылки
                 itemView.setOnClickListener {
-                    getMagnetLink(source, torrent.Id)
-                }
-            }
-
-            private fun setFilterCategory(category: String) {
-                filterAutoComplete.setText(category, false)
-                selectedCategory = category
-                applyFilter()
-            }
-            
-            private fun getMagnetLink(source: String, id: String) {
-                torApiService.getMagnetLink(source, id, object : TorApiService.MagnetCallback {
-                    override fun onSuccess(magnet: String, hash: String) {
-                        activity?.runOnUiThread {
-                            // Проверяем что фрагмент еще прикреплен
-                            if (isAdded && !isDetached) {
-                                showMagnetOptions(magnet, hash)
-                            }
-                        }
-                    }
-                    
-                    override fun onError(error: String) {
-                        activity?.runOnUiThread {
-                            // Проверяем что фрагмент еще прикреплен
-                            if (isAdded && !isDetached) {
-                                Toast.makeText(context, error, Toast.LENGTH_LONG).show()
-                            }
-                        }
-                    }
-                })
-            }
-            
-            private fun showMagnetOptions(magnet: String, hash: String) {
-                context?.let { ctx ->
-                    MaterialAlertDialogBuilder(ctx)
-                        .setTitle(getString(R.string.magnet_title))
-                        .setItems(arrayOf(getString(R.string.magnet_open), getString(R.string.magnet_copy_hash))) { _, which ->
-                            when (which) {
-                                0 -> {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(magnet))
-                                    ctx.startActivity(intent)
-                                }
-                                1 -> {
-                                    val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                    val clip = ClipData.newPlainText("Torrent Hash", hash)
-                                    clipboard.setPrimaryClip(clip)
-                                    Toast.makeText(ctx, getString(R.string.magnet_hash_copied), Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
-                        .show()
+                    this@SearchBottomSheet.getMagnetLink(source, torrent.Id)
                 }
             }
         }

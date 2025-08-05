@@ -5,8 +5,8 @@
     <item name="chipThemeDark" type="id"/>
     <item name="themeContainer" type="id"/>
     <item name="sortContainer" type="id"/>
-    <item name="searchModeContainer" type="id"/>
+
     <item name="minSeedsContainer" type="id"/>
     <item name="trackersContainer" type="id"/>
     <item name="sizeFilterContainer" type="id"/>
-</resources> 
+</resources>
