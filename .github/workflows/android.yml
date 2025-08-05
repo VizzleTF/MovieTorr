@@ -18,6 +18,17 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
+        cache: 'gradle'
+
+    - name: Cache Android SDK
+      uses: actions/cache@v4
+      with:
+        path: |
+          ${{ env.ANDROID_SDK_ROOT }}
+          ${{ env.ANDROID_HOME }}
+        key: ${{ runner.os }}-android-sdk-${{ hashFiles('**/build.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-android-sdk-
 
     - name: Cache Gradle packages
       uses: actions/cache@v4
@@ -27,12 +38,17 @@ jobs:
           ~/.gradle/wrapper
           ~/.gradle/daemon
           ~/.gradle/configuration-cache
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          ~/.gradle/kotlin
+          ~/.konan
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/gradle.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
+    - name: Pre-download dependencies
+      run: ./gradlew dependencies --configuration-cache --parallel
 
     - name: Create keystore
       run: |
@@ -40,12 +56,12 @@ jobs:
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/keystore/release.keystore
 
     - name: Build release APK (skip dependency-check)
-      run: ./gradlew assembleRelease -x dependencyCheckAnalyze
+      run: ./gradlew assembleRelease -x dependencyCheckAnalyze --build-cache --configuration-cache --parallel
       env:
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=4 -Xmx4g"
+        GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=4 -Xmx6g -XX:+UseParallelGC -XX:MaxMetaspaceSize=1g"
 
     - name: Check APK files
       run: |
@@ -98,4 +114,4 @@ jobs:
           3. Установите приложение
         draft: false
         prerelease: false
-        files: app/build/outputs/apk/release/MovieTorr-${{ github.ref_name }}.apk 
+        files: app/build/outputs/apk/release/MovieTorr-${{ github.ref_name }}.apk
