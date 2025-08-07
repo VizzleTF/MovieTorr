@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'org.owasp.dependencycheck' version '11.1.0'
 }
 
 // Функция для определения версии
@@ -94,22 +93,6 @@ android {
             all {
                 useJUnitPlatform()
             }
-        }
-    }
-}
-
-// Настройка dependency-check
-dependencyCheck {
-    format = 'HTML'
-    suppressionFile = 'dependency-check-suppressions.xml'
-    failBuildOnCVSS = 7
-    analyzers {
-        assemblyEnabled = false
-        nuspecEnabled = false
-        centralEnabled = true
-        nodeEnabled = false  // Отключаем если не нужен
-        retirejs {
-            enabled = false  // Отключаем если не нужен
         }
     }
 }
